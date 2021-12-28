@@ -1,3 +1,7 @@
+libs/
+out/
+.vscode/
+
 # Prerequisites
 *.d
 
