@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server.hpp"
 #include <iostream>
 #include <thread>
 
@@ -35,24 +35,32 @@ void server::start()
 }
 
 void server::handle_accept()
-{   
+{  
     auto con = std::make_shared<connection_t>(io_service);
     acceptor.async_accept(con->socket, [this, con](const error_code_t &ec) {
         if (!ec)
         {
-            this->handle_client_answer(con);
-            std::cout << "Client connected" << std::endl;
+            this->handle_read(con);
+            std::cout << "Client connected: " << con->id << std::endl;
         }
         this->handle_accept();
     });
 }
 
-void server::handle_client_answer(std::shared_ptr<connection_t> con)
+void server::handle_read(std::shared_ptr<connection_t> con)
 {
     boost::asio::async_read_until(con->socket, con->buf, "\n", [this, con](error_code_t ec, size_t len) {
-        std::cout << std::istream(&con->buf).rdbuf();
-        con->buf.consume(len);
-        this->handle_client_answer(con);
+        if (!ec)
+        {
+            std::cout << std::istream(&con->buf).rdbuf();
+            con->buf.consume(len);
+            this->handle_read(con);
+        } 
+        else
+        {
+            // Client disconnected
+            con->socket.close();
+        }
     });
 }
 
