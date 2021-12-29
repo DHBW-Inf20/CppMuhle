@@ -6,6 +6,7 @@ void KonsolenView::initialize(){
     showStartMenu();
 }
 
+//test
 void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     std::cout << "--------------------" << std::endl;
