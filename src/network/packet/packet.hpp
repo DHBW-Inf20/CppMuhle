@@ -3,8 +3,8 @@
 
 typedef struct packet_data
 {
+    int32_t length;
     char* data;
-    int length;
 } packet_data_t;
 
 class packet

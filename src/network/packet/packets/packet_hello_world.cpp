@@ -4,9 +4,9 @@
 
 class packet_hello_world: public packet
 {
-private:
-    std::string str;
 public:
+    std::string str;
+
     packet_data_t serialize() 
     {
         char* data = (char*) str.c_str();

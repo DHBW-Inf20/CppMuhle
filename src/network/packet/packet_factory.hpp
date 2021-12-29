@@ -4,6 +4,8 @@
 #include <map>
 #include "packet.hpp"
 
+#include "packets/packet_hello_world.cpp"
+
 class packet_factory
 {
 private:

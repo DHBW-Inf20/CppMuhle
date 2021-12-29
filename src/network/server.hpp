@@ -1,7 +1,11 @@
 #ifndef SERVER
 #define SERVER
 
+#include <functional>
+#include <vector>
+#include <map>
 #include <boost/asio.hpp>
+#include "packet/packet_factory.hpp"
 
 using tcp = boost::asio::ip::tcp;
 using error_code_t = boost::system::error_code;
@@ -26,21 +30,34 @@ typedef struct connection
 
 class server
 {
-    private:
-        boost::asio::io_service io_service;
-        tcp::endpoint endpoint;
-        tcp::acceptor acceptor{io_service};
+private:
+    ::packet_factory packet_factory;
 
-        void handle_accept();
-        void handle_read(std::shared_ptr<connection_t> con);
+    // std::map<int, std::vector<std::function<void(int id, packet* packet)>>> listeners;
 
-        std::unique_ptr<std::thread> server_thread;
+    boost::asio::io_service io_service;
+    tcp::endpoint endpoint;
+    tcp::acceptor acceptor{io_service};
 
-    public:
-        server(int);
-        ~server();
-        int get_port();
-        void start();
+    void handle_accept();
+    void handle_read(std::shared_ptr<connection_t> con);
+
+    std::unique_ptr<std::thread> server_thread;
+
+public:
+    std::map<int, std::vector<std::function<void(int id, packet* packet)>>> listeners;
+    server(int);
+    ~server();
+    int get_port();
+    void start();
+    void join_thread();
+
+    void send_packet(packet*);
+    void send_packet(int client_id, packet*);
+    template <typename P>
+    void register_packet_listener(std::function<void(int id, P *packet)>);
+
+
 };
 
 #endif
