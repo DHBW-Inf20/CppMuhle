@@ -2,6 +2,11 @@
 
 C++ Projekt für die implementation des Brettspiel Mühle auf der Konsole
 
+
+## Building 
+Um das Projekt zu builden, muss lediglich die makefile ausgeführt werden. Dazu benötigt C++ noch den Pfad in dem die Boost-Library gefunden wird
+Der Pfad bezieht sich dabei auf den Überordner von *boost*
+`make includePath=<includePath>`
 ## Idee der Struktur
 
 Der Controller handelt jegliche Eingaben des Nutzers, interpretiert diese und schickt anweisungen weiter an die Mühle-Logik.

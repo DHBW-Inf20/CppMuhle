@@ -5,6 +5,7 @@
 class Controller
 {
 private:
+    bool inGame;
     IMuhle* model;
 public:
     Controller();
