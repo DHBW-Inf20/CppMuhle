@@ -5,7 +5,7 @@ class KonsolenView: public IView
 {
 public:
     virtual void initialize();
-    virtual void showBoard(int24 white, int24 black);
+    virtual void showBoard(int24 white, int24 black, bool isWhiteMove);
     virtual void showStartMenu();
     virtual void showEndScreen(std::string message);
 };

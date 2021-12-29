@@ -5,7 +5,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
- 
+#include <vector>
 template <class Container>
 void split(const std::string& str, Container& cont, char delim = ',')
 {
@@ -15,6 +15,7 @@ void split(const std::string& str, Container& cont, char delim = ',')
         cont.push_back(token);
     }
 }
+
 
 
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
+#include <bitset>
 
 int main(){
-    std::cout << std::stoi("3") << std::endl;
-    return 0;
+    std::cout << std::bitset<24>(1^1^1^1^1) << std::endl;
 }
