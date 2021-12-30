@@ -5,14 +5,14 @@ packet_factory::packet_factory()
     this->initialize();
 }
 
-void packet_factory::registerPacket(packet* packet)
+void packet_factory::register_packet(packet* packet)
 {
     this->packet_map[packet->get_id()] = packet;
 }
 
 void packet_factory::initialize()
 {
-    this->registerPacket(new packet_hello_world());
+    this->register_packet(new packet_hello_world());
 }
 
 packet* packet_factory::get_packet_from_id(char id)

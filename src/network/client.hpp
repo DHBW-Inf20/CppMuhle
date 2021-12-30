@@ -34,9 +34,10 @@ private:
     boost::asio::io_service io_service;
     tcp::endpoint endpoint;
 
-    void handle_read(std::shared_ptr<connection_t> con);
+    void handle_read();
 
-    // std::unique_ptr<std::thread> client_thread;
+    std::shared_ptr<connection_t> server_con;
+    std::unique_ptr<std::thread> client_thread;
 
 public:
     std::map<int, std::vector<std::function<void(packet* packet)>>> listeners;
@@ -46,6 +47,7 @@ public:
     std::string get_address();
     int get_port();
     void start();
+    void join_thread();
 
     void send_packet(packet*);
     template <typename P>

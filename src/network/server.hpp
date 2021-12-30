@@ -16,7 +16,7 @@ typedef struct connection
 {
     int id;
     tcp::socket socket;
-    boost::asio::streambuf buf;
+    char buf[1 + sizeof(int32_t)];
     connection(boost::asio::io_service &io_service) : socket(io_service)
     {
         id = new_id++;
@@ -41,6 +41,7 @@ private:
 
     void handle_accept();
     void handle_read(std::shared_ptr<connection_t> con);
+    void handle_read_data(std::shared_ptr<connection_t> con, char packet_id, int32_t size);
 
     std::unique_ptr<std::thread> server_thread;
 

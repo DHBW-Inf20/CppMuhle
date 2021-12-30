@@ -12,7 +12,7 @@ public:
         char* data = (char*) str.c_str();
         packet_data_t packet_data;
         packet_data.data = data;
-        packet_data.length = str.length();
+        packet_data.size = str.length();
         return packet_data;
     }
 

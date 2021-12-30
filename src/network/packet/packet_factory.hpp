@@ -12,7 +12,7 @@ private:
     std::map<char, packet*> packet_map;
 
     void initialize();
-    void registerPacket(packet*);
+    void register_packet(packet*);
 public:
     packet_factory();
     packet* get_packet_from_id(char);
