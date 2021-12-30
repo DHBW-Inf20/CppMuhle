@@ -9,15 +9,15 @@ class IMuhle
 {
 public:
 virtual void processInput(std::string command) = 0;
-virtual void placePiece(std::string notation) = 0;
-virtual void movePiece(std::string notation) = 0;
-virtual void jumpPiece(std::string notation) = 0;
-virtual bool checkIfLegalMove(std::string notation) = 0;
-virtual bool checkIfValid(std::string notation) = 0;
-virtual bool checkIf3(std::string lastMovedPiece,int24& player) = 0;
-virtual void attack(std::string notation) = 0;
+virtual void placePiece(int position) = 0;
+virtual void movePiece(int from, int to) = 0;
+virtual void jumpPiece(int from, int to) = 0;
+virtual bool checkIfLegalMove(int from, int to) = 0;
+virtual bool checkIfValid(int from, int to) = 0;
+virtual bool checkIf3(int lastMovedPiece,int24& player) = 0;
+virtual void attack(int position) = 0;
 
-    virtual void initialize() = 0;
+virtual void initialize() = 0;
 };
 
 #endif

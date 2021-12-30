@@ -13,23 +13,23 @@ void MuhleLogik::initialize(){
     this->view = new KonsolenView();
     this->view->initialize();
     this->isWhiteTurn = true;
-    this->started = false;
+    this->status = 0;
     this->black.data = 0;
     this->white.data = 0;
     this->attackMode = false;
-    this->blackPieces = 9;
-    this->whitePieces = 9;
+    this->blackPieces = 4;
+    this->whitePieces = 4;
     this->xDir = {{"1",3},{"7",3},{"2",2},{"6",2},{"3",1},{"4",1},{"5",1},};
     this->yDir = {{"a",3},{"g",3},{"b",2},{"f",2},{"c",1},{"e",1},{"d",1},};
     this->lookupTable = {"a1","d1","g1","b2","d2","f2","c3","d3","e3","a4","b4","c4","e4","f4","g4","c5","d5","e5","b6","d6","f6","a7","d7","g7"};
-    //TODO: Datenstrukturen Initialisieren..
 } 
 
 void MuhleLogik::processInput(std::string command){
+    using std::stoi;
     // TODO: Input verarbeiten  
-    if(!started){
+    if(!status){
         if(std::stoi(command) == 1){
-            started = true;
+            status = 1;    
             this->view->showBoard(this->white, this->black, this->isWhiteTurn);
             return;
         }else{
@@ -37,34 +37,57 @@ void MuhleLogik::processInput(std::string command){
         }
     }
     if(this->attackMode){
-        this->attack(command);
+        this->attack(stoi(command));
+        this->view->showBoard(this->black,this->white,this->isWhiteTurn);
+        return;
+
     }else{
 
     if(blackPieces || whitePieces){
         // Entweder es wurden noch nicht alle Steine gesetzt
-        placePiece(command);
+        placePiece(stoi(command));
+        this->view->showBoard(this->black,this->white,this->isWhiteTurn);
+        return;
+
     }else if(std::bitset<24>(black.data).count() == 3 && !isWhiteTurn || std::bitset<24>(white.data).count() == 3 && isWhiteTurn) {
         // Oder ein Spieler hat nur noch 3 Steine , dann darf dieser springen
-        jumpPiece(command);
+        if(status == 2){ // Wenn es auf den Input gewartet hat
+            jumpPiece(memory, stoi(command));
+            status = 1;
+            this->view->showBoard(this->black,this->white,this->isWhiteTurn);
+            return;
+        }else{
+            memory = stoi(command);
+            return;
+        }
     }else{
         // Oder es wird normal geschoben
-         movePiece(command);
+        if(status == 2){ // Wenn es auf den Input gewartet hat
+             movePiece(memory,stoi(command));
+            status = 1;
+            this->view->showBoard(this->black,this->white,this->isWhiteTurn);
+            return;
+        }else{
+            memory = stoi(command);
+            return;
+        }
     }
     }
-    this->view->showBoard(this->black,this->white,this->isWhiteTurn);
 }
 
-void MuhleLogik::placePiece(std::string notation){
-    if(isOccupied(notation, this->black) || isOccupied(notation, this->white)){
+void MuhleLogik::placePiece(int position){
+    if(isOccupied(position, this->black) || isOccupied(position, this->white)){
         throw std::runtime_error("Position is already occupied");
     }else{
         if(this->isWhiteTurn){
-            this->white.data |= positionToBit24(notation).data;
+            this->white.data |= positionToBit24(position).data;
+            this->whitePieces--;
         }else{
-            this->black.data |= positionToBit24(notation).data;
+            this->black.data |= positionToBit24(position).data;
+            this->blackPieces--;
         }
     }
-    if(checkIf3(notation, this->isWhiteTurn ? this->white : this->black)){
+    if(checkIf3(position, this->isWhiteTurn ? this->white : this->black)){
         this->attackMode = true;
         std::cout << "CAN ATTACK" << std::endl;
     }else{
@@ -72,48 +95,48 @@ void MuhleLogik::placePiece(std::string notation){
     }
 }
 
-bool MuhleLogik::checkIfValid(std::string notation){
+bool MuhleLogik::checkIfValid(int from, int to){
   // Check if start position is a actually occupied by current player
-    if(!isOccupied(notation.substr(0,2), this->isWhiteTurn ? this->white : this->black)){
+    if(!isOccupied(from, this->isWhiteTurn ? this->white : this->black)){
         return false;
     }
 
     // Check if end position is not occupied by a player
-    if(isOccupied(notation.substr(2,2), this->isWhiteTurn ? this->white : this->black)){
+    if(isOccupied(to, this->isWhiteTurn ? this->white : this->black)){
         return false;
     }
     return true;
 }
 
-void MuhleLogik::movePiece(std::string notation){
-    if(!checkIfLegalMove(notation)){
+void MuhleLogik::movePiece(int from, int to){
+    if(!checkIfLegalMove(from, to)){
         throw std::runtime_error("Not a legal move");
     }
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jumpPiece übernommen werden. 
-    jumpPiece(notation);
+    jumpPiece(from, to);
 }
 
-void MuhleLogik::jumpPiece(std::string notation){
-    if(checkIfValid(notation)){
+void MuhleLogik::jumpPiece(int from, int to){
+    if(checkIfValid(from, to)){
         throw std::runtime_error("Not a valid move");
     }
     if(this->isWhiteTurn){
-        this->white.data ^= positionToBit24(notation.substr(0,2)).data; // Remove piece from start position
-        this->white.data |= positionToBit24(notation.substr(2,2)).data; // Add piece to end position
+        this->white.data ^= positionToBit24(from).data; // Remove piece from start position
+        this->white.data |= positionToBit24(to).data; // Add piece to end position
     }else{
         this->black.data ^= positionToBit24
-        (notation.substr(0,2)).data;
-        this->black.data |= positionToBit24(notation.substr(2,2)).data;
+        (from).data;
+        this->black.data |= positionToBit24(from).data;
     }
     // Check if this move created a 3 in a row
-    if(checkIf3(notation.substr(2,2), this->isWhiteTurn ? this->white : this->black)){
+    if(checkIf3(to, this->isWhiteTurn ? this->white : this->black)){
         attackMode = true;
     }else{
         this->isWhiteTurn = !this->isWhiteTurn;
     }
 }
 
-bool MuhleLogik::checkIfLegalMove(std::string notation){
+bool MuhleLogik::checkIfLegalMove(int from, int to){
     // TODO: Spielzug prüfen
     // Funktion geht davon aus, das der Zug valide ist (checkIfValid)
     /*
@@ -133,6 +156,7 @@ bool MuhleLogik::checkIfLegalMove(std::string notation){
                 a4,d1 -> d1 ist dabei, also ist der Zug legal.
 
     */
+   std::string notation = lookupTable[from]+lookupTable[to];
     int x = xDir[notation.substr(1,1)]; // Multiplikator für x-Achse
     int y = yDir[notation.substr(0,1)]; // Multiplikator für y-Achse
     std::vector<std::string> ag = {"a","b","c","d","e","f","g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
@@ -157,7 +181,7 @@ bool MuhleLogik::checkIfLegalMove(std::string notation){
     return false;
 }
 
-bool MuhleLogik::checkIf3(std::string lastMovedPiece, int24& player){
+bool MuhleLogik::checkIf3(int lastMovedPiece, int24& player){
     // TODO: Prüfen ob 3 Steine in einer Reihe sind
     /*  Triviale Lösung: Jedes Belegte feld ansehen und nach 3 in einer Reihe suchen (3 mit der selben Zahl), oder 3 in einer Spalte (3 mit gleichem Buchstaben). Einzige Ausnahme: Zahl 4 und Buchstabe d, hier muss nocheinmal verglichen werden.
     */
@@ -165,9 +189,9 @@ bool MuhleLogik::checkIf3(std::string lastMovedPiece, int24& player){
    if(std::bitset<24>(player.data).count() < 3){
        return false;
    }
-
+    std::string notation = lookupTable[lastMovedPiece];
     // Check the 4 SpecialCases:
-    if(lastMovedPiece.substr(0,1) == "d" || lastMovedPiece.substr(1,1) == "4"){
+    if(notation.substr(0,1) == "d" || notation.substr(1,1) == "4"){
     int i = positionToBit24(lastMovedPiece).data;
     // Wenn eines der 4 SpecialCases erfüllt ist, mit dem Aktuellen Feld inkludiert, dann sind es 3 in einer Reihe seit dieser Runde
     bool a =((player.data&(512|1024|2048)|i) != player.data) ;
@@ -184,8 +208,7 @@ bool MuhleLogik::checkIf3(std::string lastMovedPiece, int24& player){
     std::vector<std::string> positions;
     for(int i = 0;i<24;i++){
         if(playerCopy.data & (1 << i)){
-            std::cout << bit24ToPosition((1 << i)) << std::endl;
-            positions.push_back(bit24ToPosition((1 << i)));
+            positions.push_back(lookupTable[i]);
         }
     }
     
@@ -196,42 +219,45 @@ bool MuhleLogik::checkIf3(std::string lastMovedPiece, int24& player){
             letterMap[positions.at(i).substr(0,1)]++;
             numberMap[std::stoi(positions.at(i).substr(1,1))]++;
     } 
-    std::cout << letterMap[lastMovedPiece.substr(0,1)] << std::endl;
-    std::cout << numberMap[std::stoi(lastMovedPiece.substr(1,1))] << std::endl;
-    if(letterMap[lastMovedPiece.substr(0,1)] >= 3){
+    std::cout << letterMap[notation.substr(0,1)] << std::endl;
+    std::cout << numberMap[std::stoi(notation.substr(1,1))] << std::endl;
+    if(letterMap[notation.substr(0,1)] >= 3){
         return true;
     }
-    if(numberMap[std::stoi(lastMovedPiece.substr(1,1))] >= 3){
+    if(numberMap[std::stoi(notation.substr(1,1))] >= 3){
         return true;
     }
     return false;
 
 }
 
-void MuhleLogik::attack(std::string notation){
-    if(isOccupied(notation, this->isWhiteTurn ? this->black : this->white)){
+void MuhleLogik::attack(int position){
+    if(isOccupied(position, this->isWhiteTurn ? this->black : this->white)){
         if(this->isWhiteTurn){
-            this->black.data &= ~(1 << positionToBit24(notation).data);
+            this->black.data &= ~(1 << positionToBit24(position).data);
         }else{
-            this->white.data &= ~(1 << positionToBit24(notation).data);
+            this->white.data &= ~(1 << positionToBit24(position).data);
         }
     }
     this->isWhiteTurn = !this->isWhiteTurn;
+    this->attackMode = false;
 }
 
-bool MuhleLogik::isOccupied(std::string position, int24& player){
+bool MuhleLogik::isOccupied(int position, int24& player){
     return (player.data & positionToBit24(position).data);
 }
 
-int24 MuhleLogik::positionToBit24(std::string position){
-    // Lazy Approach
-    // TODO: Better way to convert string to bit24
+int24 MuhleLogik::positionToBit24(int position){
     int24 bit24;
-    int index = std::find(lookupTable.begin(), lookupTable.end(), position) - lookupTable.begin();
-    bit24.data = 1 << index;
+    bit24.data = 1 << position;
     return bit24;
 }
 
-std::string MuhleLogik::bit24ToPosition(int bit24){
+std::string MuhleLogik::positionToCoordinate(int position){
+    return lookupTable[position];
+}
+
+
+std::string MuhleLogik::bit24ToCoordinate(int bit24){
     return lookupTable[std::log2(bit24)];
 }

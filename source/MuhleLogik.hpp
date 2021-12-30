@@ -15,23 +15,26 @@ private:
     int24 white;
     unsigned short blackPieces;
     unsigned short whitePieces;
-    bool started;
+    int status; // 0 = not started, 1 = started, 2 = waiting for input
+    int memory;
     std::map<std::string, int> xDir;
     std::map<std::string, int> yDir;
     std::vector<std::string> lookupTable;
-    bool isOccupied(std::string position, int24& player);
-    int24 positionToBit24(std::string position);
-    std::string bit24ToPosition(int position);
+    bool isOccupied(int position, int24& player);
+    int24 positionToBit24(int position);
+    std::string bit24ToCoordinate(int position);
+    std::string positionToCoordinate(int position);
 public:
-    virtual void processInput(std::string command);
-    virtual void placePiece(std::string notation);
-    virtual void movePiece(std::string notation);
-    virtual void jumpPiece(std::string notation);
-    virtual bool checkIfLegalMove(std::string notation);
-    virtual bool checkIfValid(std::string notation);
-    virtual bool checkIf3(std::string lastMovedPiece,int24& player);
-    virtual void attack(std::string notation);
-    virtual void initialize();
+virtual void processInput(std::string command);
+virtual void placePiece(int position);
+virtual void movePiece(int from, int to);
+virtual void jumpPiece(int from, int to);
+virtual bool checkIfLegalMove(int from, int to);
+virtual bool checkIfValid(int from, int to);
+virtual bool checkIf3(int lastMovedPiece,int24& player);
+virtual void attack(int position);
+
+virtual void initialize() ;
 };
 
 #endif
