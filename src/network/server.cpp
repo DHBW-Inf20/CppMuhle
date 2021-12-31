@@ -113,9 +113,27 @@ void server::call_listeners(int from_id, packet* packet)
     }
 }
 
-bool server::send_packet(int client_id, packet* packet)
+bool server::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+{
+    error_code_t ec;
+    boost::asio::write(socket, buf, ec);
+    if (ec) return false;
+    boost::asio::write(socket, data_buf, ec);
+    if (ec) return false;
+    return true;
+}
+
+bool server::is_connected(int client_id)
 {
     if (clients.find(client_id) != clients.end()) {
+        return clients[client_id]->socket.is_open();
+    }
+    return false;
+}
+
+bool server::send_packet(int client_id, packet* packet)
+{
+    if (is_connected(client_id)) {
         std::shared_ptr<connection_t> con = clients[client_id];
         packet_data_t packet_data = packet->serialize();
 
@@ -123,24 +141,29 @@ bool server::send_packet(int client_id, packet* packet)
         cbuf[0] = packet->get_id();
         std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
         auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-        error_code_t ec;
-        boost::asio::write(con->socket, buf, ec);
-
-        if (ec) return false;
-
         auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
-        boost::asio::write(con->socket, data_buf, ec);
-
-        if (ec) return false;
-        return true;
+        return write_data(con->socket, buf, data_buf);
     }
     return false;
 }
 
-bool server::send_packet(packet*)
+void server::send_packet(packet* packet)
 {
-    // TODO
-    return false;
+   packet_data_t packet_data = packet->serialize();
+
+    char cbuf[1 + sizeof(int32_t)];
+    cbuf[0] = packet->get_id();
+    std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
+    auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
+    auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+
+    for (auto &map : clients) {
+        std::shared_ptr<connection_t> con = map.second;
+        if (con->socket.is_open())
+        {
+            write_data(con->socket, buf, data_buf);
+        }
+    }
 }
 
 template <typename P>
@@ -163,7 +186,8 @@ int main()
 
     server.register_packet_listener<packet_hello_world>([&server](int id, packet_hello_world *packet) {
         std::cout << "Message from " << id << ": " << packet->str << std::endl;
-        server.send_packet(id, packet);
+        packet->str = "Message from " + std::to_string(id) + ": " + packet->str;
+        server.send_packet(packet);
     });
 
     server.start();

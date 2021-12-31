@@ -96,25 +96,30 @@ void client::call_listeners(packet* packet)
     }
 }
 
+bool client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+{
+    error_code_t ec;
+    boost::asio::write(socket, buf, ec);
+    if (ec) return false;
+    boost::asio::write(socket, data_buf, ec);
+    if (ec) return false;
+    return true;
+}
+
 
 bool client::send_packet(packet* packet)
 {
-    packet_data_t packet_data = packet->serialize();
+    if (server_con->socket.is_open()) {
+        packet_data_t packet_data = packet->serialize();
 
-    char cbuf[1 + sizeof(int32_t)];
-    cbuf[0] = packet->get_id();
-    std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
-    auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-    error_code_t ec;
-    boost::asio::write(server_con->socket, buf, ec);
-
-    if (ec) return false;
-
-    auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
-    boost::asio::write(server_con->socket, data_buf, ec);
-
-    if (ec) return false;
-    return true;
+        char cbuf[1 + sizeof(int32_t)];
+        cbuf[0] = packet->get_id();
+        std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
+        auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
+        auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+        return write_data(server_con->socket, buf, data_buf);
+    }
+    return false;
 }
 
 template <typename P>
@@ -137,7 +142,7 @@ int main()
     client.start();
 
     client.register_packet_listener<packet_hello_world>([](packet_hello_world* packet) {
-        std::cout << "Echo: " << packet->str << std::endl;
+        std::cout << packet->str << std::endl;
     });
 
     packet_hello_world* phw = new packet_hello_world();

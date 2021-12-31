@@ -38,6 +38,8 @@ private:
     void receive_packet(char packet_id, int32_t size);
     void call_listeners(packet*);
 
+    bool write_data(tcp::socket&, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf);
+
     std::shared_ptr<connection_t> server_con;
     std::unique_ptr<std::thread> client_thread;
 

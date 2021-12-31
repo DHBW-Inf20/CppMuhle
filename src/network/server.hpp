@@ -45,6 +45,8 @@ private:
     void receive_packet(std::shared_ptr<connection_t> con, char packet_id, int32_t size);
     void call_listeners(int from_id, packet*);
 
+    bool write_data(tcp::socket&, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf);
+
     std::unique_ptr<std::thread> server_thread;
 
 public:
@@ -54,7 +56,8 @@ public:
     void start();
     void join_thread();
 
-    bool send_packet(packet*);
+    bool is_connected(int client_id);
+    void send_packet(packet*);
     bool send_packet(int client_id, packet*);
     template <typename P>
     void register_packet_listener(std::function<void(int id, P *packet)>);
