@@ -44,6 +44,7 @@ void server::handle_accept()
     acceptor.async_accept(con->socket, [this, con](const error_code_t &ec) {
         if (!ec)
         {
+            clients[con->id] = con;
             this->handle_read(con);
             std::cout << "Client connected: " << con->id << std::endl;
         }
@@ -60,40 +61,37 @@ void server::handle_read(std::shared_ptr<connection_t> con)
             char packet_id = con->buf[0];
             int32_t size;
             std::memcpy(&size, &con->buf[1], sizeof(int32_t));
-            std::cout << "Recieved packet " << (int) packet_id << " from " << con->id << std::endl;
-            std::cout << "size: " << size << std::endl;
-            this->handle_read_data(con, packet_id, size);
+            // std::cout << "Recieved packet " << (int) packet_id << " from " << con->id << std::endl;
+            // std::cout << "size: " << size << std::endl;
+            this->receive_packet(con, packet_id, size);
             this->handle_read(con);
         } 
         else
         {
             // Client disconnected
+            std::cout << "Client disconnected: " << con->id << std::endl;
+            clients.erase(con->id);
             con->socket.close();
         }
     });
 }
 
-void server::handle_read_data(std::shared_ptr<connection_t> con, char packet_id, int32_t size)
+void server::receive_packet(std::shared_ptr<connection_t> con, char packet_id, int32_t size)
 {
     char* data_buf = (char*) malloc(size);
     auto buf = boost::asio::buffer(data_buf, size);
     boost::asio::async_read(con->socket, buf, [this, data_buf, con, packet_id](error_code_t ec, size_t len) {
         if (!ec)
         {
-            packet_data_t packet_data;
-            packet_data.size = len;
-            packet_data.data = data_buf;
             packet* packet = packet_factory.get_packet_from_id(packet_id);
             if (packet)
             {
+                packet_data_t packet_data;
+                packet_data.size = len;
+                packet_data.data = data_buf;
                 packet->deserialize(packet_data);
-                if (listeners.find(packet_id) != listeners.end())
-                {
-                    for (int i = 0; i < listeners[packet_id].size(); i++)
-                    {
-                        listeners[packet_id][i](con->id, packet);
-                    }
-                }
+                this->call_listeners(con->id, packet);
+                delete packet;
             }
             else
             {
@@ -104,14 +102,45 @@ void server::handle_read_data(std::shared_ptr<connection_t> con, char packet_id,
     });
 }
 
-void server::send_packet(int client_id, packet*)
+void server::call_listeners(int from_id, packet* packet)
 {
-
+    if (listeners.find(packet->get_id()) != listeners.end())
+    {
+        for (int i = 0; i < listeners[packet->get_id()].size(); i++)
+        {
+            listeners[packet->get_id()][i](from_id, packet);
+        }
+    }
 }
 
-void server::send_packet(packet*)
+bool server::send_packet(int client_id, packet* packet)
 {
-    
+    if (clients.find(client_id) != clients.end()) {
+        std::shared_ptr<connection_t> con = clients[client_id];
+        packet_data_t packet_data = packet->serialize();
+
+        char cbuf[1 + sizeof(int32_t)];
+        cbuf[0] = packet->get_id();
+        std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
+        auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
+        error_code_t ec;
+        boost::asio::write(con->socket, buf, ec);
+
+        if (ec) return false;
+
+        auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+        boost::asio::write(con->socket, data_buf, ec);
+
+        if (ec) return false;
+        return true;
+    }
+    return false;
+}
+
+bool server::send_packet(packet*)
+{
+    // TODO
+    return false;
 }
 
 template <typename P>
@@ -132,8 +161,9 @@ int main()
 {
     server server(1337);
 
-    server.register_packet_listener<packet_hello_world>([](int id, packet_hello_world *packet) {
+    server.register_packet_listener<packet_hello_world>([&server](int id, packet_hello_world *packet) {
         std::cout << "Message from " << id << ": " << packet->str << std::endl;
+        server.send_packet(id, packet);
     });
 
     server.start();

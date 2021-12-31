@@ -13,7 +13,7 @@ using error_code_t = boost::system::error_code;
 typedef struct connection
 {
     tcp::socket socket;
-    boost::asio::streambuf buf;
+    char buf[1 + sizeof(int32_t)];
     connection(boost::asio::io_service &io_service) : socket(io_service)
     {
     }
@@ -35,6 +35,8 @@ private:
     tcp::endpoint endpoint;
 
     void handle_read();
+    void receive_packet(char packet_id, int32_t size);
+    void call_listeners(packet*);
 
     std::shared_ptr<connection_t> server_con;
     std::unique_ptr<std::thread> client_thread;
@@ -49,7 +51,7 @@ public:
     void start();
     void join_thread();
 
-    void send_packet(packet*);
+    bool send_packet(packet*);
     template <typename P>
     void register_packet_listener(std::function<void(P *packet)>);
 };
