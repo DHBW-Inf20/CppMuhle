@@ -7,18 +7,15 @@ class packet_hello_world: public packet
 public:
     std::string str;
 
-    packet_data_t serialize() 
+    char* serialize() 
     {
         char* data = (char*) str.c_str();
-        packet_data_t packet_data;
-        packet_data.data = data;
-        packet_data.size = str.length();
-        return packet_data;
+        return data;
     }
 
-    void deserialize(packet_data_t packet_data)
+    void deserialize(char* data)
     {
-        str = std::string(packet_data.data);
+        str = std::string(data);
     }
 
     packet* clone()

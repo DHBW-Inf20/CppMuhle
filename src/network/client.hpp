@@ -49,7 +49,7 @@ public:
     void start();
     void join_thread();
 
-    void send_packet(packet*);
+    bool send_packet(packet*);
     template <typename P>
     void register_packet_listener(std::function<void(P *packet)>);
 };

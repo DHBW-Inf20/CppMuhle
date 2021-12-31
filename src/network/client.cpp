@@ -52,24 +52,21 @@ void client::handle_read()
 }
 
 
-void client::send_packet(packet* packet)
+bool client::send_packet(packet* packet)
 {
-    packet_data_t packet_data = packet->serialize();
+    char* data = packet->serialize();
+    int32_t data_size = sizeof(data);
     char cbuf[1 + sizeof(int32_t)];
     cbuf[0] = packet->get_id();
-    std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
+    std::memcpy(&cbuf[1], &data_size, sizeof(int32_t));
     auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-    // boost::asio::async_write(server_con->socket, buf, [this, packet_data](error_code_t e, size_t r) {
-    //     auto buf = boost::asio::buffer(packet_data.data, packet_data.length);
-    //     boost::asio::async_write(server_con->socket, buf, [](error_code_t e, size_t r) {
-    //     });
-    // });
-
-    std::size_t size = boost::asio::write(server_con->socket, buf);
-    if (size != 0) {
-        auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
-        boost::asio::write(server_con->socket, data_buf);
-    }
+    error_code_t ec;
+    boost::asio::write(server_con->socket, buf, ec);
+    if (ec) return false;
+    auto data_buf = boost::asio::buffer(data, data_size);
+    boost::asio::write(server_con->socket, data_buf, ec);
+    if (ec) return false;
+    return true;
 }
 
 template <typename P>
@@ -92,11 +89,21 @@ int main()
     client client("127.0.0.1", 1337);
     client.start();
 
+    // packet_hello_world* phw = new packet_hello_world();
+    // phw->str = "Hello world!";
+    // bool test = client.send_packet(phw);
+    // std::cout << test << std::endl;
+    // phw->str = "C++ Test /+#-.;,äöüß";
+    // client.send_packet(phw);
+
     packet_hello_world* phw = new packet_hello_world();
-    phw->str = "Hello world!";
-    client.send_packet(phw);
-    phw->str = "C++ Test /+#-.;,äöüß";
-    client.send_packet(phw);
+    while (std::cin.good())
+    {
+        std::string msg;
+        std::getline(std::cin, msg);
+        phw->str = msg;
+        client.send_packet(phw);
+    }
 
     client.join_thread();
 }
