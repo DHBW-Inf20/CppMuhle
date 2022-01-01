@@ -122,12 +122,26 @@ void net_server::call_listeners(int from_id, packet* packet)
     }
 }
 
-bool net_server::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+packet_buf_t net_server::get_packet_buf(packet *packet)
+{
+    packet_data_t packet_data = packet->serialize();
+    packet_buf_t packet_buf;
+
+    packet_buf.cbuf[0] = packet->get_id();
+    std::memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
+    
+    packet_buf.buf = boost::asio::buffer(packet_buf.cbuf, 1 + sizeof(int32_t));
+    packet_buf.data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+
+    return packet_buf;
+}
+
+bool net_server::write_data(tcp::socket &socket, packet_buf_t &packet_buf)
 {
     error_code_t ec;
-    boost::asio::write(socket, buf, ec);
+    boost::asio::write(socket, packet_buf.buf, ec);
     if (ec) return false;
-    boost::asio::write(socket, data_buf, ec);
+    boost::asio::write(socket, packet_buf.data_buf, ec);
     if (ec) return false;
     return true;
 }
@@ -142,19 +156,13 @@ bool net_server::is_connected(int client_id)
 
 void net_server::send_packet(packet *packet)
 {
-   packet_data_t packet_data = packet->serialize();
-
-    char cbuf[1 + sizeof(int32_t)];
-    cbuf[0] = packet->get_id();
-    std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
-    auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-    auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+   packet_buf_t packet_buf = get_packet_buf(packet);
 
     for (auto &map : clients) {
         std::shared_ptr<connection_t> con = map.second;
         if (con->socket.is_open())
         {
-            write_data(con->socket, buf, data_buf);
+            write_data(con->socket, packet_buf);
         }
     }
 }
@@ -162,16 +170,10 @@ void net_server::send_packet(packet *packet)
 bool net_server::send_packet(packet *packet, int client_id)
 {
     if (is_connected(client_id)) {
-        packet_data_t packet_data = packet->serialize();
-
-        char cbuf[1 + sizeof(int32_t)];
-        cbuf[0] = packet->get_id();
-        std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
-        auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-        auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
-
         std::shared_ptr<connection_t> con = clients[client_id];
-        return write_data(con->socket, buf, data_buf);
+        packet_buf_t packet_buf = get_packet_buf(packet);
+
+        return write_data(con->socket, packet_buf);
     }
     return false;
 }
@@ -183,20 +185,13 @@ void net_server::send_packet(packet *packet, std::vector<int> &client_ids)
 
 void net_server::send_packet(packet *packet, int *client_ids, int size)
 {
-   
-    packet_data_t packet_data = packet->serialize();
-
-    char cbuf[1 + sizeof(int32_t)];
-    cbuf[0] = packet->get_id();
-    std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
-    auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-    auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+   packet_buf_t packet_buf = get_packet_buf(packet);
 
     for (int* client_id = client_ids; client_id < client_ids + size; client_id++)
     {
         if (is_connected(*client_id)) {
             std::shared_ptr<connection_t> con = clients[*client_id];
-            write_data(con->socket, buf, data_buf);
+            write_data(con->socket, packet_buf);
         }
     }
 }

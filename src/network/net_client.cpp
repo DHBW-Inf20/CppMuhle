@@ -109,12 +109,26 @@ void net_client::call_listeners(packet* packet)
     }
 }
 
-bool net_client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+packet_buf_t net_client::get_packet_buf(packet *packet)
+{
+    packet_data_t packet_data = packet->serialize();
+    packet_buf_t packet_buf;
+
+    packet_buf.cbuf[0] = packet->get_id();
+    std::memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
+    
+    packet_buf.buf = boost::asio::buffer(packet_buf.cbuf, 1 + sizeof(int32_t));
+    packet_buf.data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
+
+    return packet_buf;
+}
+
+bool net_client::write_data(tcp::socket &socket, packet_buf_t &packet_buf)
 {
     error_code_t ec;
-    boost::asio::write(socket, buf, ec);
+    boost::asio::write(socket, packet_buf.buf, ec);
     if (ec) return false;
-    boost::asio::write(socket, data_buf, ec);
+    boost::asio::write(socket, packet_buf.data_buf, ec);
     if (ec) return false;
     return true;
 }
@@ -123,14 +137,9 @@ bool net_client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 
 bool net_client::send_packet(packet* packet)
 {
     if (server_con->socket.is_open()) {
-        packet_data_t packet_data = packet->serialize();
+        packet_buf_t packet_buf = get_packet_buf(packet);
 
-        char cbuf[1 + sizeof(int32_t)];
-        cbuf[0] = packet->get_id();
-        std::memcpy(&cbuf[1], &packet_data.size, sizeof(int32_t));
-        auto buf = boost::asio::buffer(cbuf, 1 + sizeof(int32_t));
-        auto data_buf = boost::asio::buffer(packet_data.data, packet_data.size);
-        return write_data(server_con->socket, buf, data_buf);
+        return write_data(server_con->socket, packet_buf);
     }
     return false;
 }
