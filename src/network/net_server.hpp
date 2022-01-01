@@ -49,7 +49,9 @@ public:
 
     bool is_connected(int client_id);
     void send_packet(packet*);
-    bool send_packet(int client_id, packet*);
+    bool send_packet(packet*, int client_id);
+    void send_packet(packet*, std::vector<int> &client_ids);
+    void send_packet(packet*, int *client_ids, int size);
     template <typename P>
     void register_packet_listener(std::function<void(int id, P *packet)>);
 
