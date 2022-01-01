@@ -7,6 +7,8 @@
 
 class IMuhle
 {
+private:
+bool testMode;
 public:
 virtual void processInput(std::string command) = 0;
 virtual void placePiece(int position) = 0;
@@ -17,7 +19,7 @@ virtual bool checkIfValid(int from, int to) = 0;
 virtual bool checkIf3(int lastMovedPiece,int24& player) = 0;
 virtual void attack(int position) = 0;
 
-virtual void initialize() = 0;
+virtual void initialize(bool testMode = false) = 0;
 };
 
 #endif

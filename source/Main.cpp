@@ -7,5 +7,6 @@
 int main()
 {
     Controller controller;
-    controller.run();
+    // controller.run();
+    controller.test();
 }

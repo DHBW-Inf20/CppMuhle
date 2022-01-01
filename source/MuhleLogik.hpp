@@ -24,7 +24,9 @@ private:
     int24 positionToBit24(int position);
     std::string bit24ToCoordinate(int position);
     std::string positionToCoordinate(int position);
+    bool testMode;
 public:
+void showState();
 virtual void processInput(std::string command);
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);
@@ -34,7 +36,7 @@ virtual bool checkIfValid(int from, int to);
 virtual bool checkIf3(int lastMovedPiece,int24& player);
 virtual void attack(int position);
 
-virtual void initialize() ;
+virtual void initialize(bool testMode = false) ;
 };
 
 #endif

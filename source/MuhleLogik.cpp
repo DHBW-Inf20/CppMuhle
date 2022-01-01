@@ -9,69 +9,62 @@
 #include <map>
 #include <vector>
 #include <cmath>
-void MuhleLogik::initialize(){
+void MuhleLogik::initialize(bool testMode){
     this->view = new KonsolenView();
     this->view->initialize();
     this->isWhiteTurn = true;
+    this->testMode = testMode;
     this->status = 0;
     this->black.data = 0;
     this->white.data = 0;
     this->attackMode = false;
-    this->blackPieces = 4;
-    this->whitePieces = 4;
+    this->blackPieces = 9;
+    this->whitePieces = 9;
     this->xDir = {{"1",3},{"7",3},{"2",2},{"6",2},{"3",1},{"4",1},{"5",1},};
     this->yDir = {{"a",3},{"g",3},{"b",2},{"f",2},{"c",1},{"e",1},{"d",1},};
     this->lookupTable = {"a1","d1","g1","b2","d2","f2","c3","d3","e3","a4","b4","c4","e4","f4","g4","c5","d5","e5","b6","d6","f6","a7","d7","g7"};
 } 
 
 void MuhleLogik::processInput(std::string command){
-    using std::stoi;
     // TODO: Input verarbeiten  
     if(!status){
         if(std::stoi(command) == 1){
             status = 1;    
-            this->view->showBoard(this->white, this->black, this->isWhiteTurn);
-            return;
         }else{
             exit(0);
         }
-    }
-    if(this->attackMode){
-        this->attack(stoi(command));
-        this->view->showBoard(this->black,this->white,this->isWhiteTurn);
-        return;
+    }else{
 
+    if(this->attackMode){
+        this->attack(std::stoi(command));
     }else{
 
     if(blackPieces || whitePieces){
         // Entweder es wurden noch nicht alle Steine gesetzt
-        placePiece(stoi(command));
-        this->view->showBoard(this->black,this->white,this->isWhiteTurn);
-        return;
-
+        placePiece(std::stoi(command));
     }else if(std::bitset<24>(black.data).count() == 3 && !isWhiteTurn || std::bitset<24>(white.data).count() == 3 && isWhiteTurn) {
         // Oder ein Spieler hat nur noch 3 Steine , dann darf dieser springen
         if(status == 2){ // Wenn es auf den Input gewartet hat
-            jumpPiece(memory, stoi(command));
+            jumpPiece(memory, std::stoi(command));
             status = 1;
-            this->view->showBoard(this->black,this->white,this->isWhiteTurn);
-            return;
         }else{
-            memory = stoi(command);
+            memory = std::stoi(command);
             return;
         }
     }else{
         // Oder es wird normal geschoben
         if(status == 2){ // Wenn es auf den Input gewartet hat
-             movePiece(memory,stoi(command));
+             movePiece(memory,std::stoi(command));
             status = 1;
-            this->view->showBoard(this->black,this->white,this->isWhiteTurn);
-            return;
         }else{
-            memory = stoi(command);
+            memory = std::stoi(command);
             return;
         }
     }
+    }
+        if(!this->testMode){
+            this->view->showBoard(this->black, this->white, this->isWhiteTurn);
+        }
     }
 }
 
@@ -260,4 +253,9 @@ std::string MuhleLogik::positionToCoordinate(int position){
 
 std::string MuhleLogik::bit24ToCoordinate(int bit24){
     return lookupTable[std::log2(bit24)];
+}
+
+
+void MuhleLogik::showState(){
+    this->view->showBoard(this->white, this->black, this->isWhiteTurn);
 }
