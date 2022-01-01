@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 #include <boost/asio.hpp>
-#include "packet/packet_factory.hpp"
+#include "packet_factory.hpp"
 
 using tcp = boost::asio::ip::tcp;
 using error_code_t = boost::system::error_code;

@@ -1,4 +1,4 @@
-#include "../packet.hpp"
+#include "packet.hpp"
 #include <iostream>
 #include <string>
 

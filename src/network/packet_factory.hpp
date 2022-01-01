@@ -2,7 +2,7 @@
 #define PACKET_FACTORY
 
 #include <map>
-#include "packet.hpp"
+#include "packets/packet.hpp"
 
 #include "packets/packet_hello_world.cpp"
 
