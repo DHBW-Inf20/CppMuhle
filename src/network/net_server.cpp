@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "net_server.hpp"
 #include <iostream>
 #include <thread>
 
@@ -13,22 +13,22 @@ connection::~connection()
     socket.close();
 }
 
-server::server(int port)
+net_server::net_server(int port)
 {
     endpoint = tcp::endpoint(tcp::v4(), port);
 }
 
-server::~server()
+net_server::~net_server()
 {
     std::cout << "Server stopped" << std::endl;
 }
 
-int server::get_port()
+int net_server::get_port()
 {
     return endpoint.port();
 }
 
-void server::start()
+void net_server::start()
 {
     std::cout << "Starting server..." << std::endl;
     acceptor.open(endpoint.protocol());
@@ -42,12 +42,12 @@ void server::start()
     server_thread = std::unique_ptr<std::thread>(new std::thread([this]() { io_service.run(); }));
 }
 
-void server::join_thread()
+void net_server::join_thread()
 {
     server_thread->join();
 }
 
-void server::handle_accept()
+void net_server::handle_accept()
 {  
     auto con = std::make_shared<connection_t>(io_service);
     acceptor.async_accept(con->socket, [this, con](const error_code_t &ec) {
@@ -61,7 +61,7 @@ void server::handle_accept()
     });
 }
 
-void server::handle_read(std::shared_ptr<connection_t> con)
+void net_server::handle_read(std::shared_ptr<connection_t> con)
 {
     auto buf = boost::asio::buffer(con->buf, 1 + sizeof(int32_t));
     boost::asio::async_read(con->socket, buf, [this, con](error_code_t ec, size_t len) {
@@ -85,7 +85,7 @@ void server::handle_read(std::shared_ptr<connection_t> con)
     });
 }
 
-void server::receive_packet(std::shared_ptr<connection_t> con, char packet_id, int32_t size)
+void net_server::receive_packet(std::shared_ptr<connection_t> con, char packet_id, int32_t size)
 {
     char* data_buf = (char*) malloc(size);
     auto buf = boost::asio::buffer(data_buf, size);
@@ -111,7 +111,7 @@ void server::receive_packet(std::shared_ptr<connection_t> con, char packet_id, i
     });
 }
 
-void server::call_listeners(int from_id, packet* packet)
+void net_server::call_listeners(int from_id, packet* packet)
 {
     if (listeners.find(packet->get_id()) != listeners.end())
     {
@@ -122,7 +122,7 @@ void server::call_listeners(int from_id, packet* packet)
     }
 }
 
-bool server::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+bool net_server::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
 {
     error_code_t ec;
     boost::asio::write(socket, buf, ec);
@@ -132,7 +132,7 @@ bool server::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf
     return true;
 }
 
-bool server::is_connected(int client_id)
+bool net_server::is_connected(int client_id)
 {
     if (clients.find(client_id) != clients.end()) {
         return clients[client_id]->socket.is_open();
@@ -140,7 +140,7 @@ bool server::is_connected(int client_id)
     return false;
 }
 
-bool server::send_packet(int client_id, packet* packet)
+bool net_server::send_packet(int client_id, packet* packet)
 {
     if (is_connected(client_id)) {
         std::shared_ptr<connection_t> con = clients[client_id];
@@ -156,7 +156,7 @@ bool server::send_packet(int client_id, packet* packet)
     return false;
 }
 
-void server::send_packet(packet* packet)
+void net_server::send_packet(packet* packet)
 {
    packet_data_t packet_data = packet->serialize();
 
@@ -176,7 +176,7 @@ void server::send_packet(packet* packet)
 }
 
 template <typename P>
-void server::register_packet_listener(std::function<void(int id, P *packet)> method)
+void net_server::register_packet_listener(std::function<void(int id, P *packet)> method)
 {
     char packet_id = P().get_id();
     if (listeners.find(packet_id) == listeners.end())
@@ -191,7 +191,7 @@ void server::register_packet_listener(std::function<void(int id, P *packet)> met
 
 int main()
 {
-    server server(1337);
+    net_server server(1337);
 
     server.register_packet_listener<packet_hello_world>([&server](int id, packet_hello_world *packet) {
         std::cout << "Message from " << id << ": " << packet->str << std::endl;

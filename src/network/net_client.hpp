@@ -1,5 +1,5 @@
-#ifndef CLIENT
-#define CLIENT
+#ifndef NET_CLIENT_HPP
+#define NET_CLIENT_HPP
 
 #include <functional>
 #include <vector>
@@ -18,7 +18,7 @@ typedef struct connection
     ~connection();
 } connection_t;
 
-class client
+class net_client
 {
 private:
     ::packet_factory packet_factory;
@@ -38,8 +38,8 @@ private:
     std::unique_ptr<std::thread> client_thread;
 
 public:
-    client(std::string address, int port);
-    ~client();
+    net_client(std::string address, int port);
+    ~net_client();
     std::string get_address();
     int get_port();
     void start();

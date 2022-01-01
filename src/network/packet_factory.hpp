@@ -1,5 +1,5 @@
-#ifndef PACKET_FACTORY
-#define PACKET_FACTORY
+#ifndef PACKET_FACTORY_HPP
+#define PACKET_FACTORY_HPP
 
 #include <map>
 #include "packets/packet.hpp"

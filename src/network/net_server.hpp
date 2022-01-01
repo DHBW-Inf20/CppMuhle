@@ -1,5 +1,5 @@
-#ifndef SERVER
-#define SERVER
+#ifndef NET_SERVER_HPP
+#define NET_SERVER_HPP
 
 #include <functional>
 #include <vector>
@@ -19,7 +19,7 @@ typedef struct connection
     ~connection();
 } connection_t;
 
-class server
+class net_server
 {
 private:
     ::packet_factory packet_factory;
@@ -41,8 +41,8 @@ private:
     std::unique_ptr<std::thread> server_thread;
 
 public:
-    server(int);
-    ~server();
+    net_server(int);
+    ~net_server();
     int get_port();
     void start();
     void join_thread();

@@ -1,4 +1,4 @@
-#include "client.hpp"
+#include "net_client.hpp"
 #include <iostream>
 #include <string>
 
@@ -9,27 +9,27 @@ connection::~connection()
     socket.close();
 }
 
-client::client(std::string address, int port)
+net_client::net_client(std::string address, int port)
 {
     endpoint = tcp::endpoint(boost::asio::ip::address::from_string(address), port);
 }
 
-client::~client()
+net_client::~net_client()
 {
     std::cout << "Client stopped" << std::endl;
 }
 
-std::string client::get_address()
+std::string net_client::get_address()
 {
     return endpoint.address().to_string();
 }
 
-int client::get_port()
+int net_client::get_port()
 {
     return endpoint.port();
 }
 
-void client::start()
+void net_client::start()
 {
     server_con = std::make_shared<connection_t>(io_service);
     server_con->socket.connect(endpoint);
@@ -40,13 +40,13 @@ void client::start()
     client_thread = std::unique_ptr<std::thread>(new std::thread([this]() { io_service.run(); }));
 }
 
-void client::join_thread()
+void net_client::join_thread()
 {
     client_thread->join();
 }
 
 
-void client::handle_read()
+void net_client::handle_read()
 {
     auto buf = boost::asio::buffer(server_con->buf, 1 + sizeof(int32_t));
     boost::asio::async_read(server_con->socket, buf, [this](error_code_t ec, size_t len) {
@@ -66,7 +66,7 @@ void client::handle_read()
     });
 }
 
-void client::receive_packet(char packet_id, int32_t size)
+void net_client::receive_packet(char packet_id, int32_t size)
 {
     char* data_buf = (char*) malloc(size);
     auto buf = boost::asio::buffer(data_buf, size);
@@ -92,7 +92,7 @@ void client::receive_packet(char packet_id, int32_t size)
     });
 }
 
-void client::call_listeners(packet* packet)
+void net_client::call_listeners(packet* packet)
 {
     if (listeners.find(packet->get_id()) != listeners.end())
     {
@@ -103,7 +103,7 @@ void client::call_listeners(packet* packet)
     }
 }
 
-bool client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
+bool net_client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf, boost::asio::mutable_buffers_1 &data_buf)
 {
     error_code_t ec;
     boost::asio::write(socket, buf, ec);
@@ -114,7 +114,7 @@ bool client::write_data(tcp::socket &socket, boost::asio::mutable_buffers_1 &buf
 }
 
 
-bool client::send_packet(packet* packet)
+bool net_client::send_packet(packet* packet)
 {
     if (server_con->socket.is_open()) {
         packet_data_t packet_data = packet->serialize();
@@ -130,7 +130,7 @@ bool client::send_packet(packet* packet)
 }
 
 template <typename P>
-void client::register_packet_listener(std::function<void(P *packet)> method)
+void net_client::register_packet_listener(std::function<void(P *packet)> method)
 {
     char packet_id = P().get_id();
     if (listeners.find(packet_id) == listeners.end())
@@ -145,7 +145,7 @@ void client::register_packet_listener(std::function<void(P *packet)> method)
 
 int main()
 {    
-    client client("127.0.0.1", 1337);
+    net_client client("127.0.0.1", 1337);
     client.start();
 
     client.register_packet_listener<packet_hello_world>([](packet_hello_world* packet) {

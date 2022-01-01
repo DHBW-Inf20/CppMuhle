@@ -1,5 +1,5 @@
-#ifndef PACKET
-#define PACKET
+#ifndef PACKET_HPP
+#define PACKET_HPP
 
 typedef struct packet_data
 {
