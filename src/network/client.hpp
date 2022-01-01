@@ -14,14 +14,8 @@ typedef struct connection
 {
     tcp::socket socket;
     char buf[1 + sizeof(int32_t)];
-    connection(boost::asio::io_service &io_service) : socket(io_service)
-    {
-    }
-    ~connection()
-    {
-        socket.close();
-    }
-
+    connection(boost::asio::io_service &io_service);
+    ~connection();
 } connection_t;
 
 class client
@@ -29,7 +23,7 @@ class client
 private:
     ::packet_factory packet_factory;
 
-    // std::map<int, std::vector<std::function<void(int id, packet* packet)>>> listeners;
+    std::map<int, std::vector<std::function<void(packet* packet)>>> listeners;
 
     boost::asio::io_service io_service;
     tcp::endpoint endpoint;
@@ -44,8 +38,6 @@ private:
     std::unique_ptr<std::thread> client_thread;
 
 public:
-    std::map<int, std::vector<std::function<void(packet* packet)>>> listeners;
-
     client(std::string address, int port);
     ~client();
     std::string get_address();

@@ -2,7 +2,16 @@
 #include <iostream>
 #include <thread>
 
-#define DEBUG(x) std::cout << "[DEBUG] " << x << std::endl
+int new_id = 0;
+connection::connection(boost::asio::io_service &io_service) : socket(io_service)
+{
+    id = new_id++;
+}
+
+connection::~connection()
+{
+    socket.close();
+}
 
 server::server(int port)
 {

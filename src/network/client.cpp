@@ -2,6 +2,13 @@
 #include <iostream>
 #include <string>
 
+connection::connection(boost::asio::io_service &io_service) : socket(io_service) {}
+
+connection::~connection()
+{
+    socket.close();
+}
+
 client::client(std::string address, int port)
 {
     endpoint = tcp::endpoint(boost::asio::ip::address::from_string(address), port);

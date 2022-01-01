@@ -10,22 +10,13 @@
 using tcp = boost::asio::ip::tcp;
 using error_code_t = boost::system::error_code;
 
-int new_id = 0;
-
 typedef struct connection
 {
     int id;
     tcp::socket socket;
     char buf[1 + sizeof(int32_t)];
-    connection(boost::asio::io_service &io_service) : socket(io_service)
-    {
-        id = new_id++;
-    }
-    ~connection()
-    {
-        socket.close();
-    }
-
+    connection(boost::asio::io_service &io_service);
+    ~connection();
 } connection_t;
 
 class server

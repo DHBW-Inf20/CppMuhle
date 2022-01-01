@@ -18,7 +18,7 @@ public:
 
     void deserialize(packet_data_t packet_data)
     {
-        str = std::string(packet_data.data);
+        str = std::string(packet_data.data, packet_data.size);
     }
 
     packet* clone()
@@ -31,10 +31,3 @@ public:
         return 0;
     }
 };
-
-// int main() 
-// {
-//     packet_hello_world* phw = new packet_hello_world();
-//     packet_data_t serialized = phw->serialize();
-//     std::cout << serialized.data << std::endl;
-// }
