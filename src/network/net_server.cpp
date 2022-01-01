@@ -107,7 +107,7 @@ void net_server::receive_packet(std::shared_ptr<connection_t> con, char packet_i
                 std::cout << "Packet with id " << packet_id << "not found" << std::endl;
             }
         }
-        delete data_buf;
+        delete[] data_buf;
     });
 }
 

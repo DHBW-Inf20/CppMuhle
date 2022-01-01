@@ -94,7 +94,7 @@ void net_client::receive_packet(char packet_id, int32_t size)
                 std::cout << "Packet with id " << packet_id << "not found" << std::endl;
             }
         }
-        delete data_buf;
+        delete[] data_buf;
     });
 }
 
