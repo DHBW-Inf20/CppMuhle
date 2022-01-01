@@ -26,7 +26,9 @@ private:
     std::map<int, std::vector<std::function<void(packet* packet)>>> listeners;
 
     boost::asio::io_service io_service;
-    tcp::endpoint endpoint;
+    std::string address;
+    int port;
+
 
     void handle_read();
     void receive_packet(char packet_id, int32_t size);

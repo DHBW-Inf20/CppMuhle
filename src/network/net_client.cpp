@@ -11,7 +11,8 @@ connection::~connection()
 
 net_client::net_client(std::string address, int port)
 {
-    endpoint = tcp::endpoint(boost::asio::ip::address::from_string(address), port);
+    this->address = address;
+    this->port = port;
 }
 
 net_client::~net_client()
@@ -21,22 +22,27 @@ net_client::~net_client()
 
 std::string net_client::get_address()
 {
-    return endpoint.address().to_string();
+    return address;
 }
 
 int net_client::get_port()
 {
-    return endpoint.port();
+    return port;
 }
 
 void net_client::start()
 {
     server_con = std::make_shared<connection_t>(io_service);
-    server_con->socket.connect(endpoint);
+
+    tcp::resolver resolver{io_service};
+    tcp::resolver::query query(address.data(), std::to_string(port).data());
+    auto it = resolver.resolve(query);
+
+    boost::asio::connect(server_con->socket, it);
 
     handle_read();
 
-    // server_thread = std::make_unique<std::thread>([this]() { io_service.run(); }); // C++14
+    // client_thread = std::make_unique<std::thread>([this]() { io_service.run(); }); // C++14
     client_thread = std::unique_ptr<std::thread>(new std::thread([this]() { io_service.run(); }));
 }
 
@@ -145,7 +151,7 @@ void net_client::register_packet_listener(std::function<void(P *packet)> method)
 
 int main()
 {    
-    net_client client("127.0.0.1", 1337);
+    net_client client("localhost", 1337);
     client.start();
 
     client.register_packet_listener<packet_hello_world>([](packet_hello_world* packet) {
