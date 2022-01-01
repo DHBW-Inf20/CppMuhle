@@ -193,10 +193,18 @@ int main()
 {
     net_server server(1337);
 
-    server.register_packet_listener<packet_hello_world>([&server](int id, packet_hello_world *packet) {
-        std::cout << "Message from " << id << ": " << packet->str << std::endl;
-        packet->str = "Message from " + std::to_string(id) + ": " + packet->str;
-        server.send_packet(packet);
+    std::map<int, std::string> names;
+
+    server.register_packet_listener<packet_login>([&names](int id, packet_login *packet) {
+        std::cout << "Login from " << id << ": " << packet->name << std::endl;
+        names[id] = packet->name;
+    });
+
+    server.register_packet_listener<packet_message>([&names, &server](int id, packet_message *packet) {
+        if (names.find(id) != names.end()) {
+            packet->str = names[id] + ": " + packet->str;
+            server.send_packet(packet);
+        }
     });
 
     server.start();

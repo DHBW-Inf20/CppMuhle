@@ -154,17 +154,27 @@ int main()
     net_client client("localhost", 1337);
     client.start();
 
-    client.register_packet_listener<packet_hello_world>([](packet_hello_world* packet) {
+    client.register_packet_listener<packet_message>([](packet_message* packet) {
         std::cout << packet->str << std::endl;
     });
 
-    packet_hello_world* phw = new packet_hello_world();
+    std::string name;
+    std::cout << "Enter Name: ";
+    std::cin >> name;
+
+    packet_login* pl = new packet_login();
+    pl->name = name;
+    client.send_packet(pl);
+
+    packet_message* phw = new packet_message();
     while (std::cin.good())
     {
         std::string msg;
         std::getline(std::cin, msg);
-        phw->str = msg;
-        client.send_packet(phw);
+        if (msg.length() > 0) {
+            phw->str = msg;
+            client.send_packet(phw);
+        }
     }
 
     client.join_thread();

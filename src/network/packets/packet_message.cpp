@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-class packet_hello_world: public packet
+class packet_message: public packet
 {
 public:
     std::string str;
@@ -23,7 +23,7 @@ public:
 
     packet* clone()
     {
-        return new packet_hello_world();
+        return new packet_message();
     }
 
     char get_id()

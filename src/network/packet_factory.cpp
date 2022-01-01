@@ -12,7 +12,8 @@ void packet_factory::register_packet(packet* packet)
 
 void packet_factory::initialize()
 {
-    this->register_packet(new packet_hello_world());
+    this->register_packet(new packet_message());
+    this->register_packet(new packet_login());
 }
 
 packet* packet_factory::get_packet_from_id(char id)

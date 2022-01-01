@@ -4,7 +4,8 @@
 #include <map>
 #include "packets/packet.hpp"
 
-#include "packets/packet_hello_world.cpp"
+#include "packets/packet_message.cpp"
+#include "packets/packet_login.cpp"
 
 class packet_factory
 {
