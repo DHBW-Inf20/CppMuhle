@@ -5,6 +5,7 @@
 #include <vector>
 #include "IMuhle.hpp"
 #include "helperTypes.hpp"
+#include "Controller.hpp"
 class MuhleLogik : public IMuhle
 {
 private:
@@ -27,6 +28,8 @@ private:
     bool testMode;
 public:
 void showState();
+MuhleLogik();
+MuhleLogik(Controller* view);
 virtual void processInput(std::string command);
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);

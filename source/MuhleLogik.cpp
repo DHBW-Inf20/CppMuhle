@@ -1,6 +1,7 @@
 #include "MuhleLogik.hpp"
 #include "KonsolenView.hpp"
 #include "helperTypes.hpp"
+#include "Controller.hpp"
 #include "utility.hpp"
 #include <iostream>
 #include <string>
@@ -9,8 +10,16 @@
 #include <map>
 #include <vector>
 #include <cmath>
-void MuhleLogik::initialize(bool testMode){
+
+MuhleLogik::MuhleLogik(Controller* view){
+    this->view = view;
+}
+
+MuhleLogik::MuhleLogik(){
     this->view = new KonsolenView();
+}
+
+void MuhleLogik::initialize(bool testMode){
     this->view->initialize();
     this->isWhiteTurn = true;
     this->testMode = testMode;
