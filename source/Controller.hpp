@@ -11,6 +11,7 @@ public:
     Controller();
     void run();
     void test();
+    ~Controller();
 };
 
 

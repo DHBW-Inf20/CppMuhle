@@ -22,6 +22,10 @@ void Controller::run(){
     }
 }
 
+Controller::~Controller(){
+    delete this->model;
+}
+
 void Controller::test(){
     this->model->initialize(true);
     model->processInput("1");

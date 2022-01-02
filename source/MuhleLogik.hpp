@@ -37,6 +37,7 @@ virtual bool checkIf3(int lastMovedPiece,int24& player);
 virtual void attack(int position);
 
 virtual void initialize(bool testMode = false) ;
+virtual ~MuhleLogik();
 };
 
 #endif
