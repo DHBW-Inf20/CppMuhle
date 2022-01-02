@@ -21,8 +21,8 @@ public:
 
     void deserialize(packet_data_t &packet_data)
     {
-        std::memcpy(&black, packet_data.data, sizeof(int24));
-        std::memcpy(&white, packet_data.data + sizeof(int24), sizeof(int24));
+        std::memcpy(&black, &packet_data.data, sizeof(int24));
+        std::memcpy(&white, &packet_data.data + sizeof(int24), sizeof(int24));
     }
 
     packet* clone()
