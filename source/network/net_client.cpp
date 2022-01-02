@@ -147,20 +147,6 @@ bool net_client::send_packet(packet* packet)
     return false;
 }
 
-template <typename P>
-void net_client::register_packet_listener(std::function<void(P *packet)> method)
-{
-    char packet_id = P().get_id();
-    if (listeners.find(packet_id) == listeners.end())
-    {
-        listeners[packet_id] = std::vector<std::function<void(packet *packet)>>();
-    }
-    listeners[packet_id].push_back([method](packet *packet) {
-        method((P*) packet);
-    });
-}
-
-
 // int main()
 // {    
 //     net_client client("localhost", 50000);

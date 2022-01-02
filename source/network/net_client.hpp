@@ -57,8 +57,19 @@ public:
     void join_thread();
 
     bool send_packet(packet*);
+    
     template <typename P>
-    void register_packet_listener(std::function<void(P *packet)>);
+    void register_packet_listener(std::function<void(P *packet)> method)
+    {
+        char packet_id = P().get_id();
+        if (listeners.find(packet_id) == listeners.end())
+        {
+            listeners[packet_id] = std::vector<std::function<void(packet *packet)>>();
+        }
+        listeners[packet_id].push_back([method](packet *packet) {
+            method((P*) packet);
+        });
+    }
 };
 
 #endif

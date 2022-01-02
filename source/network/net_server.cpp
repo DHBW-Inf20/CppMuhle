@@ -206,21 +206,6 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
     delete[] packet_data.data;
 }
 
-
-template <typename P>
-void net_server::register_packet_listener(std::function<void(int id, P *packet)> method)
-{
-    char packet_id = P().get_id();
-    if (listeners.find(packet_id) == listeners.end())
-    {
-        listeners[packet_id] = std::vector<std::function<void(int id, packet *packet)>>();
-    }
-    listeners[packet_id].push_back([method](int id, packet *packet) {
-        method(id, (P*) packet);
-    });
-}
-
-
 // int main()
 // {
 //     net_server server(50000);
