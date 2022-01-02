@@ -17,6 +17,7 @@ private:
     void register_packet(packet*);
 public:
     packet_factory();
+    ~packet_factory();
     packet* get_packet_from_id(char);
 };
 

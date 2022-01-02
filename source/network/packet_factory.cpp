@@ -5,6 +5,14 @@ packet_factory::packet_factory()
     this->initialize();
 }
 
+packet_factory::~packet_factory()
+{
+    for (auto &map : packet_map)
+    {
+        delete map.second;
+    }
+}
+
 void packet_factory::register_packet(packet* packet)
 {
     this->packet_map[packet->get_id()] = packet;
