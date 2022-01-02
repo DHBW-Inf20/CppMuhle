@@ -2,6 +2,10 @@
 #include <string>
 #include "../../helperTypes.hpp"
 
+#include <bitset>
+#include <iostream>
+
+
 class packet_muhle_field: public packet
 {
 public:
@@ -16,13 +20,16 @@ public:
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = 2 * sizeof(int24);
+        // std::cout << std::bitset<64>(data) << std::endl;
         return packet_data;
     }
 
     void deserialize(packet_data_t &packet_data)
     {
-        std::memcpy(&black, &packet_data.data, sizeof(int24));
-        std::memcpy(&white, &packet_data.data + sizeof(int24), sizeof(int24));
+        std::memcpy(&black, packet_data.data, sizeof(int24));
+        std::memcpy(&white, packet_data.data + sizeof(int24), sizeof(int24));
+        // std::cout << std::bitset<64>(&packet_data.data) << std::endl;
+
     }
 
     packet* clone()

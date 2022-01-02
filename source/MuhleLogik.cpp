@@ -20,7 +20,7 @@ MuhleLogik::MuhleLogik(){
 }
 
 void MuhleLogik::initialize(bool testMode){
-    this->view->initialize();
+    // this->view->initialize();
     this->isWhiteTurn = true;
     this->testMode = testMode;
     this->status = 0;

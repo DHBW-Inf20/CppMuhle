@@ -24,6 +24,7 @@ return;
 
 void Controller::initialize(){
     this->model = new MuhleLogik(this);
+    this->model->initialize();
     this->server = new net_server(42069);
         server->register_packet_listener<packet_login>([this](int id, packet_login *packet) {
         std::cout << "Login from " << id << ": " << packet->name << std::endl;
