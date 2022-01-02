@@ -10,6 +10,10 @@ int main()
         std::cout << packet->str << std::endl;
     });
 
+    client.register_packet_listener<packet_muhle_field>([](packet_muhle_field* packet){
+        std::cout << packet->white.data << "\n" << packet->black.data << std::endl;
+    });
+
     std::string name;
     std::cout << "Enter Name: ";
     std::cin >> name;
@@ -25,6 +29,7 @@ int main()
         std::getline(std::cin, msg);
         if (msg.length() > 0) {
             phw->str = msg;
+
             client.send_packet(phw);
         }
     }

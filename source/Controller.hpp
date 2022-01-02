@@ -1,12 +1,12 @@
 #ifndef CONTROLLER_HPP_GUARD
 #define CONTROLLER_HPP_GUARD
 #include "network/net_server.hpp"
-#include "MuhleLogik.hpp"
+#include "IMuhle.hpp"
 #include "IView.hpp"
 class Controller : public IView{
 
     public:
-        MuhleLogik* model;
+        IMuhle* model;
         net_server* server;
         std::map<int, std::string> names;
         void initialize();

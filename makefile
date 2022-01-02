@@ -26,7 +26,7 @@ Server: build/server
 Client: build/client
 
 build/server:   source/network/packet_factory.cpp source/network/net_client.cpp source/MainServer.cpp
-	$(CXX) $(CPPFLAGS) -o build/server source/network/packet_factory.cpp source/network/net_server.cpp source/MuhleLogik.cpp source/KonsolenView.cpp source/MainServer.cpp $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
+	$(CXX) $(CPPFLAGS) -o build/server source/network/packet_factory.cpp source/network/net_server.cpp source/MuhleLogik.cpp source/KonsolenView.cpp source/Controller.cpp source/MainServer.cpp $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
 
 build/client:  source/network/packet_factory.cpp source/network/net_client.cpp source/MainClient.cpp
 	$(CXX) $(CPPFLAGS) -o build/client source/network/packet_factory.cpp source/network/net_client.cpp source/MainClient.cpp $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
