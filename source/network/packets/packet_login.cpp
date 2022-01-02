@@ -1,5 +1,4 @@
 #include "packet.hpp"
-#include <iostream>
 #include <string>
 
 class packet_login: public packet
