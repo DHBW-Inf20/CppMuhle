@@ -61,10 +61,18 @@ public:
     bool send_packet(packet*, int client_id);
     void send_packet(packet*, std::vector<int> &client_ids);
     void send_packet(packet*, int *client_ids, int size);
+
     template <typename P>
-    void register_packet_listener(std::function<void(int id, P *packet)>);
-
-
+    void register_packet_listener(std::function<void(int id, P *packet)> method) {
+        char packet_id = P().get_id();
+        if (listeners.find(packet_id) == listeners.end())
+        {
+            listeners[packet_id] = std::vector<std::function<void(int id, packet *packet)>>();
+        }
+        listeners[packet_id].push_back([method](int id, packet *packet) {
+            method(id, (P*) packet);
+        });
+    }
 };
 
 #endif
