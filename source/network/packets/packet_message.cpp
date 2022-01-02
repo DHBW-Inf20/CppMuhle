@@ -1,6 +1,4 @@
 #include "packet.hpp"
-#include <boost/asio.hpp>
-#include <iostream>
 #include <string>
 
 class packet_message: public packet
@@ -22,7 +20,7 @@ public:
     {
         str = std::string(packet_data.data, packet_data.size);
     }
-    
+
     packet* clone()
     {
         return new packet_message();
