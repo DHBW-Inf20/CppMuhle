@@ -43,7 +43,7 @@ private:
     void receive_packet(std::shared_ptr<connection_t> con, char packet_id, int32_t size);
     void call_listeners(int from_id, packet*);
 
-    packet_buf_t get_packet_buf(packet*);
+    packet_buf_t get_packet_buf(packet*, packet_data_t &packet_data);
     bool write_data(tcp::socket&, packet_buf_t &packet_buf);
 
     std::unique_ptr<std::thread> server_thread;

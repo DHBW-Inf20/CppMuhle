@@ -109,9 +109,8 @@ void net_client::call_listeners(packet* packet)
     }
 }
 
-packet_buf_t net_client::get_packet_buf(packet *packet)
+packet_buf_t net_client::get_packet_buf(packet *packet, packet_data_t &packet_data)
 {
-    packet_data_t packet_data = packet->serialize();
     packet_buf_t packet_buf;
 
     packet_buf.cbuf[0] = packet->get_id();
@@ -137,9 +136,13 @@ bool net_client::write_data(tcp::socket &socket, packet_buf_t &packet_buf)
 bool net_client::send_packet(packet* packet)
 {
     if (server_con->socket.is_open()) {
-        packet_buf_t packet_buf = get_packet_buf(packet);
+        packet_data_t packet_data = packet->serialize();
+        packet_buf_t packet_buf = get_packet_buf(packet, packet_data);
 
-        return write_data(server_con->socket, packet_buf);
+        bool success = write_data(server_con->socket, packet_buf);
+
+        packet->free(packet_data);
+        return success;
     }
     return false;
 }

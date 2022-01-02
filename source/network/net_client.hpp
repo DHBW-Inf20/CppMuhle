@@ -41,7 +41,7 @@ private:
     void receive_packet(char packet_id, int32_t size);
     void call_listeners(packet*);
 
-    packet_buf_t get_packet_buf(packet*);
+    packet_buf_t get_packet_buf(packet*, packet_data_t &packet_data);
     bool write_data(tcp::socket&, packet_buf_t &packet_buf);
 
     std::shared_ptr<connection_t> server_con;

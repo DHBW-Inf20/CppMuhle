@@ -16,9 +16,13 @@ public:
         return packet_data;
     }
 
-    void deserialize(packet_data_t packet_data)
+    void deserialize(packet_data_t &packet_data)
     {
         name = std::string(packet_data.data, packet_data.size);
+    }
+
+    void free(packet_data_t &packet_data)
+    {
     }
 
     packet* clone()

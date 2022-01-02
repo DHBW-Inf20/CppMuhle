@@ -122,9 +122,8 @@ void net_server::call_listeners(int from_id, packet* packet)
     }
 }
 
-packet_buf_t net_server::get_packet_buf(packet *packet)
+packet_buf_t net_server::get_packet_buf(packet *packet, packet_data_t &packet_data)
 {
-    packet_data_t packet_data = packet->serialize();
     packet_buf_t packet_buf;
 
     packet_buf.cbuf[0] = packet->get_id();
@@ -156,7 +155,8 @@ bool net_server::is_connected(int client_id)
 
 void net_server::send_packet(packet *packet)
 {
-   packet_buf_t packet_buf = get_packet_buf(packet);
+    packet_data_t packet_data = packet->serialize();
+    packet_buf_t packet_buf = get_packet_buf(packet, packet_data);
 
     for (auto &map : clients) {
         std::shared_ptr<connection_t> con = map.second;
@@ -165,15 +165,22 @@ void net_server::send_packet(packet *packet)
             write_data(con->socket, packet_buf);
         }
     }
+    
+    packet->free(packet_data);
 }
 
 bool net_server::send_packet(packet *packet, int client_id)
 {
     if (is_connected(client_id)) {
-        std::shared_ptr<connection_t> con = clients[client_id];
-        packet_buf_t packet_buf = get_packet_buf(packet);
+        packet_data_t packet_data = packet->serialize();
 
-        return write_data(con->socket, packet_buf);
+        std::shared_ptr<connection_t> con = clients[client_id];
+        packet_buf_t packet_buf = get_packet_buf(packet, packet_data);
+
+        bool success = write_data(con->socket, packet_buf);
+
+        packet->free(packet_data);
+        return success;
     }
     return false;
 }
@@ -185,7 +192,8 @@ void net_server::send_packet(packet *packet, std::vector<int> &client_ids)
 
 void net_server::send_packet(packet *packet, int *client_ids, int size)
 {
-   packet_buf_t packet_buf = get_packet_buf(packet);
+    packet_data_t packet_data = packet->serialize();
+    packet_buf_t packet_buf = get_packet_buf(packet, packet_data);
 
     for (int* client_id = client_ids; client_id < client_ids + size; client_id++)
     {
@@ -194,6 +202,8 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
             write_data(con->socket, packet_buf);
         }
     }
+
+    packet->free(packet_data);
 }
 
 
