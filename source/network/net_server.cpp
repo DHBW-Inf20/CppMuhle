@@ -115,7 +115,7 @@ void net_server::call_listeners(int from_id, packet* packet)
 {
     if (listeners.find(packet->get_id()) != listeners.end())
     {
-        for (int i = 0; i < listeners[packet->get_id()].size(); i++)
+        for (long long unsigned int  i = 0; i < listeners[packet->get_id()].size(); i++)
         {
             listeners[packet->get_id()][i](from_id, packet);
         }
@@ -213,7 +213,7 @@ void net_server::register_packet_listener(std::function<void(int id, P *packet)>
 
 int main()
 {
-    net_server server(1337);
+    net_server server(50000);
 
     std::map<int, std::string> names;
 

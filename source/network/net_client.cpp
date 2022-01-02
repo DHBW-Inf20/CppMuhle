@@ -102,7 +102,7 @@ void net_client::call_listeners(packet* packet)
 {
     if (listeners.find(packet->get_id()) != listeners.end())
     {
-        for (int i = 0; i < listeners[packet->get_id()].size(); i++)
+        for (long long unsigned int i = 0; i < listeners[packet->get_id()].size(); i++)
         {
             listeners[packet->get_id()][i](packet);
         }
@@ -160,7 +160,7 @@ void net_client::register_packet_listener(std::function<void(P *packet)> method)
 
 int main()
 {    
-    net_client client("localhost", 1337);
+    net_client client("localhost", 50000);
     client.start();
 
     client.register_packet_listener<packet_message>([](packet_message* packet) {
