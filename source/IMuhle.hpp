@@ -20,6 +20,8 @@ virtual bool checkIf3(int lastMovedPiece,int24& player) = 0;
 virtual void attack(int position) = 0;
 
 virtual void initialize(bool testMode = false) = 0;
+virtual ~IMuhle() {};
+
 };
 
 #endif

@@ -42,7 +42,7 @@ void MuhleLogik::processInput(std::string command){
     if(blackPieces || whitePieces){
         // Entweder es wurden noch nicht alle Steine gesetzt
         placePiece(std::stoi(command));
-    }else if(std::bitset<24>(black.data).count() == 3 && !isWhiteTurn || std::bitset<24>(white.data).count() == 3 && isWhiteTurn) {
+    }else if((std::bitset<24>(black.data).count() == 3 && !isWhiteTurn) || (std::bitset<24>(white.data).count() == 3 && isWhiteTurn)) {
         // Oder ein Spieler hat nur noch 3 Steine , dann darf dieser springen
         if(status == 2){ // Wenn es auf den Input gewartet hat
             jumpPiece(memory, std::stoi(command));
@@ -187,10 +187,10 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24& player){
     if(notation.substr(0,1) == "d" || notation.substr(1,1) == "4"){
     int i = positionToBit24(lastMovedPiece).data;
     // Wenn eines der 4 SpecialCases erfüllt ist, mit dem Aktuellen Feld inkludiert, dann sind es 3 in einer Reihe seit dieser Runde
-    bool a =((player.data&(512|1024|2048)|i) != player.data) ;
-    bool b = ((player.data&(419430|524288|65536)|i) != player.data) ;
-    bool c = ((player.data&(4096|8192|16384)|i) != player.data);
-    bool d =   ((player.data&(2|16|128)|i) != player.data);
+    bool a =((player.data&(512|1024|2048))|i) != player.data ;
+    bool b = ((player.data&(419430|524288|65536))|i) != player.data ;
+    bool c = ((player.data&(4096|8192|16384))|i) != player.data;
+    bool d =   ((player.data&(2|16|128))|i) != player.data;
     if(a & b & c & d){
         return true;
     }     
@@ -208,7 +208,7 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24& player){
     // To keep track of the numbers used
     std::map<std::string, int> letterMap;
     std::map<int, int> numberMap;
-    for(int i = 0;i<positions.size();i++){
+    for(long long unsigned int i = 0;i<positions.size();i++){
             letterMap[positions.at(i).substr(0,1)]++;
             numberMap[std::stoi(positions.at(i).substr(1,1))]++;
     } 
@@ -250,6 +250,9 @@ std::string MuhleLogik::positionToCoordinate(int position){
     return lookupTable[position];
 }
 
+MuhleLogik::~MuhleLogik(){
+    delete this->view;
+}
 
 std::string MuhleLogik::bit24ToCoordinate(int bit24){
     return lookupTable[std::log2(bit24)];

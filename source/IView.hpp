@@ -9,6 +9,7 @@ public:
     virtual void showBoard(int24 white, int24 black, bool isWhiteMove) = 0;
     virtual void showStartMenu() = 0;
     virtual void showEndScreen(std::string message) = 0;
+    virtual ~IView() {};
 };
 
 #endif
