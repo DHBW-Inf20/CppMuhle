@@ -32,6 +32,6 @@ public:
 
     char get_id()
     {
-        return 0;
+        return 2;
     }
 };
