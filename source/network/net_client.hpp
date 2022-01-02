@@ -22,8 +22,7 @@ typedef struct connection
 typedef struct packet_buf
 {
     char cbuf[1 + sizeof(int32_t)];
-    boost::asio::mutable_buffer buf;
-    boost::asio::mutable_buffer data_buf;
+    std::vector<boost::asio::const_buffer> buffers;
 } packet_buf_t;
 
 class net_client
@@ -43,7 +42,7 @@ private:
     void call_listeners(packet*);
 
     packet_buf_t get_packet_buf(packet*, packet_data_t &packet_data);
-    bool write_data(tcp::socket&, packet_buf_t &packet_buf);
+    void write_data(tcp::socket&, packet_buf_t &packet_buf);
 
     std::shared_ptr<connection_t> server_con;
     std::unique_ptr<std::thread> client_thread;
@@ -56,7 +55,7 @@ public:
     void start();
     void join_thread();
 
-    bool send_packet(packet*);
+    void send_packet(packet*);
     
     template <typename P>
     void register_packet_listener(std::function<void(P *packet)> method)
