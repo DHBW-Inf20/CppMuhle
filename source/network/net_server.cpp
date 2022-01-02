@@ -1,6 +1,6 @@
 #include "net_server.hpp"
 #include <iostream>
-#include <thread>
+#include <string>
 
 int new_id = 0;
 connection::connection(boost::asio::io_service &io_service) : socket(io_service)
@@ -221,29 +221,29 @@ void net_server::register_packet_listener(std::function<void(int id, P *packet)>
 }
 
 
-int main()
-{
-    net_server server(50000);
+// int main()
+// {
+//     net_server server(50000);
 
-    std::map<int, std::string> names;
+//     std::map<int, std::string> names;
 
-    server.register_packet_listener<packet_login>([&names](int id, packet_login *packet) {
-        std::cout << "Login from " << id << ": " << packet->name << std::endl;
-        names[id] = packet->name;
-    });
+//     server.register_packet_listener<packet_login>([&names](int id, packet_login *packet) {
+//         std::cout << "Login from " << id << ": " << packet->name << std::endl;
+//         names[id] = packet->name;
+//     });
 
-    server.register_packet_listener<packet_message>([&names, &server](int id, packet_message *packet) {
-        if (names.find(id) != names.end()) {
-            packet->str = names[id] + ": " + packet->str;
-            // server.send_packet(packet);
-            std::vector<int> ids;
-            for (auto &map : names) {
-                ids.push_back(map.first);
-            }
-            server.send_packet(packet, ids);
-        }
-    });
+//     server.register_packet_listener<packet_message>([&names, &server](int id, packet_message *packet) {
+//         if (names.find(id) != names.end()) {
+//             packet->str = names[id] + ": " + packet->str;
+//             // server.send_packet(packet);
+//             std::vector<int> ids;
+//             for (auto &map : names) {
+//                 ids.push_back(map.first);
+//             }
+//             server.send_packet(packet, ids);
+//         }
+//     });
 
-    server.start();
-    server.join_thread();
-}
+//     server.start();
+//     server.join_thread();
+// }

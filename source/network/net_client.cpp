@@ -91,7 +91,7 @@ void net_client::receive_packet(char packet_id, int32_t size)
             }
             else
             {
-                std::cout << "Packet with id " << packet_id << "not found" << std::endl;
+                std::cout << "Packet with id " << packet_id << " not found" << std::endl;
             }
         }
         delete[] data_buf;
@@ -161,33 +161,33 @@ void net_client::register_packet_listener(std::function<void(P *packet)> method)
 }
 
 
-int main()
-{    
-    net_client client("localhost", 50000);
-    client.start();
+// int main()
+// {    
+//     net_client client("localhost", 50000);
+//     client.start();
 
-    client.register_packet_listener<packet_message>([](packet_message* packet) {
-        std::cout << packet->str << std::endl;
-    });
+//     client.register_packet_listener<packet_message>([](packet_message* packet) {
+//         std::cout << packet->str << std::endl;
+//     });
 
-    std::string name;
-    std::cout << "Enter Name: ";
-    std::cin >> name;
+//     std::string name;
+//     std::cout << "Enter Name: ";
+//     std::cin >> name;
 
-    packet_login* pl = new packet_login();
-    pl->name = name;
-    client.send_packet(pl);
+//     packet_login* pl = new packet_login();
+//     pl->name = name;
+//     client.send_packet(pl);
 
-    packet_message* phw = new packet_message();
-    while (std::cin.good())
-    {
-        std::string msg;
-        std::getline(std::cin, msg);
-        if (msg.length() > 0) {
-            phw->str = msg;
-            client.send_packet(phw);
-        }
-    }
+//     packet_message* phw = new packet_message();
+//     while (std::cin.good())
+//     {
+//         std::string msg;
+//         std::getline(std::cin, msg);
+//         if (msg.length() > 0) {
+//             phw->str = msg;
+//             client.send_packet(phw);
+//         }
+//     }
 
-    client.join_thread();
-}
+//     client.join_thread();
+// }
