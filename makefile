@@ -1,17 +1,20 @@
-ifndef includePath
-	$(error 'includePath not defined (make includePath=<includePath>)')
+ifdef includePath
+    IncludeFlag = -I "$(includePath)"
 endif
 
-ifndef libraryPath
-	$(error 'libraryPath not defined (make libraryPath=<libraryPath>)')
+ifdef libraryPath
+	LibraryFlag = -L "$(libraryPath)"
 endif
 
 ifdef OS
 	WINDOWSLIBS = -lwsock32 -lws2_32
 endif
+
 ifndef CPPFLAGS
-	CPPFLAGS = -Wall -std=c++11 -I "$(includePath)" -L "$(libraryPath)"
-endif 
+	CPPFLAGS = -Wall -std=c++11 $(IncludeFlag) $(LibraryFlag)
+else
+	CPPFLAGS = $(CPPFLAGS) $(IncludeFlag) $(LibraryFlag)
+endif
 
 ifndef CXX
 	CXX = g++
