@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <vector>
+#include <thread>
 #include <map>
 #include <boost/asio.hpp>
 #include "packet_factory.hpp"
