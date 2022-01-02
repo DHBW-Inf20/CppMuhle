@@ -9,7 +9,8 @@ public:
 
     packet_data_t serialize() 
     {
-        char* data = (char*) name.c_str();
+        char* data = (char*) std::malloc(name.length());
+        std::memcpy(data, name.data(), name.length());
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = name.length();
@@ -19,10 +20,6 @@ public:
     void deserialize(packet_data_t &packet_data)
     {
         name = std::string(packet_data.data, packet_data.size);
-    }
-
-    void free(packet_data_t &packet_data)
-    {
     }
 
     packet* clone()

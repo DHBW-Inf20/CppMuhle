@@ -141,7 +141,7 @@ bool net_client::send_packet(packet* packet)
 
         bool success = write_data(server_con->socket, packet_buf);
 
-        packet->free(packet_data);
+        delete[] packet_data.data;
         return success;
     }
     return false;

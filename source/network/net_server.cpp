@@ -166,7 +166,7 @@ void net_server::send_packet(packet *packet)
         }
     }
     
-    packet->free(packet_data);
+    delete[] packet_data.data;
 }
 
 bool net_server::send_packet(packet *packet, int client_id)
@@ -179,7 +179,7 @@ bool net_server::send_packet(packet *packet, int client_id)
 
         bool success = write_data(con->socket, packet_buf);
 
-        packet->free(packet_data);
+        delete[] packet_data.data;
         return success;
     }
     return false;
@@ -203,7 +203,7 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
         }
     }
 
-    packet->free(packet_data);
+    delete[] packet_data.data;
 }
 
 
