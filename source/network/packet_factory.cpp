@@ -14,6 +14,7 @@ void packet_factory::initialize()
 {
     this->register_packet(new packet_message());
     this->register_packet(new packet_login());
+    this->register_packet(new packet_muhle_field());
 }
 
 packet* packet_factory::get_packet_from_id(char id)

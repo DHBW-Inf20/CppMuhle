@@ -6,6 +6,7 @@
 
 #include "packets/packet_message.cpp"
 #include "packets/packet_login.cpp"
+#include "packets/packet_muhle_field.cpp"
 
 class packet_factory
 {
