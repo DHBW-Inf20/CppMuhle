@@ -3,9 +3,9 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "IMuhle.hpp"
 #include "helperTypes.hpp"
-class MuhleLogik : public IMuhle
+#include "IView.hpp"
+class MuhleLogik
 {
 private:
     IView* view;
@@ -13,20 +13,19 @@ private:
     bool attackMode;
     int24 black;
     int24 white;
-    unsigned short blackPieces;
-    unsigned short whitePieces;
-    int status; // 0 = not started, 1 = started, 2 = waiting for input
+    int status; // 0 = not started, 1 = startPhase (placing), 2+ = midPhase (moving). 3 = Waiting for 2nd Input
     int memory;
     std::map<std::string, int> xDir;
     std::map<std::string, int> yDir;
     std::vector<std::string> lookupTable;
-    bool isOccupied(int position, int24& player);
     int24 positionToBit24(int position);
     std::string bit24ToCoordinate(int position);
     std::string positionToCoordinate(int position);
     bool testMode;
 public:
 void showState();
+MuhleLogik(IView* view);
+bool isOccupied(int position, int24& player);
 virtual void processInput(std::string command);
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);
@@ -35,8 +34,11 @@ virtual bool checkIfLegalMove(int from, int to);
 virtual bool checkIfValid(int from, int to);
 virtual bool checkIf3(int lastMovedPiece,int24& player);
 virtual void attack(int position);
-
 virtual void initialize(bool testMode = false) ;
+bool getAttackMode();
+int24 getBlack();
+int24 getWhite();
+int getStatus();
 };
 
 #endif

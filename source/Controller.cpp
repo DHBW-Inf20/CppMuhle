@@ -2,8 +2,8 @@
 #include <string>
 #include "Controller.hpp"
 #include "MuhleLogik.hpp"
-void runSequence(std::vector<std::string> &inputs, IMuhle *model);
-void runFirstPhase(IMuhle *model);
+void runSequence(std::vector<std::string> &inputs, MuhleLogik *model);
+void runFirstPhase(MuhleLogik *model);
 
 
 Controller::Controller(){
@@ -12,8 +12,6 @@ Controller::Controller(){
 
 void Controller::run(){
     this->model->initialize();
-    
-
     // Start Input Loop
     std::string input;
     while(std::cin.good()){
@@ -28,12 +26,12 @@ void Controller::test(){
     runFirstPhase(this->model);
 }
 
-void runFirstPhase(IMuhle *model){
+void runFirstPhase(MuhleLogik *model){
     std::vector<std::string> input = {"1","3","4"};
     runSequence(input,model);
 }
 
-void runSequence(std::vector<std::string> &inputs, IMuhle *model){
+void runSequence(std::vector<std::string> &inputs, MuhleLogik *model){
     for(auto input : inputs){
         model->processInput(input);
     }
