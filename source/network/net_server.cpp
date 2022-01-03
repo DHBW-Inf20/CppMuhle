@@ -55,7 +55,10 @@ void net_server::handle_accept()
         {
             clients[con->id] = con;
             this->handle_read(con);
-            std::cout << "Client connected: " << con->id << std::endl;
+
+            packet_socket_connect* packet = new packet_socket_connect();
+            this->call_listeners(con->id, packet);
+            delete packet;
         }
         this->handle_accept();
     });
@@ -78,7 +81,10 @@ void net_server::handle_read(std::shared_ptr<connection_t> con)
         else
         {
             // Client disconnected
-            std::cout << "Client disconnected: " << con->id << std::endl;
+            packet_socket_disconnect* packet = new packet_socket_disconnect();
+            this->call_listeners(con->id, packet);
+            delete packet;
+
             clients.erase(con->id);
             con->socket.close();
         }

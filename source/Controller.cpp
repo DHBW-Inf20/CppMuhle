@@ -26,7 +26,16 @@ void Controller::initialize(){
     this->model = new MuhleLogik(this);
     this->model->initialize();
     this->server = new net_server(42069);
-        server->register_packet_listener<packet_login>([this](int id, packet_login *packet) {
+
+    server->register_packet_listener<packet_socket_connect>([](int id, packet_socket_connect *packet) {
+        std::cout << "Client connected: " << id << std::endl;
+    });
+
+    server->register_packet_listener<packet_socket_disconnect>([](int id, packet_socket_disconnect *packet) {
+        std::cout << "Client disconnected: " << id << std::endl;
+    });
+
+    server->register_packet_listener<packet_login>([this](int id, packet_login *packet) {
         std::cout << "Login from " << id << ": " << packet->name << std::endl;
         names[id] = packet->name;
     });
