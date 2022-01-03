@@ -107,7 +107,7 @@ void net_server::receive_packet(std::shared_ptr<connection_t> con, char packet_i
                 std::cout << "Packet with id " << packet_id << "not found" << std::endl;
             }
         }
-        delete[] data_buf;
+        free(data_buf);
     });
 }
 
@@ -161,7 +161,7 @@ void net_server::send_packet(packet *packet)
         }
     }
     
-    delete[] packet_data.data;
+    free(packet_data.data);
 }
 
 void net_server::send_packet(packet *packet, int client_id)
@@ -174,7 +174,7 @@ void net_server::send_packet(packet *packet, int client_id)
 
         write_data(con->socket, packet_buf);
 
-        delete[] packet_data.data;
+        free(packet_data.data);
     }
 }
 
@@ -196,7 +196,7 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
         }
     }
 
-    delete[] packet_data.data;
+    free(packet_data.data);
 }
 
 // int main()
