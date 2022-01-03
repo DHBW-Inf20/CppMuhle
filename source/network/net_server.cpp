@@ -204,30 +204,3 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
 
     free(packet_data.data);
 }
-
-// int main()
-// {
-//     net_server server(50000);
-
-//     std::map<int, std::string> names;
-
-//     server.register_packet_listener<packet_login>([&names](int id, packet_login *packet) {
-//         std::cout << "Login from " << id << ": " << packet->name << std::endl;
-//         names[id] = packet->name;
-//     });
-
-//     server.register_packet_listener<packet_message>([&names, &server](int id, packet_message *packet) {
-//         if (names.find(id) != names.end()) {
-//             packet->str = names[id] + ": " + packet->str;
-//             // server.send_packet(packet);
-//             std::vector<int> ids;
-//             for (auto &map : names) {
-//                 ids.push_back(map.first);
-//             }
-//             server.send_packet(packet, ids);
-//         }
-//     });
-
-//     server.start();
-//     server.join_thread();
-// }
