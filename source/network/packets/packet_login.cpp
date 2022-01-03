@@ -8,8 +8,8 @@ public:
 
     packet_data_t serialize() 
     {
-        char* data = (char*) std::malloc(name.length());
-        std::memcpy(data, name.data(), name.length());
+        char* data = (char*) malloc(name.length());
+        memcpy(data, name.data(), name.length());
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = name.length();

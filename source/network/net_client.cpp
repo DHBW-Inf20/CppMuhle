@@ -60,7 +60,7 @@ void net_client::handle_read()
         {
             char packet_id = server_con->buf[0];
             int32_t size;
-            std::memcpy(&size, &server_con->buf[1], sizeof(int32_t));
+            memcpy(&size, &server_con->buf[1], sizeof(int32_t));
             this->receive_packet(packet_id, size);
             this->handle_read();
         } 
@@ -114,7 +114,7 @@ packet_buf_t net_client::get_packet_buf(packet *packet, packet_data_t &packet_da
     packet_buf_t packet_buf;
 
     packet_buf.cbuf[0] = packet->get_id();
-    std::memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
+    memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
     
     packet_buf.buffers.push_back(boost::asio::buffer(packet_buf.cbuf, 1 + sizeof(int32_t)));
     packet_buf.buffers.push_back(boost::asio::buffer(packet_data.data, packet_data.size));

@@ -14,9 +14,9 @@ public:
 
     packet_data_t serialize() 
     {
-        char* data = (char*) std::malloc(2 * sizeof(int24));
-        std::memcpy(data, &black, sizeof(int24));
-        std::memcpy(data + sizeof(int24), &white, sizeof(int24));
+        char* data = (char*) malloc(2 * sizeof(int24));
+        memcpy(data, &black, sizeof(int24));
+        memcpy(data + sizeof(int24), &white, sizeof(int24));
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = 2 * sizeof(int24);
@@ -26,8 +26,8 @@ public:
 
     void deserialize(packet_data_t &packet_data)
     {
-        std::memcpy(&black, packet_data.data, sizeof(int24));
-        std::memcpy(&white, packet_data.data + sizeof(int24), sizeof(int24));
+        memcpy(&black, packet_data.data, sizeof(int24));
+        memcpy(&white, packet_data.data + sizeof(int24), sizeof(int24));
         // std::cout << std::bitset<64>(&packet_data.data) << std::endl;
 
     }

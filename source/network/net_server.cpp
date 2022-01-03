@@ -69,7 +69,7 @@ void net_server::handle_read(std::shared_ptr<connection_t> con)
         {
             char packet_id = con->buf[0];
             int32_t size;
-            std::memcpy(&size, &con->buf[1], sizeof(int32_t));
+            memcpy(&size, &con->buf[1], sizeof(int32_t));
             // std::cout << "Recieved packet " << (int) packet_id << " from " << con->id << std::endl;
             // std::cout << "size: " << size << std::endl;
             this->receive_packet(con, packet_id, size);
@@ -127,7 +127,7 @@ packet_buf_t net_server::get_packet_buf(packet *packet, packet_data_t &packet_da
     packet_buf_t packet_buf;
 
     packet_buf.cbuf[0] = packet->get_id();
-    std::memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
+    memcpy(&packet_buf.cbuf[1], &packet_data.size, sizeof(int32_t));
     
     packet_buf.buffers.push_back(boost::asio::buffer(packet_buf.cbuf, 1 + sizeof(int32_t)));
     packet_buf.buffers.push_back(boost::asio::buffer(packet_data.data, packet_data.size));
