@@ -45,6 +45,13 @@ void MuhleLogik::initialize(bool testMode)
     this->memory = 0;
 }
 
+void MuhleLogik::shutdown(){
+    // TODO: Shut down the Programm
+    if(!this->testMode){
+        exit(0);
+    }
+}
+
 void MuhleLogik::processInput(std::string command)
 {
     int intCommand;
@@ -52,6 +59,10 @@ void MuhleLogik::processInput(std::string command)
         intCommand = stoi(command);
     }
     catch(std::invalid_argument){
+        // TODO: SEND ERROR MESSAGE TO GUI
+        return;
+    }
+    catch(std::out_of_range){
         // TODO: SEND ERROR MESSAGE TO GUI
         return;
     }
@@ -64,7 +75,7 @@ void MuhleLogik::processInput(std::string command)
         }
         else
         {
-            exit(0);
+            shutdown();
         }
     }
     else

@@ -52,7 +52,6 @@ void runLimitTests(MuhleLogik* model){
         BOOST_TEST_CHECKPOINT("Reached Input: " + input);
         model->initialize(true);
         model->processInput(input);
-        
     }
     BOOST_TEST_CHECKPOINT("model.processInput() with Limits passed");
 

@@ -24,6 +24,7 @@ private:
     bool testMode;
 public:
 void showState();
+void shutdown();
 MuhleLogik(IView* view);
 bool isOccupied(int position, int24& player);
 virtual void processInput(std::string command);

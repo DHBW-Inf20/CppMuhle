@@ -1,13 +1,15 @@
 #include <iostream>
 #include <string>
 #include "Controller.hpp"
+#include "KonsolenView.hpp"
 #include "MuhleLogik.hpp"
 void runSequence(std::vector<std::string> &inputs, MuhleLogik *model);
 void runFirstPhase(MuhleLogik *model);
 
-
+// 0,2,9,14,21
 Controller::Controller(){
-    this->model = new MuhleLogik();
+    KonsolenView *view = new KonsolenView();
+    this->model = new MuhleLogik(view);
 }
 
 void Controller::run(){
