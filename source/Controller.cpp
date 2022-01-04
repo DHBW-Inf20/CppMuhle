@@ -49,7 +49,6 @@ bool Controller::askForInput(std::string &to, std::string &from)
             std::cin >> to;
             break;
         case MOVING:
-            std::string to;
             std::cout << "From: __" << CUR_COL(50-4) << "To: __" << CUR_COL(7);
             std::cin >> from;
             std::cout << CUR_UP(1) << CUR_COL(50);
