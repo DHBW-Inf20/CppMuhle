@@ -54,8 +54,8 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
     
     std::string weiss = "⚪";
     std::string schwarz = "◯ ";
-    std::string empty = "○-";
-    std::string emptyright = "○ ";
+    std::string empty = "+-";
+    std::string emptyright = "+ ";
 
     std::string neutral = "  ";
     std::string horizontal = "--";
