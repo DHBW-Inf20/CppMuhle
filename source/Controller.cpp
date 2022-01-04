@@ -4,6 +4,17 @@
 #include "KonsolenView.hpp"
 #include "MuhleLogik.hpp"
 #include <bitset>
+
+#define CLEAR_SCREEN "\033[2J\33[H"
+#define CUR_UP(x) "\033[" << x << "A"
+#define CUR_RIGHT(x) "\033[" << x << "C"
+#define CUR_LEFT(x) "\033[" << x << "D"
+#define CUR_COL(x) "\033[" << x << "G"
+#define CUR_ROW(x) "\033[" << x << "d"
+#define ERAZE_LINE "\033[K"
+#define CUR_SAVE "\033[s"
+#define CUR_RESTORE "\033[u"
+
 void runSequence(std::vector<std::string> &inputs, MuhleLogik *model);
 void runFirstPhase(MuhleLogik *model);
 
@@ -34,13 +45,14 @@ bool Controller::askForInput(std::string &to, std::string &from)
             std::cin >> to;
             break;
         case PLACING:
-            std::cout << "To: ";
+            std::cout << "Place: __" << CUR_COL(8);
             std::cin >> to;
             break;
         case MOVING:
-            std::cout << "From: ";
+            std::string to;
+            std::cout << "From: __" << CUR_COL(50-4) << "To: __" << CUR_COL(7);
             std::cin >> from;
-            std::cout << "To: ";
+            std::cout << CUR_UP(1) << CUR_COL(50);
             std::cin >> to;
             break;
     }
