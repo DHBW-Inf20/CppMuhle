@@ -32,6 +32,8 @@ MuhleLogik::MuhleLogik(IView *view)
         {"d", 1},
     };
     this->lookupTable = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
+    this->black = new int24;	
+    this->white= new int24;	
 }
 
 void MuhleLogik::initialize(bool testMode)
@@ -331,4 +333,9 @@ int24* MuhleLogik::getCurrentPlayer(){
 void MuhleLogik::startGame(){
     this->status = PLACING;
     this->showState();
+}
+
+MuhleLogik::~MuhleLogik(){
+    delete this->black;	
+    delete this->white;
 }
