@@ -9,6 +9,8 @@
 #include "packets/packet_message.cpp"
 #include "packets/packet_login.cpp"
 #include "packets/packet_muhle_field.cpp"
+#include "packets/packet_game_request.cpp"
+#include "packets/packet_game_code.cpp"
 
 class packet_factory
 {

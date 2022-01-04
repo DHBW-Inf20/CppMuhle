@@ -136,6 +136,9 @@ void net_client::send_packet(packet* packet)
 
         write_data(server_con->socket, packet_buf);
 
-        free(packet_data.data);
+        if (packet_data.size > 0 && packet_data.data != nullptr)
+        {
+            free(packet_data.data);
+        }
     }
 }

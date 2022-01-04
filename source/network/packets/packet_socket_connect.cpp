@@ -6,7 +6,9 @@ public:
 
     packet_data_t serialize() 
     {
-        return packet_data_t();
+        packet_data_t packet_data;
+        packet_data.size = 0;
+        return packet_data;
     }
 
     void deserialize(packet_data_t &packet_data)

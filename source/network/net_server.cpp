@@ -167,7 +167,10 @@ void net_server::send_packet(packet *packet)
         }
     }
     
-    free(packet_data.data);
+    if (packet_data.size > 0 && packet_data.data != nullptr)
+    {
+        free(packet_data.data);
+    }
 }
 
 void net_server::send_packet(packet *packet, int client_id)
@@ -180,7 +183,10 @@ void net_server::send_packet(packet *packet, int client_id)
 
         write_data(con->socket, packet_buf);
 
-        free(packet_data.data);
+        if (packet_data.size > 0 && packet_data.data != nullptr)
+        {
+            free(packet_data.data);
+        }
     }
 }
 
@@ -202,5 +208,8 @@ void net_server::send_packet(packet *packet, int *client_ids, int size)
         }
     }
 
-    free(packet_data.data);
+    if (packet_data.size > 0 && packet_data.data != nullptr)
+    {
+        free(packet_data.data);
+    }
 }

@@ -1,9 +1,9 @@
 #include "packet.hpp"
+#include <string>
 
-class packet_socket_disconnect: public packet
+class packet_game_request: public packet
 {
 public:
-
     packet_data_t serialize() 
     {
         packet_data_t packet_data;
@@ -17,11 +17,11 @@ public:
 
     packet* clone()
     {
-        return new packet_socket_disconnect();
+        return new packet_game_request();
     }
 
     char get_id()
     {
-        return -2;
+        return 3;
     }
 };

@@ -6,6 +6,8 @@ class packet_login: public packet
 public:
     std::string name;
 
+    packet_login() {}
+
     packet_data_t serialize() 
     {
         char* data = (char*) malloc(name.length());
