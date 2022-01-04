@@ -40,8 +40,8 @@ void MuhleLogik::initialize(bool testMode)
     this->isWhiteTurn = true;
     this->testMode = testMode;
     this->status = INITIALIZED;
-    this->black.data = 0;
-    this->white.data = 0;
+    this->black->data = 0;
+    this->white->data = 0;
     this->attackMode = false;
     this->memory = 0;
 }
@@ -56,7 +56,7 @@ void MuhleLogik::placePiece(int position)
 {
     if (isOccupied(position, this->black) || isOccupied(position, this->white))
     {
-        throw std::runtime_error("Position is already occupied");
+        throw std::runtime_error("Position is already occupied: Pos: " + std::bitset<24>(position).to_string() + " Occupied: black: " + std::bitset<24>(this->black->data).to_string() + " white: " + std::bitset<24>(this->white->data).to_string());
     }
     else
     {
@@ -67,11 +67,11 @@ void MuhleLogik::placePiece(int position)
         }
         if (this->isWhiteTurn)
         {
-            this->white.data |= position;
+            this->white->data |= position;
         }
         else
         {
-            this->black.data |= position;
+            this->black->data |= position;
         }
     }
     if (checkIf3(position, this->isWhiteTurn ? this->white : this->black))
@@ -121,16 +121,16 @@ void MuhleLogik::jumpPiece(int from, int to)
     }
     if (this->isWhiteTurn)
     {
-        this->white.data ^= from; // Remove piece from start position
-        this->white.data |= to;   // Add piece to end position
+        this->white->data ^= from; // Remove piece from start position
+        this->white->data |= to;   // Add piece to end position
     }
     else
     {
-        this->black.data ^= from;
-        this->black.data |= to;
+        this->black->data ^= from;
+        this->black->data |= to;
     }
     // Check if this move created a 3 in a row
-    if (checkIf3(to, this->isWhiteTurn ? this->white : this->black))
+    if (checkIf3(to, getCurrentPlayer()))
     {
         attackMode = true;
     }
@@ -192,13 +192,13 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
     return false;
 }
 
-bool MuhleLogik::checkIf3(int lastMovedPiece, int24 &player)
+bool MuhleLogik::checkIf3(int lastMovedPiece, int24 *player)
 {
     // TODO: Prüfen ob 3 Steine in einer Reihe sind
     /*  Triviale Lösung: Jedes Belegte feld ansehen und nach 3 in einer Reihe suchen (3 mit der selben Zahl), oder 3 in einer Spalte (3 mit gleichem Buchstaben). Einzige Ausnahme: Zahl 4 und Buchstabe d, hier muss nocheinmal verglichen werden.
      */
     // See if there are more than 3 positions set
-    if (std::bitset<24>(player.data).count() < 3)
+    if (std::bitset<24>(player->data).count() < 3)
     {
         return false;
     }
@@ -208,10 +208,10 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24 &player)
     {
         int i = lastMovedPiece;
         // Wenn eines der 4 SpecialCases erfüllt ist, mit dem Aktuellen Feld inkludiert, dann sind es 3 in einer Reihe seit dieser Runde
-        bool a = ((player.data & (512 | 1024 | 2048) | i) != player.data);
-        bool b = ((player.data & (419430 | 524288 | 65536) | i) != player.data);
-        bool c = ((player.data & (4096 | 8192 | 16384) | i) != player.data);
-        bool d = ((player.data & (2 | 16 | 128) | i) != player.data);
+        bool a = ((player->data & (512 | 1024 | 2048) | i) != player->data);
+        bool b = ((player->data & (419430 | 524288 | 65536) | i) != player->data);
+        bool c = ((player->data & (4096 | 8192 | 16384) | i) != player->data);
+        bool d = ((player->data & (2 | 16 | 128) | i) != player->data);
         if (a & b & c & d)
         {
             return true;
@@ -219,7 +219,7 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24 &player)
     }
 
     // Collect all Positions
-    int24 playerCopy = player;
+    int24 playerCopy = *player;
     std::vector<std::string> positions;
     for (int i = 0; i < 24; i++)
     {
@@ -252,24 +252,24 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24 &player)
 
 void MuhleLogik::attack(int position)
 {
-    if (isOccupied(position, this->isWhiteTurn ? this->black : this->white))
+    if (isOccupied(position, getCurrentPlayer()))
     {
         if (this->isWhiteTurn)
         {
-            this->black.data &= ~(1 << position);
+            this->black->data &= ~(1 << position);
         }
         else
         {
-            this->white.data &= ~(1 << position);
+            this->white->data &= ~(1 << position);
         }
     }
     this->isWhiteTurn = !this->isWhiteTurn;
     this->attackMode = false;
     showState();
 }
-bool MuhleLogik::isOccupied(int position, int24 &player)
+bool MuhleLogik::isOccupied(int position, int24 *player)
 {
-    return (player.data & position);
+    return (player->data & position);
 }
 
 int24 MuhleLogik::positionToBit24(int position)
@@ -291,7 +291,7 @@ std::string MuhleLogik::bit24ToCoordinate(int bit24)
 
 void MuhleLogik::showState()
 {
-    this->view->showBoard(this->white, this->black, this->isWhiteTurn);
+    this->view->showBoard(*this->white, *this->black, this->isWhiteTurn);
 }
 
 bool MuhleLogik::getAttackMode()
@@ -300,11 +300,11 @@ bool MuhleLogik::getAttackMode()
 }
 int24 MuhleLogik::getBlack()
 {
-    return this->black;
+    return *this->black;
 }
 int24 MuhleLogik::getWhite()
 {
-    return this->white;
+    return *this->white;
 }
 GameStatus MuhleLogik::getStatus()
 {
@@ -324,7 +324,7 @@ void MuhleLogik::setMemory(int memory){
     this->memory = memory;
 }
 
-int24 MuhleLogik::getCurrentPlayer(){
+int24* MuhleLogik::getCurrentPlayer(){
     return this->isWhiteTurn ? this->white : this->black;
 }
 
