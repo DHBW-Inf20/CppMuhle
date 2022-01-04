@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <vector>
+#include <thread>
 #include <map>
 #include <boost/asio.hpp>
 #include "packet_factory.hpp"
@@ -21,8 +22,7 @@ typedef struct connection
 typedef struct packet_buf
 {
     char cbuf[1 + sizeof(int32_t)];
-    boost::asio::mutable_buffer buf;
-    boost::asio::mutable_buffer data_buf;
+    std::vector<boost::asio::const_buffer> buffers;
 } packet_buf_t;
 
 class net_client
@@ -41,8 +41,8 @@ private:
     void receive_packet(char packet_id, int32_t size);
     void call_listeners(packet*);
 
-    packet_buf_t get_packet_buf(packet*);
-    bool write_data(tcp::socket&, packet_buf_t &packet_buf);
+    packet_buf_t get_packet_buf(packet*, packet_data_t &packet_data);
+    void write_data(tcp::socket&, packet_buf_t &packet_buf);
 
     std::shared_ptr<connection_t> server_con;
     std::unique_ptr<std::thread> client_thread;
@@ -55,9 +55,20 @@ public:
     void start();
     void join_thread();
 
-    bool send_packet(packet*);
+    void send_packet(packet*);
+    
     template <typename P>
-    void register_packet_listener(std::function<void(P *packet)>);
+    void register_packet_listener(std::function<void(P *packet)> method)
+    {
+        char packet_id = P().get_id();
+        if (listeners.find(packet_id) == listeners.end())
+        {
+            listeners[packet_id] = std::vector<std::function<void(packet *packet)>>();
+        }
+        listeners[packet_id].push_back([method](packet *packet) {
+            method((P*) packet);
+        });
+    }
 };
 
 #endif

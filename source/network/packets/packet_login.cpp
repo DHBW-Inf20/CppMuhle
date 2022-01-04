@@ -1,5 +1,4 @@
 #include "packet.hpp"
-#include <iostream>
 #include <string>
 
 class packet_login: public packet
@@ -9,14 +8,15 @@ public:
 
     packet_data_t serialize() 
     {
-        char* data = (char*) name.c_str();
+        char* data = (char*) malloc(name.length());
+        memcpy(data, name.data(), name.length());
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = name.length();
         return packet_data;
     }
 
-    void deserialize(packet_data_t packet_data)
+    void deserialize(packet_data_t &packet_data)
     {
         name = std::string(packet_data.data, packet_data.size);
     }

@@ -1,5 +1,6 @@
 libs/
 out/
+build/
 .vscode/
 
 # Prerequisites
@@ -34,3 +35,8 @@ out/
 *.exe
 *.out
 *.app
+
+# Libs
+
+
+.vscode

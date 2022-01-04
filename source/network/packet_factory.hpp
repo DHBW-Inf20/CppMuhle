@@ -4,8 +4,11 @@
 #include <map>
 #include "packets/packet.hpp"
 
+#include "packets/packet_socket_connect.cpp"
+#include "packets/packet_socket_disconnect.cpp"
 #include "packets/packet_message.cpp"
 #include "packets/packet_login.cpp"
+#include "packets/packet_muhle_field.cpp"
 
 class packet_factory
 {
@@ -16,6 +19,7 @@ private:
     void register_packet(packet*);
 public:
     packet_factory();
+    ~packet_factory();
     packet* get_packet_from_id(char);
 };
 
