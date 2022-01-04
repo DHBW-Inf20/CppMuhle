@@ -58,20 +58,21 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
     std::string g7 = neutral; 
     
     //print spielfeld
-    std::cout << "     A     B     C     D     E     F     G  \n" << std::endl;
-    std::cout << "1    " << a1 << "----------------" << d1 << "----------------" << g1 << std::endl;
-    std::cout << "     |                 |                 | " << std::endl;
-    std::cout << "2    |     " << b2 << "----------" << d2 << "----------" << f2 << "    | " << std::endl;
-    std::cout << "     |     |           |           |     | " << std::endl;
-    std::cout << "3    |     |     "<< c3 <<"----" << d3 << "----" << e3 << "    |     | " << std::endl;
-    std::cout << "     |     |     |           |     |     | " << std::endl;
-    std::cout << "4    " << a4 << "----" << b4 << "----" << c4 << "          " << e4 << "----" << f4 << "----" << g4 << std::endl;
-    std::cout << "     |     |     |           |     |     | " << std::endl;
-    std::cout << "5    |     |     " << c5 << "----" << d5 << "----" << e5 << "    |     | " << std::endl;
-    std::cout << "     |     |           |           |     | " << std::endl;
-    std::cout << "6    |     " << b6 << "----------" << d6 << "----------" << f6 <<"    | " << std::endl;
-    std::cout << "     |                 |                 | " << std::endl;
-    std::cout << "7    " << a7 << "----------------" << d7 << "----------------" << g7 << "\n" <<std::endl;
+    std::cout << "     A    B    C    D    E    F    G  \n" << std::endl;
+    std::cout << "1    " << a1 << "-------------" << d1 << "-------------" << g1 << std::endl;
+    std::cout << "     |              |              | " << std::endl;
+    std::cout << "2    |    " << b2 << "--------" << d2 << "--------" << f2 << "   | " << std::endl;
+    std::cout << "     |    |         |         |    | " << std::endl;
+    std::cout << "3    |    |    "<< c3 <<"---" << d3 << "---" << e3 << "   |    | " << std::endl;
+    std::cout << "     |    |    |         |    |    | " << std::endl;
+    std::cout << "4    " << a4 << "---" << b4 << "---" << c4 << "        " << e4 << "---" << f4 << "---" << g4 << std::endl;
+    std::cout << "     |    |    |         |    |    | " << std::endl;
+    std::cout << "5    |    |    " << c5 << "---" << d5 << "---" << e5 << "   |    | " << std::endl;
+    std::cout << "     |    |         |         |    | " << std::endl;
+    std::cout << "6    |    " << b6 << "--------" << d6 << "--------" << f6 <<"   | " << std::endl;
+    std::cout << "     |              |              | " << std::endl;
+    std::cout << "7    " << a7 << "-------------" << d7 << "-------------" << g7 << "\n" <<std::endl;
+
 
 
     // std::cout << white.data << std::endl << black.data << "\n";
