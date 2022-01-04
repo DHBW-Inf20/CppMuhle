@@ -10,9 +10,10 @@
 #include <vector>
 #include <cmath>
 
-MuhleLogik::MuhleLogik(IView* view){
+MuhleLogik::MuhleLogik(IView *view)
+{
     this->view = view;
-        this->xDir = {
+    this->xDir = {
         {"1", 3},
         {"7", 3},
         {"2", 2},
@@ -38,97 +39,17 @@ void MuhleLogik::initialize(bool testMode)
     this->view->initialize();
     this->isWhiteTurn = true;
     this->testMode = testMode;
-    this->status = 0;
+    this->status = INITIALIZED;
     this->black.data = 0;
     this->white.data = 0;
     this->attackMode = false;
     this->memory = 0;
 }
 
-void MuhleLogik::shutdown(){
-    // TODO: Shut down the Programm
-    if(!this->testMode){
-        exit(0);
-    }
-}
-
-void MuhleLogik::processInput(std::string command)
+void MuhleLogik::processInput(int command)
 {
-    int intCommand;
-    try{
-        intCommand = stoi(command);
-    }
-    catch(std::invalid_argument){
-        // TODO: SEND ERROR MESSAGE TO GUI
-        return;
-    }
-    catch(std::out_of_range){
-        // TODO: SEND ERROR MESSAGE TO GUI
-        return;
-    }
-    // TODO: Input verarbeiten
-    if (!status)
-    {
-        if (std::stoi(command) == 1)
-        {
-            status = 1;
-        }
-        else
-        {
-            shutdown();
-        }
-    }
-    else
-    {
-
-        if (this->attackMode)
-        {
-            this->attack(std::stoi(command));
-        }
-        else
-        {
-
-            if (status == 1 )
-            {
-                // Entweder es wurden noch nicht alle Steine gesetzt
-                placePiece(std::stoi(command));
-            }
-            else if ((std::bitset<24>(black.data).count() == 3 && !isWhiteTurn) || (std::bitset<24>(white.data).count() == 3 && isWhiteTurn))
-            {
-                // Oder ein Spieler hat nur noch 3 Steine , dann darf dieser springen
-                if (status == 3)
-                { // Wenn es auf den Input gewartet hat
-                    jumpPiece(memory, std::stoi(command));
-                    status = 2;
-                }
-                else
-                {
-                    memory = std::stoi(command);
-                    status = 3;
-                    return;
-                }
-            }
-            else
-            {
-                // Oder es wird normal geschoben
-                if (status == 3)
-                { // Wenn es auf den Input gewartet hat
-                    movePiece(memory, std::stoi(command));
-                    status = 2;
-                }
-                else
-                {
-                    memory = std::stoi(command);
-                    status = 3;
-                    return;
-                }
-            }
-        }
-    }
-    if (!this->testMode)
-    {
-        this->view->showBoard(this->black, this->white, this->isWhiteTurn);
-    }
+return;
+  
 }
 
 void MuhleLogik::placePiece(int position)
@@ -140,16 +61,17 @@ void MuhleLogik::placePiece(int position)
     else
     {
         this->memory++;
-        if(this->memory == 18){ // Wenn 18 Steine gesetzt wurden
-            this->status = 2; // Gehe in nächste Phase über
+        if (this->memory == 18)
+        {                     // Wenn 18 Steine gesetzt wurden
+            this->status = MOVING; // Gehe in nächste Phase über
         }
         if (this->isWhiteTurn)
         {
-            this->white.data |= positionToBit24(position).data;
+            this->white.data |= position;
         }
         else
         {
-            this->black.data |= positionToBit24(position).data;
+            this->black.data |= position;
         }
     }
     if (checkIf3(position, this->isWhiteTurn ? this->white : this->black))
@@ -197,13 +119,13 @@ void MuhleLogik::jumpPiece(int from, int to)
     }
     if (this->isWhiteTurn)
     {
-        this->white.data ^= positionToBit24(from).data; // Remove piece from start position
-        this->white.data |= positionToBit24(to).data;   // Add piece to end position
+        this->white.data ^= from; // Remove piece from start position
+        this->white.data |= to;   // Add piece to end position
     }
     else
     {
-        this->black.data ^= positionToBit24(from).data;
-        this->black.data |= positionToBit24(from).data;
+        this->black.data ^= from;
+        this->black.data |= to;
     }
     // Check if this move created a 3 in a row
     if (checkIf3(to, this->isWhiteTurn ? this->white : this->black))
@@ -280,7 +202,7 @@ bool MuhleLogik::checkIf3(int lastMovedPiece, int24 &player)
     // Check the 4 SpecialCases:
     if (notation.substr(0, 1) == "d" || notation.substr(1, 1) == "4")
     {
-        int i = positionToBit24(lastMovedPiece).data;
+        int i = lastMovedPiece;
         // Wenn eines der 4 SpecialCases erfüllt ist, mit dem Aktuellen Feld inkludiert, dann sind es 3 in einer Reihe seit dieser Runde
         bool a = ((player.data & (512 | 1024 | 2048) | i) != player.data);
         bool b = ((player.data & (419430 | 524288 | 65536) | i) != player.data);
@@ -330,11 +252,11 @@ void MuhleLogik::attack(int position)
     {
         if (this->isWhiteTurn)
         {
-            this->black.data &= ~(1 << position) ;
+            this->black.data &= ~(1 << position);
         }
         else
         {
-            this->white.data &= ~(1 << position) ;
+            this->white.data &= ~(1 << position);
         }
     }
     this->isWhiteTurn = !this->isWhiteTurn;
@@ -343,7 +265,7 @@ void MuhleLogik::attack(int position)
 
 bool MuhleLogik::isOccupied(int position, int24 &player)
 {
-    return (player.data & positionToBit24(position).data);
+    return (player.data & position);
 }
 
 int24 MuhleLogik::positionToBit24(int position)
@@ -368,16 +290,32 @@ void MuhleLogik::showState()
     this->view->showBoard(this->white, this->black, this->isWhiteTurn);
 }
 
-
-bool MuhleLogik::getAttackMode(){
+bool MuhleLogik::getAttackMode()
+{
     return this->attackMode;
 }
-int24 MuhleLogik::getBlack(){
+int24 MuhleLogik::getBlack()
+{
     return this->black;
 }
-int24 MuhleLogik::getWhite(){
+int24 MuhleLogik::getWhite()
+{
     return this->white;
 }
-int MuhleLogik::getStatus(){
+GameStatus MuhleLogik::getStatus()
+{
     return this->status;
+}
+int MuhleLogik::getMemory()
+{
+    return this->memory;
+}
+void MuhleLogik::setAttackMode(bool attackMode){
+    this->attackMode = attackMode;
+}
+void MuhleLogik::setStatus(GameStatus status){
+    this->status = status;
+}
+void MuhleLogik::setMemory(int memory){
+    this->memory = memory;
 }

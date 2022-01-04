@@ -3,38 +3,85 @@
 #include "Controller.hpp"
 #include "KonsolenView.hpp"
 #include "MuhleLogik.hpp"
+#include <bitset>
 void runSequence(std::vector<std::string> &inputs, MuhleLogik *model);
 void runFirstPhase(MuhleLogik *model);
 
 // 0,2,9,14,21
-Controller::Controller(){
+Controller::Controller()
+{
     KonsolenView *view = new KonsolenView();
     this->model = new MuhleLogik(view);
+    this->action = MENU;
 }
 
-void Controller::run(){
+
+/*
+    Asks for input, dependnig on the current status of the Game.
+*/
+bool Controller::askForInput(std::string &to, std::string &from)
+{
+
+    if(this->model->getAttackMode()){
+        std::cout << "Attack: " << std::endl;
+        std::cin >> to;
+        return std::cin.good();
+    }
+
+    switch(this->model->getStatus()){
+        case INITIALIZED:
+            std::cout << "> ";
+            std::cin >> to;
+            break;
+        case PLACING:
+            std::cout << "To: ";
+            std::cin >> to;
+            break;
+        case MOVING:
+            std::cout << "From: ";
+            std::cin >> from;
+            std::cout << "To: ";
+            std::cin >> to;
+            break;
+    }
+    return std::cin.good();
+}
+
+void Controller::run()
+{
     this->model->initialize();
     // Start Input Loop
-    std::string input;
-    while(std::cin.good()){
-        std::cin >> input;
-        this->model->processInput(input);  
-    }
-}
+    std::string from;
+    std::string to;
+    int command;
+    while (std::cin.good() && askForInput(from,to))
+    {
+        
+        switch(this->action){
+            case MENU:
+                    try{
+                        command = stoi(from);
+                    }catch(std::invalid_argument){
+                        command = -1;
+                    }
+                switch(command){
+                    case 1:
+                        this->action = GAME;
+                        break;
+                    case 2:
+                        from = "exit";
+                        break;
+                    default:
+                        std::cout << "Invalid input" << std::endl;
+                        break;
+                }
+                break;
+            case GAME:
 
-void Controller::test(){
-    this->model->initialize(true);
-    model->processInput("1");
-    runFirstPhase(this->model);
-}
+            command = this->lookupTable.at(from);
+            std::cout << command << std::endl;
+            break;
 
-void runFirstPhase(MuhleLogik *model){
-    std::vector<std::string> input = {"1","3","4"};
-    runSequence(input,model);
-}
-
-void runSequence(std::vector<std::string> &inputs, MuhleLogik *model){
-    for(auto input : inputs){
-        model->processInput(input);
+        }
     }
 }

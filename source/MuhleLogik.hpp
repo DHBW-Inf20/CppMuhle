@@ -5,6 +5,12 @@
 #include <vector>
 #include "helperTypes.hpp"
 #include "IView.hpp"
+
+enum GameStatus {
+    INITIALIZED,
+    PLACING,
+    MOVING
+};
 class MuhleLogik
 {
 private:
@@ -13,7 +19,7 @@ private:
     bool attackMode;
     int24 black;
     int24 white;
-    int status; // 0 = not started, 1 = startPhase (placing), 2+ = midPhase (moving). 3 = Waiting for 2nd Input
+    GameStatus status; 
     int memory;
     std::map<std::string, int> xDir;
     std::map<std::string, int> yDir;
@@ -27,7 +33,7 @@ void showState();
 void shutdown();
 MuhleLogik(IView* view);
 bool isOccupied(int position, int24& player);
-virtual void processInput(std::string command);
+virtual void processInput(int position);
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);
 virtual void jumpPiece(int from, int to);
@@ -39,7 +45,11 @@ virtual void initialize(bool testMode = false) ;
 bool getAttackMode();
 int24 getBlack();
 int24 getWhite();
-int getStatus();
+int getMemory();
+GameStatus getStatus();
+void setAttackMode(bool attackMode);
+void setStatus(GameStatus status);
+void setMemory(int memory);
 };
 
 #endif
