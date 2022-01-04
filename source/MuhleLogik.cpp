@@ -83,6 +83,8 @@ void MuhleLogik::placePiece(int position)
     {
         this->isWhiteTurn = !this->isWhiteTurn;
     }
+    showState();
+
 }
 
 bool MuhleLogik::checkIfValid(int from, int to)
@@ -136,6 +138,8 @@ void MuhleLogik::jumpPiece(int from, int to)
     {
         this->isWhiteTurn = !this->isWhiteTurn;
     }
+    showState();
+
 }
 
 bool MuhleLogik::checkIfLegalMove(int from, int to)
@@ -261,8 +265,8 @@ void MuhleLogik::attack(int position)
     }
     this->isWhiteTurn = !this->isWhiteTurn;
     this->attackMode = false;
+    showState();
 }
-
 bool MuhleLogik::isOccupied(int position, int24 &player)
 {
     return (player.data & position);
@@ -318,4 +322,13 @@ void MuhleLogik::setStatus(GameStatus status){
 }
 void MuhleLogik::setMemory(int memory){
     this->memory = memory;
+}
+
+int24 MuhleLogik::getCurrentPlayer(){
+    return this->isWhiteTurn ? this->white : this->black;
+}
+
+void MuhleLogik::startGame(){
+    this->status = PLACING;
+    this->showState();
 }

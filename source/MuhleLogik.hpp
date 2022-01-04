@@ -50,6 +50,8 @@ GameStatus getStatus();
 void setAttackMode(bool attackMode);
 void setStatus(GameStatus status);
 void setMemory(int memory);
+int24 getCurrentPlayer();
+void startGame();
 };
 
 #endif

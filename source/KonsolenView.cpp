@@ -1,18 +1,29 @@
 #include "KonsolenView.hpp"
+
 #include <iostream>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#define CLEAR_SCREEN "\033[2J\33[H"
 
 void KonsolenView::initialize(){
     int24 weisstest;
     int24 schwarztest;
     showStartMenu();
-    showBoard(weisstest, schwarztest, true);
+    #ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    #endif
+
+    // showBoard(weisstest, schwarztest, true);
 }
 
 //test
 void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
+    std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
-    std::cout << "==============================================" << std::endl;
+    // std::cout << "==============================================" << std::endl;
     
     std::string weiss = "⚪";
     std::string schwarz = "◯ ";
@@ -63,9 +74,9 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
     std::cout << "7    " << a7 << "----------------" << d7 << "----------------" << g7 << "\n" <<std::endl;
 
 
-    std::cout << white.data << std::endl << black.data << std::endl;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "Zug-Eingabe <"<< farbe << ">: ";
+    // std::cout << white.data << std::endl << black.data << "\n";
+    // std::cout << "============================================== \n";
+    // std::cout << "Zug-Eingabe <"<< farbe << ">: \n";
 }
 
 void KonsolenView::showStartMenu(){
