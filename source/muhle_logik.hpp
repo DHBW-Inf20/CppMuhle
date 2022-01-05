@@ -47,9 +47,9 @@ private:
     bool is_occupied(int position, int player) const;
     bool check_if_legal_move(int from, int to) const;
     bool check_if_valid(int from, int to) ;
-    bool check_if_3(int lastMovedPiece) ;
-    bool check_if_3(int lastMovedPiece, int24& player) ;
-    bool check_if_only_3(int24 &player) ;
+    bool check_if_triplets(int lastMovedPiece) ;
+    bool check_if_triplets(int lastMovedPiece, int24& player) ;
+    bool check_if_only_triplets(int24 &player) ;
     iview* view;
     game_status status; 
     bool is_white_turn;

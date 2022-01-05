@@ -180,4 +180,6 @@ void konsolen_view::show_end_screen(bool whiteWins){
 ⣿⡿⠋⠁⠀⠀⢀⣀⣠⡴⣸⣿⣇⡄⠀⠀⠀⠀⢀⡿⠄⠙⠛⠀⣀⣠⣤⣤⠄
 )" << '\n';
     }
+std::cout << "1: Zurück zum Menü" << '\n';
+std::cout << "2: Beenden" << '\n';
 }

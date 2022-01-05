@@ -75,23 +75,41 @@ void controller::run()
     this->model->initialize();
     std::string to;
     std::string from;
-    bool exit = false; // To quit the loop safely
+    bool exitFlag = false; // To quit the loop safely
     int command;
     int second_command;
     // run_test_sequence();
-    while (std::cin.good() && !exit &&  ask_for_input(from, to) )
+    while (std::cin.good() && !exitFlag &&  ask_for_input(from, to) )
     {
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
         std::transform(to.begin(), to.end(), to.begin(), ::tolower);
 
-        if (from.compare("exit") == 0 || to.compare("exit") == 0)
+        if (from.compare("exitFlag") == 0 || to.compare("exitFlag") == 0)
         {
             break;
         }
+
         switch (this->action)
         {
         case input_type::ENDSCREEN:
-            this->model->initialize();
+            try
+            {
+                command = stoi(to);
+            }
+            catch (std::invalid_argument &e)
+            {
+                command = -1;
+                std::cout << "Invalid Input: " << to << "\n";
+            }
+            switch (command){
+                case 1:
+                    this->model->initialize();
+                    this->action = input_type::MENU;
+                    break;
+                case 2:
+                    exitFlag = true;
+                    break;
+            }
             this->action = MENU;
             break;
         case input_type::MENU:
@@ -116,7 +134,7 @@ void controller::run()
                 this->model->get_view()->show_start_menu();
                 break;
             case 3:
-                exit = true;
+                exitFlag = true;
                 break;
             default:
                 std::cout << "Invalid input\n";
@@ -144,7 +162,6 @@ void controller::interpret_command(int from, int to)
 {
     try
     {
-
         if (this->model->get_attack_mode())
         {
             this->model->attack(1 << to);
@@ -167,6 +184,10 @@ void controller::interpret_command(int from, int to)
             else
             {
                 this->model->move_piece(1 << from, 1 << to);
+            }
+            if (this->model->get_status() == ENDED)
+            {
+                this->action = input_type::ENDSCREEN;
             }
             break;
         case game_status::ENDED:
@@ -191,12 +212,34 @@ void controller::run_test_sequence()
 {
     std::vector<std::string> inputs = {"1","a1","a7","d1","d7","a4","g7","a4","a4","g4","c4","g1","d1","b4"};
     int command;
+    int exitFlag = false;
     for (auto to : inputs)
     {
+        if(exitFlag)
+        {
+            break;
+        }
         switch (this->action)
         {
         case input_type::ENDSCREEN:
-            this->model->initialize();
+            try
+            {
+                command = stoi(to);
+            }
+            catch (std::invalid_argument &e)
+            {
+                command = -1;
+                std::cout << "Invalid Input: " << to << "\n";
+            }
+            switch (command){
+                case 1:
+                    this->model->initialize();
+                    this->action = input_type::MENU;
+                    break;
+                case 2:
+                    exitFlag = true;
+                    break;
+            }
             this->action = MENU;
             break;
         case input_type::MENU:
@@ -204,18 +247,24 @@ void controller::run_test_sequence()
             {
                 command = stoi(to);
             }
-            catch (std::invalid_argument &)
+            catch (std::invalid_argument &e)
             {
                 command = -1;
-                std::cout << "Invalid input: " << to << "\n";
+                std::cout << "Invalid Input: " << to << "\n";
             }
             switch (command)
             {
             case 1:
-                this->action = GAME;
+                this->action = input_type::GAME;
                 this->model->start_game();
                 break;
             case 2:
+                this->model->get_view()->show_instructions();
+                SHOW_PRESS_ANY_KEY;
+                this->model->get_view()->show_start_menu();
+                break;
+            case 3:
+                exitFlag = true;
                 break;
             default:
                 std::cout << "Invalid input\n";
@@ -223,7 +272,14 @@ void controller::run_test_sequence()
             }
             break;
         case input_type::GAME:
-            command = this->c_lookup_table.at(to);
+            try
+            {
+                command = this->c_lookup_table.at(to);
+            }
+            catch (std::out_of_range &)
+            {
+                std::cout << "Invalid Coordinate\n";
+            }
             this->interpret_command(0, command);
             break;
         }

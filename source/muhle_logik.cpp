@@ -52,15 +52,18 @@ void muhle_logik::place_piece(int position)
             this->status = MOVING; // Gehe in nächste Phase über
         }
     }
-    if (check_if_3(position))
+    if (check_if_triplets(position))
     {
-          if(!check_if_only_3(get_opposing_player())){
-            // Wenn der gegner nur noch eine Mühle besizt, dann hat der momentane Spieler trotzdem gewonnen
-            if(std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING){
+        if (check_if_only_triplets(get_opposing_player()))
+        {
+            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
+            {
                 end_game();
-            }else{
-                attack_mode = true;
             }
+        }
+        else
+        {
+            attack_mode = true;
         }
     }
     else
@@ -108,14 +111,18 @@ void muhle_logik::jump_piece(int from, int to)
     get_current_player().data ^= from; // Remove piece from start position
     get_current_player().data |= to;   // Add piece to end position
     // Check if this move created a 3 in a row
-    if (check_if_3(to))
+    if (check_if_triplets(to))
     {
-        if(!check_if_only_3(get_opposing_player())){
-            if(std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING){
+        if (check_if_only_triplets(get_opposing_player()))
+        {
+            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
+            {
                 end_game();
-            }else{
-                attack_mode = true;
             }
+        }
+        else
+        {
+            attack_mode = true;
         }
     }
     else
@@ -125,12 +132,12 @@ void muhle_logik::jump_piece(int from, int to)
     show_state();
 }
 
-bool muhle_logik::check_if_only_3(int24 &player)
+bool muhle_logik::check_if_only_triplets(int24 &player)
 {
     for (int i = 0; i < 24; i++)
     {
         int check_int = player.data & (1 << i);
-        if (check_int && !check_if_3(check_int, player))
+        if (check_int && !check_if_triplets(check_int, player))
         {
             return false;
         }
@@ -159,15 +166,15 @@ bool muhle_logik::check_if_legal_move(int from, int to) const
                 a4,d1 -> d1 ist dabei, also ist der Zug legal.
 
     */
-   // Verwandelt die Zahl wieder in Koordinaten um (War anfangs ein anderes System)
+    // Verwandelt die Zahl wieder in Koordinaten um (War anfangs ein anderes System)
     std::string notation = c_lookup_table.at(std::log2(from)) + c_lookup_table.at(std::log2(to));
 
-    int x = c_x_dir.at(notation.substr(1, 1));                         // Multiplikator für x-Achse
-    int y = c_y_dir.at(notation.substr(0, 1));                         // Multiplikator für y-Achse
+    int x = c_x_dir.at(notation.substr(1, 1));                                 // Multiplikator für x-Achse
+    int y = c_y_dir.at(notation.substr(0, 1));                                 // Multiplikator für y-Achse
     const std::vector<std::string> c_ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
 
-    int a_bis_g_index = std::find(c_ag.begin(), c_ag.end(), notation.substr(0, 1)) - c_ag.begin(); // Index aus dem c_ag Array 
-    int zahlen_anteil = std::stoi(notation.substr(1, 1)); // Zahl aus dem String
+    int a_bis_g_index = std::find(c_ag.begin(), c_ag.end(), notation.substr(0, 1)) - c_ag.begin(); // Index aus dem c_ag Array
+    int zahlen_anteil = std::stoi(notation.substr(1, 1));                                          // Zahl aus dem String
 
     for (int i = -1; i <= 1; i += 2) // Sequenz für -1,1 um in jede Richtung einmal zu laufen
     {
@@ -192,7 +199,7 @@ bool muhle_logik::check_if_legal_move(int from, int to) const
     return false;
 }
 
-bool muhle_logik::check_if_3(int last_moved_piece, int24 &player)
+bool muhle_logik::check_if_triplets(int last_moved_piece, int24 &player)
 {
     if (std::bitset<24>(player.data).count() < 3)
     {
@@ -221,7 +228,7 @@ bool muhle_logik::check_if_3(int last_moved_piece, int24 &player)
     return false;
 }
 
-bool muhle_logik::check_if_3(int last_moved_piece)
+bool muhle_logik::check_if_triplets(int last_moved_piece)
 {
     if (std::bitset<24>(this->get_current_player().data).count() < 3)
     {
@@ -252,7 +259,7 @@ bool muhle_logik::check_if_3(int last_moved_piece)
 
 void muhle_logik::attack(int position)
 {
-    if (check_if_3(position, get_opposing_player()))
+    if (check_if_triplets(position, get_opposing_player()))
     {
         std::string move = this->c_lookup_table[std::log2(position)];
         throw wrong_move("Du darfst eine Mühle nicht schlagen!", move);
