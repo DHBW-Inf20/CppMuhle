@@ -74,28 +74,44 @@ void net_client::handle_read()
 
 void net_client::receive_packet(char packet_id, int32_t size)
 {
-    char* data_buf = (char*) malloc(size);
-    auto buf = boost::asio::buffer(data_buf, size);
-    boost::asio::async_read(server_con->socket, buf, [this, data_buf, packet_id](error_code_t ec, size_t len) {
-        if (!ec)
+    if (size > 0)
+    {
+        char* data_buf = (char*) malloc(size);
+        auto buf = boost::asio::buffer(data_buf, size);
+        boost::asio::async_read(server_con->socket, buf, [this, data_buf, packet_id](error_code_t ec, size_t len) {
+            if (!ec)
+            {
+                packet* packet = packet_factory.get_packet_from_id(packet_id);
+                if (packet)
+                {
+                    packet_data_t packet_data;
+                    packet_data.size = len;
+                    packet_data.data = data_buf;
+                    packet->deserialize(packet_data);
+                    this->call_listeners(packet);
+                    delete packet;
+                }
+                else
+                {
+                    std::cout << "Packet with id " << packet_id << " not found" << std::endl;
+                }
+            }
+            free(data_buf);
+        });
+    }
+    else
+    {
+        packet* packet = packet_factory.get_packet_from_id(packet_id);
+        if (packet)
         {
-            packet* packet = packet_factory.get_packet_from_id(packet_id);
-            if (packet)
-            {
-                packet_data_t packet_data;
-                packet_data.size = len;
-                packet_data.data = data_buf;
-                packet->deserialize(packet_data);
-                this->call_listeners(packet);
-                delete packet;
-            }
-            else
-            {
-                std::cout << "Packet with id " << packet_id << " not found" << std::endl;
-            }
+            call_listeners(packet);
+            delete packet;
         }
-        free(data_buf);
-    });
+        else
+        {
+            std::cout << "Packet with id " << packet_id << " not found" << std::endl;
+        }
+    }
 }
 
 void net_client::call_listeners(packet* packet)
