@@ -27,7 +27,7 @@ endif
 
 
 
-build/Muhle.exe: build source/Controller.cpp source/main.cpp source/muhle_logik.cpp source/konsolen_view.cpp
+build/Muhle.exe: build source/controller.cpp source/main.cpp source/muhle_logik.cpp source/konsolen_view.cpp
 	$(CXX) $(CPPFLAGS) -o build/Muhle.exe source/muhle_logik.cpp  source/controller.cpp source/konsolen_view.cpp source/main.cpp
 
 build:
