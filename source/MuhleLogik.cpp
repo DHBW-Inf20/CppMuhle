@@ -85,45 +85,49 @@ void MuhleLogik::placePiece(int position)
 bool MuhleLogik::checkIfValid(int from, int to)
 {
     // Check if start position is a actually occupied by current player
-    if (!isOccupied(from, this->isWhiteTurn ? this->white.data : this->black.data))
+    if (!isOccupied(from, getCurrentPlayer().data))
     {
         return false;
     }
-
+    std::cout << "Start Position is occupied by current player\n";
     // Check if end position is not occupied by a player
-    if (isOccupied(to, this->isWhiteTurn ? this->white.data : this->black.data))
+    if (isOccupied(to, getCurrentPlayer().data | getOpposingPlayer().data))
     {
         return false;
     }
+    std::cout << "End Position is not occupied a player\n";
+
     return true;
 }
 
 void MuhleLogik::movePiece(int from, int to)
 {
+    std::cout << "Entered Move Piece\n";
     if (!checkIfLegalMove(from, to))
     {
         throw std::runtime_error("Not a legal move");
     }
+    std::cout << "Is Valid Move\n";
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jumpPiece übernommen werden.
     jumpPiece(from, to);
 }
 
 void MuhleLogik::jumpPiece(int from, int to)
 {
-    if (checkIfValid(from, to))
+    std::cout << "Entered jumpPiece\n";
+    if ( !checkIfValid(from, to))
     {
         throw std::runtime_error("Not a valid move");
     }
-    if (this->isWhiteTurn)
-    {
-        this->white.data ^= from; // Remove piece from start position
-        this->white.data |= to;   // Add piece to end position
-    }
-    else
-    {
-        this->black.data ^= from;
-        this->black.data |= to;
-    }
+    std::cout << "Is Valid Move\n";
+    std::cout << "data: " << std::bitset<24>(getCurrentPlayer().data) << std::endl;
+    std::cout << "From:   " << std::bitset<24>(from) << std::endl;
+    std::cout << "To:      " << std::bitset<24>(to) << std::endl;
+    std::cout << "XOR data, from:   " << std::bitset<24>(getCurrentPlayer().data ^ from) << std::endl;
+    std::cout << "OR data, to" << std::bitset<24>(getCurrentPlayer().data |to) << std::endl;
+
+    getCurrentPlayer().data ^= from; // Remove piece from start position
+    getCurrentPlayer().data |= to;   // Add piece to end position
     // Check if this move created a 3 in a row
     if (checkIf3(to))
     {
@@ -138,6 +142,7 @@ void MuhleLogik::jumpPiece(int from, int to)
 
 bool MuhleLogik::checkIfLegalMove(int from, int to)
 {
+    std::cout << "Entered checkIfLegalMove\n";
     // TODO: Spielzug prüfen
     // Funktion geht davon aus, das der Zug valide ist (checkIfValid)
     /*
@@ -157,7 +162,8 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
                 a4,d1 -> d1 ist dabei, also ist der Zug legal.
 
     */
-    std::string notation = lookupTable[from] + lookupTable[to];
+    std::string notation = lookupTable[std::log2(from)] + lookupTable[std::log2(to)];
+    std::cout << "Notation: " << notation << "\n";
     int x = xDir[notation.substr(1, 1)];                               // Multiplikator für x-Achse
     int y = yDir[notation.substr(0, 1)];                               // Multiplikator für y-Achse
     std::vector<std::string> ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
@@ -188,63 +194,30 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
 
 bool MuhleLogik::checkIf3(int lastMovedPiece)
 {
-    return false;
-    // TODO: Prüfen ob 3 Steine in einer Reihe sind
-    /*  Triviale Lösung: Jedes Belegte feld ansehen und nach 3 in einer Reihe suchen (3 mit der selben Zahl), oder 3 in einer Spalte (3 mit gleichem Buchstaben). Einzige Ausnahme: Zahl 4 und Buchstabe d, hier muss nocheinmal verglichen werden.
-     */
-    // See if there are more than 3 positions set
-    auto player = getCurrentPlayer();
-    if (std::bitset<24>(player.data).count() < 3)
+    // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
+    std::vector<int> threeList = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
+    std::vector<int> matching3 = {};
+
+    // Alle 3er Reihen suchen und in matching3 speichern
+    for(auto i : threeList)
     {
-        return false;
+        if (std::bitset<24>(i & getCurrentPlayer().data).count() == 3)
+        {
+            matching3.push_back(i);
+        }
     }
-    std::string notation = lookupTable[lastMovedPiece];
-    // Check the 4 SpecialCases:
-    if (notation.substr(0, 1) == "d" || notation.substr(1, 1) == "4")
+
+    // Falls der letzte Bewegte Spielstein in einer dieser 3er Reihen ist, true zurückgeben
+    for(auto i : matching3)
     {
-        int i = lastMovedPiece;
-        // Wenn eines der 4 SpecialCases erfüllt ist, mit dem Aktuellen Feld inkludiert, dann sind es 3 in einer Reihe seit dieser Runde
-        bool a = ((player.data & (512 | 1024 | 2048) | i) != player.data);
-        bool b = ((player.data & (419430 | 524288 | 65536) | i) != player.data);
-        bool c = ((player.data & (4096 | 8192 | 16384) | i) != player.data);
-        bool d = ((player.data & (2 | 16 | 128) | i) != player.data);
-        if (a & b & c & d)
+        if (i & lastMovedPiece) // Wenn die Bits an einer stelle übereinstimmen kommt irgendwas != 0 raus
         {
             return true;
         }
     }
-
-    // Collect all Positions
-
-    std::vector<std::string> positions;
-    for (int i = 0; i < 24; i++)
-    {
-        if (player.data & (1 << i))
-        {
-            positions.push_back(lookupTable[i]);
-        }
-    }
-
-    // To keep track of the numbers used
-    std::map<std::string, int> letterMap;
-    std::map<int, int> numberMap;
-    for (int i = 0; i < positions.size(); i++)
-    {
-        letterMap[positions.at(i).substr(0, 1)]++;
-        numberMap[std::stoi(positions.at(i).substr(1, 1))]++;
-    }
-    std::cout << letterMap[notation.substr(0, 1)] << std::endl;
-    std::cout << numberMap[std::stoi(notation.substr(1, 1))] << std::endl;
-    if (letterMap[notation.substr(0, 1)] >= 3)
-    {
-        return true;
-    }
-    if (numberMap[std::stoi(notation.substr(1, 1))] >= 3)
-    {
-        return true;
-    }
     return false;
 }
+
 
 void MuhleLogik::attack(int position)
 {

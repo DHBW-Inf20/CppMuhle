@@ -15,8 +15,6 @@
 #define CUR_SAVE "\033[s"
 #define CUR_RESTORE "\033[u"
 
-void runSequence(std::vector<std::string> &inputs, MuhleLogik *model);
-void runFirstPhase(MuhleLogik *model);
 
 // 0,2,9,14,21
 Controller::Controller()
@@ -30,7 +28,7 @@ Controller::Controller()
 /*
     Asks for input, dependnig on the current status of the Game.
 */
-bool Controller::askForInput(std::string &to, std::string &from)
+bool Controller::askForInput(std::string &from, std::string &to)
 {
     // std::cout << CLEAR_SCREEN;
 
@@ -71,7 +69,7 @@ void Controller::run()
     bool exit = false; // To quit the loop safely 
     int command;
     int secondCommand;
-    runTestSequence();
+    // runTestSequence();
     while (std::cin.good() && askForInput(from,to) && !exit)
     {   
         if(from.compare("exit") == 0 || to.compare("exit") == 0){
