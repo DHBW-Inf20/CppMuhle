@@ -11,10 +11,10 @@
 #define CLEAR_SCREEN "\033[2J\33[H"
 #define SIDEBAR_MARGIN " "
 #define PIECEMARGIN " "
-#define MUHLE_PIECE_WHITE "⚪";
-#define MUHLE_PIECE_BLACK "◯ ";
-#define MUHLE_PIECE_EMPTY "+-";
-#define MUHLE_PIECE_EMPTY_RIGHT "+ ";
+#define MUHLE_PIECE_WHITE "⚪"
+#define MUHLE_PIECE_BLACK "◯ "
+#define MUHLE_PIECE_EMPTY "+-"
+#define MUHLE_PIECE_EMPTY_RIGHT "+ "
 
 
 void KonsolenView::initialize(){
@@ -29,41 +29,39 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whi
     std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     
-    std::string whiteSymbol = MUHLE_PIECE_WHITE;
-    std::string blackSymbol = MUHLE_PIECE_BLACK;
-    std::string empty = MUHLE_PIECE_EMPTY ;
-    std::string emptyright = MUHLE_PIECE_EMPTY_RIGHT;
-
-    std::vector<std::string> printField;
     int whiteIndex;
     int blackIndex;
-
-    //get string array
-    for (int i=0; i<24; ++i){
+    for (int i = 0; i < 24; i++){
         whiteIndex = (white.data >> i) & 0b1;
         blackIndex = (black.data >> i) & 0b1;
 
         if (whiteIndex == 1 && blackIndex == 0){
-            printField.insert(printField.end(), whiteSymbol);
+            printField[i] = MUHLE_PIECE_WHITE;
         }
         else if (blackIndex == 1 && whiteIndex == 0){
-            printField.insert(printField.end(), blackSymbol);
+            printField[i] = MUHLE_PIECE_BLACK;
         }
         else if (whiteIndex == 0 && blackIndex == 0 && (i+1)%3 == 0){
-            printField.insert(printField.end(), emptyright);
+            printField[i] =  MUHLE_PIECE_EMPTY_RIGHT;
         }
         else{
-            printField.insert(printField.end(), empty);
+            printField[i] = MUHLE_PIECE_EMPTY;
         }
     }
 
-    std::vector<std::string> whitePiecesArray = {"  ","  ","  ","  ","  ","  ","  ","  ","  "};
-    std::vector<std::string> blackPiecesArray = {"  ","  ","  ","  ","  ","  ","  ","  ","  "};
-    for (int i = 0; i < whitePieces; i++){
-        whitePiecesArray[i] = whiteSymbol;
+    for (int i = 0; i < 9; i++){
+        if (i < whitePieces) {
+            whitePiecesArray[i] = MUHLE_PIECE_WHITE;
+        } else {
+            whitePiecesArray[i] = "  ";
+        }
     }
-    for (int i = 0; i < blackPieces; i++){
-        blackPiecesArray[i] = blackSymbol;
+    for (int i = 0; i < 9; i++){
+        if (i < blackPieces) {
+            blackPiecesArray[i] = MUHLE_PIECE_BLACK;
+        } else {
+            blackPiecesArray[i] = "  ";
+        }
     }
 
     //print field
