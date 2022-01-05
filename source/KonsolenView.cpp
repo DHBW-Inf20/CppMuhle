@@ -9,12 +9,12 @@
 #define CLEAR_SCREEN "\033[2J\33[H"
 
 void KonsolenView::initialize(){
-    int24 weisstest;
-    int24 schwarztest;
-    showStartMenu();
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     #endif
+    int24 weisstest;
+    int24 schwarztest;
+    showStartMenu();
 
     // showBoard(weisstest, schwarztest, true);
 }
@@ -47,8 +47,8 @@ std::string getField (int24 white, int24 black, int position, bool rightField){
     return field;
 }
 
-void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove){
-    std::cout << CLEAR_SCREEN;
+void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whitePieces, int blackPieces){
+    // std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     std::cout << "==============================================" << std::endl;
     

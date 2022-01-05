@@ -6,7 +6,7 @@ class IView
 {
 public:
     virtual void initialize() = 0;
-    virtual void showBoard(int24 white, int24 black, bool isWhiteMove) = 0;
+    virtual void showBoard(int24 white, int24 black,bool isWhiteMove, int whitePieces, int blackPieces) = 0;
     virtual void showStartMenu() = 0;
     virtual void showEndScreen(std::string message) = 0;
 };

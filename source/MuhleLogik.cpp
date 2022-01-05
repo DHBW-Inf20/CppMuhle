@@ -32,7 +32,6 @@ MuhleLogik::MuhleLogik(IView *view)
         {"d", 1},
     };
     this->lookupTable = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
-
 }
 
 void MuhleLogik::initialize(bool testMode)
@@ -44,9 +43,9 @@ void MuhleLogik::initialize(bool testMode)
     this->black.data = 0;
     this->white.data = 0;
     this->attackMode = false;
-    this->memory = 0;
+    this->whitePieces = 9;
+    this->blackPieces = 9;
 }
-
 
 void MuhleLogik::placePiece(int position)
 {
@@ -56,31 +55,31 @@ void MuhleLogik::placePiece(int position)
     }
     else
     {
-        this->memory++;
-        if (this->memory == 18)
-        {                     // Wenn 18 Steine gesetzt wurden
-            this->status = MOVING; // Gehe in nächste Phase über
-        }
         if (this->isWhiteTurn)
         {
             this->white.data |= position;
+            this->whitePieces--;
         }
         else
         {
             this->black.data |= position;
+            this->blackPieces--;
+        }
+
+        if (this->blackPieces == 0 && this->whitePieces == 0)
+        {                          // Wenn 18 Steine gesetzt wurden
+            this->status = MOVING; // Gehe in nächste Phase über
         }
     }
     if (checkIf3(position))
     {
         this->attackMode = true;
-        std::cout << "CAN ATTACK" << std::endl;
     }
     else
     {
         this->isWhiteTurn = !this->isWhiteTurn;
     }
     showState();
-
 }
 
 bool MuhleLogik::checkIfValid(int from, int to)
@@ -135,7 +134,6 @@ void MuhleLogik::jumpPiece(int from, int to)
         this->isWhiteTurn = !this->isWhiteTurn;
     }
     showState();
-
 }
 
 bool MuhleLogik::checkIfLegalMove(int from, int to)
@@ -249,24 +247,28 @@ bool MuhleLogik::checkIf3(int lastMovedPiece)
 
 void MuhleLogik::attack(int position)
 {
-    std::cout << std::bitset<24>(getCurrentPlayer().data) << "\n";
+    std::cout << std::bitset<24>(getOpposingPlayer().data) << "\n";
     std::cout << std::bitset<24>(~position) << "\n";
-    if (isOccupied(position, getCurrentPlayer().data))
+    if (isOccupied(position, getOpposingPlayer().data))
     {
-        getCurrentPlayer().data &= ~position;
-     }
+        getOpposingPlayer().data &= ~position;
+    }
+    else
+    {
+        throw std::runtime_error("No piece to attack");
+    }
     this->isWhiteTurn = !this->isWhiteTurn;
     this->attackMode = false;
     showState();
 }
 bool MuhleLogik::isOccupied(int position, int player)
 {
-    if(player & position)
+    if (player & position)
     {
-    std::cout << "Position: " << std::bitset<24>(position) << std::endl;
-    std::cout << "Player:   " << std::bitset<24>(player) << std::endl;
-    std::cout << "And:      " << std::bitset<24>(position & player) << std::endl;
-    return true;
+        std::cout << "Position: " << std::bitset<24>(position) << std::endl;
+        std::cout << "Player:   " << std::bitset<24>(player) << std::endl;
+        std::cout << "And:      " << std::bitset<24>(position & player) << std::endl;
+        return true;
     }
     return false;
 }
@@ -290,7 +292,7 @@ std::string MuhleLogik::bit24ToCoordinate(int bit24)
 
 void MuhleLogik::showState()
 {
-    this->view->showBoard(this->white, this->black, this->isWhiteTurn);
+    this->view->showBoard(this->white, this->black, this->isWhiteTurn, this->whitePieces, this->blackPieces);
 }
 
 bool MuhleLogik::getAttackMode()
@@ -310,33 +312,32 @@ GameStatus MuhleLogik::getStatus()
 {
     return this->status;
 }
-int MuhleLogik::getMemory()
+
+void MuhleLogik::setAttackMode(bool attackMode)
 {
-    return this->memory;
-}
-void MuhleLogik::setAttackMode(bool attackMode){
     this->attackMode = attackMode;
 }
-void MuhleLogik::setStatus(GameStatus status){
+void MuhleLogik::setStatus(GameStatus status)
+{
     this->status = status;
 }
-void MuhleLogik::setMemory(int memory){
-    this->memory = memory;
-}
 
-int24& MuhleLogik::getCurrentPlayer(){
+
+int24 &MuhleLogik::getCurrentPlayer()
+{
     return this->isWhiteTurn ? this->white : this->black;
 }
-int24& MuhleLogik::getOpposingPlayer(){
+int24 &MuhleLogik::getOpposingPlayer()
+{
     return this->isWhiteTurn ? this->black : this->white;
 }
 
-
-void MuhleLogik::startGame(){
+void MuhleLogik::startGame()
+{
     this->status = PLACING;
     this->showState();
 }
 
-MuhleLogik::~MuhleLogik(){
-
+MuhleLogik::~MuhleLogik()
+{
 }
