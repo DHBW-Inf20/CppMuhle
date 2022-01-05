@@ -157,7 +157,7 @@ void controller::interpret_command(int from, int to)
             }
             break;
         case game_status::ENDED:
-        case game_status::INITIALIZED:
+        case game_statWus::INITIALIZED:
         default:
             break;
         }
@@ -215,4 +215,9 @@ void controller::run_test_sequence()
             break;
         }
     }
+}
+
+~controller()
+{
+    delete this->model;
 }

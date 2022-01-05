@@ -343,4 +343,5 @@ void muhle_logik::start_game()
 
 muhle_logik::~muhle_logik()
 {
+    delete this->view;
 }
