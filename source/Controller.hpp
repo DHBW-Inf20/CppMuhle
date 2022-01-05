@@ -6,7 +6,8 @@
 
 enum ACTION{
     MENU,
-    GAME
+    GAME,
+    ENDSCREEN
 };
 class Controller
 {

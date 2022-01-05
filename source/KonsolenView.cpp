@@ -21,6 +21,7 @@ void KonsolenView::initialize(){
 }
 
 void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whitePieces, int blackPieces){
+    // std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     
     std::string whiteSymbol = "⚪";
@@ -89,9 +90,14 @@ void KonsolenView::showStartMenu(){
     std::cout << "==============================================" << std::endl;
 }
 
-void KonsolenView::showEndScreen(std::string message){
+void KonsolenView::showEndScreen(bool whiteWins){
+    std::cout << CLEAR_SCREEN;
     std::cout << "==============================================" << std::endl;
     std::cout << "<Endscreen>" << std::endl;
     std::cout << "==============================================" << std::endl;
-    std::cout << message << std::endl;
+    if (whiteWins){
+        std::cout << "Spieler Weiss hat gewonnen!" << std::endl;
+    } else {
+        std::cout << "Spieler Schwarz hat gewonnen!" << std::endl;
+    }
 }

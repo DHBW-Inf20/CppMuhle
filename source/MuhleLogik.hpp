@@ -9,7 +9,8 @@
 enum GameStatus {
     INITIALIZED,
     PLACING,
-    MOVING
+    MOVING,
+    ENDED
 };
 class MuhleLogik
 {
@@ -34,6 +35,7 @@ void showState();
 void shutdown();
 MuhleLogik(IView* view);
 bool isOccupied(int position, int player);
+void endGame();
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);
 virtual void jumpPiece(int from, int to);
