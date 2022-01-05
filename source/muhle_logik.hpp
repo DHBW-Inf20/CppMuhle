@@ -30,6 +30,7 @@ public:
     void attack(int position);
 
     // getter
+    iview *get_view();
     game_status get_status() const;
     bool get_attack_mode() const;
     int24& get_black();

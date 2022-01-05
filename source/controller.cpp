@@ -7,8 +7,8 @@
 #include <bitset>
 #include <algorithm>
 
-// #define CLEAR_SCREEN "\033[2J\33[H"
-#define CLEAR_SCREEN ""
+#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN ""
 #define CUR_UP(x) "\033[" << x << "A"
 #define CUR_RIGHT(x) "\033[" << x << "C"
 #define CUR_LEFT(x) "\033[" << x << "D"
@@ -17,6 +17,13 @@
 #define ERAZE_LINE "\033[K"
 #define CUR_SAVE "\033[s"
 #define CUR_RESTORE "\033[u"
+
+#ifdef _WIN32
+#define SHOW_PRESS_ANY_KEY system("pause");
+#else
+#define SHOW_PRESS_ANY_KEY system("read");
+#endif
+
 
 controller::controller()
 {
@@ -71,8 +78,8 @@ void controller::run()
     bool exit = false; // To quit the loop safely
     int command;
     int second_command;
-    run_test_sequence();
-    while (std::cin.good() && ask_for_input(from, to) && !exit)
+    // run_test_sequence();
+    while (std::cin.good() && !exit &&  ask_for_input(from, to) )
     {
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
         std::transform(to.begin(), to.end(), to.begin(), ::tolower);
@@ -102,6 +109,11 @@ void controller::run()
             case 1:
                 this->action = input_type::GAME;
                 this->model->start_game();
+                break;
+            case 2:
+                this->model->get_view()->show_instructions();
+                SHOW_PRESS_ANY_KEY;
+                this->model->get_view()->show_start_menu();
                 break;
             case 3:
                 exit = true;

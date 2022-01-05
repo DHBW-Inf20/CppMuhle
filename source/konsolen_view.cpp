@@ -8,8 +8,8 @@
 #include <windows.h>
 #endif
 
-// #define CLEAR_SCREEN "\033[2J\33[H"
-#define CLEAR_SCREEN ""
+#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN ""
 #define SIDEBAR_MARGIN " "
 #define PIECEMARGIN " "
 #define MUHLE_PIECE_WHITE "⚪"
@@ -28,7 +28,7 @@ void konsolen_view::initialize(){
 
 void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int white_pieces, int black_pieces){
     std::cout << CLEAR_SCREEN;
-    std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
+    std::string farbe = isWhiteMove ? MUHLE_PIECE_WHITE: MUHLE_PIECE_BLACK;
     
     int whiteIndex;
     int blackIndex;
@@ -66,7 +66,7 @@ void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int w
     }
 
     //print field
-    std::cout << "Spieler: " << farbe << "\n";
+    std::cout << "     Am Zug: " << farbe << "\n";
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
     std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << white_pieces_array[0] << PIECEMARGIN << black_pieces_array[0] << "\n";
     std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[1] << PIECEMARGIN << black_pieces_array[1] << "\n";
@@ -92,6 +92,21 @@ void konsolen_view::show_start_menu(){
     std::cout << "2. Anleitung anzeigen" << std::endl;
     std::cout << "3. Spiel beenden" << std::endl;
     std::cout << "==============================================" << std::endl;
+}
+
+void konsolen_view::show_instructions(){
+    std::cout << CLEAR_SCREEN;
+    std::cout << "==============================================" << std::endl;
+    std::cout << "Anleitung" << std::endl;
+    std::cout << "==============================================" << std::endl;
+    std::cout << "Ablauf Mühle:" << std::endl;
+    std::cout << "Setzphase: Die Spieler setzen abwechselnd je einen Stein, insgesamt je neun, auf Kreuzungs- oder Eckpunkte des Brettes" << std::endl;
+    std::cout << "Zugphase: Die Spielsteine werden gezogen, das heißt, pro Runde darf jeder Spieler einen Stein auf einen angrenzenden, freien Punkt bewegen. Kann ein Spieler keinen Stein bewegen, hat er verloren." << std::endl;
+    std::cout << "Endphase: Sobald ein Spieler nur noch drei Steine hat, darf er mit seinen Steinen springen, das heißt, er darf nun pro Runde mit einem Stein an einen beliebigen freien Punkt springen. Sobald ihm ein weiterer Stein abgenommen wird, hat er das Spiel verloren." << std::endl;
+    std::cout << "Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, nennt man eine „Mühle“. Wenn ein Spieler eine Mühle schließt, darf er einen beliebigen Stein des Gegners aus dem Spiel nehmen, sofern dieser Stein nicht ebenfalls Bestandteil einer Mühle ist. " << std::endl;
+    std::cout << "==============================================" << std::endl;
+    std::cout << "Drücke eine beliebige Taste um zurück zu kehren" << std::endl;
+
 }
 
 void konsolen_view::show_end_screen(bool whiteWins){

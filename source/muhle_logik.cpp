@@ -279,6 +279,11 @@ void muhle_logik::attack(int position)
     }
 }
 
+iview *muhle_logik::get_view()
+{
+    return this->view;
+}
+
 void muhle_logik::end_game()
 {
     this->status = ENDED;
