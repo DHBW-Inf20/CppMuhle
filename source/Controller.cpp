@@ -72,7 +72,7 @@ void Controller::run()
     bool exit = false; // To quit the loop safely 
     int command;
     int secondCommand;
-    runTestSequence();
+    // runTestSequence();
     while (std::cin.good() && askForInput(from,to) && !exit)
     {   
     std::transform(from.begin(), from.end(), from.begin(), ::tolower);
@@ -145,7 +145,6 @@ void Controller::interpretCommand(int from, int to)
             break;
     }
     }catch(WrongMove e){
-        std::cout << CLEAR_SCREEN;
         this->model->showState();
         std::cout  << e.what() << " (" << e.getMove() << ")\n";
     }catch(std::exception e){

@@ -12,7 +12,7 @@ $(info If the Build is failing, try adding an libPath to the Boost-Libraries )
 endif
 
 ifndef CPPFLAGS
-	CPPFLAGS = -std=c++11 $(IFLAG) $(LFLAG)
+	CPPFLAGS = -std=c++11 -Wall -Wextra -Wzero-as-null-pointer-constant -Wformat=2 -Wunused $(IFLAG) $(LFLAG)
 else
 	CPPFLAGS = $(CPPFLAGS)  $(IFLAG) $(LFLAG)
 endif
