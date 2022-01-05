@@ -72,7 +72,7 @@ void MuhleLogik::placePiece(int position)
             this->status = MOVING; // Gehe in nächste Phase über
         }
     }
-    if (checkIf3(position))
+    if (checkIf3(position) && !checkIfOnly3(getOpposingPlayer()))
     {
         this->attackMode = true;
     }
@@ -121,7 +121,7 @@ void MuhleLogik::jumpPiece(int from, int to)
     getCurrentPlayer().data ^= from; // Remove piece from start position
     getCurrentPlayer().data |= to;   // Add piece to end position
     // Check if this move created a 3 in a row
-    if (checkIf3(to))
+    if (checkIf3(to) && !checkIfOnly3(getOpposingPlayer()))
     {
         attackMode = true;
     }
@@ -130,6 +130,16 @@ void MuhleLogik::jumpPiece(int from, int to)
         this->isWhiteTurn = !this->isWhiteTurn;
     }
     showState();
+}
+
+bool MuhleLogik::checkIfOnly3(int24 &player){
+    for(int i = 0; i < 24; i++){
+        int checkInt = player.data & (1 << i);
+        if(checkInt && checkIf3(checkInt)){
+            return true;
+        }
+    }
+    return false;
 }
 
 bool MuhleLogik::checkIfLegalMove(int from, int to)
