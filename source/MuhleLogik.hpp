@@ -17,8 +17,8 @@ private:
     IView* view;
     bool isWhiteTurn;
     bool attackMode;
-    int24* black;
-    int24* white;
+    int24 black;
+    int24 white;
     GameStatus status; 
     int memory;
     std::map<std::string, int> xDir;
@@ -32,26 +32,28 @@ public:
 void showState();
 void shutdown();
 MuhleLogik(IView* view);
-bool isOccupied(int position, int24* player);
-virtual void processInput(int position);
+bool isOccupied(int position, int player);
 virtual void placePiece(int position);
 virtual void movePiece(int from, int to);
 virtual void jumpPiece(int from, int to);
 virtual bool checkIfLegalMove(int from, int to);
 virtual bool checkIfValid(int from, int to);
-virtual bool checkIf3(int lastMovedPiece,int24* player);
+virtual bool checkIf3(int lastMovedPiece);
 virtual void attack(int position);
-virtual void initialize(bool testMode = false) ;
+virtual void initialize(bool testMode = false);
 bool getAttackMode();
-int24 getBlack();
-int24 getWhite();
+int24& getBlack();
+int24& getWhite();
 int getMemory();
 GameStatus getStatus();
 void setAttackMode(bool attackMode);
 void setStatus(GameStatus status);
 void setMemory(int memory);
-int24* getCurrentPlayer();
+int24& getCurrentPlayer();
+int24& getOpposingPlayer();
 void startGame();
+~MuhleLogik();
+
 };
 
 #endif

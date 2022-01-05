@@ -115,7 +115,7 @@ void Controller::run()
 
 void Controller::interpretCommand(int from, int to)
 {
-    // try{
+    try{
 
     if(this->model->getAttackMode()){
         this->model->attack(1<<to);
@@ -126,17 +126,17 @@ void Controller::interpretCommand(int from, int to)
             this->model->placePiece(1<<to);
             break;
         case MOVING:
-            if(std::bitset<24>(this->model->getCurrentPlayer()->data).count() == 3){
+            if(std::bitset<24>(this->model->getCurrentPlayer().data).count() == 3){
                 this->model->jumpPiece(1<<from, 1<<to);
             }else{
                 this->model-> movePiece(1<<from,1<< to);
             }
             break;
     }
-    // }catch(std::runtime_error e){
-    //     this->model->showState();
-    //     std::cout << from <<" : " << e.what() << "\n";
-    // }catch(std::exception e){
-    //     std::cout << e.what() << "\n";
-    // }
+    }catch(std::runtime_error e){
+        this->model->showState();
+        std::cout << from <<" : " << e.what() << "\n";
+    }catch(std::exception e){
+        std::cout << e.what() << "\n";
+    }
 }
