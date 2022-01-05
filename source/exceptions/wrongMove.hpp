@@ -6,8 +6,8 @@
 class WrongMove: virtual public std::exception {
     protected:
 
-    std::string move;              
     std::string error_message;      ///< Error message
+    std::string move;              
     
 public:
 

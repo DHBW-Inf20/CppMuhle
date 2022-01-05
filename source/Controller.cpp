@@ -85,12 +85,13 @@ void Controller::run()
             case ENDSCREEN:
                 this->model->initialize();
                 this->action = MENU;
+                break;
             case MENU:
                 try{
                     command = stoi(to);
-                }catch(std::invalid_argument){
+                }catch(std::invalid_argument &e){
                     command = -1;
-                    std::cout << "Invalid input\n";
+                    std::cout << "Invalid Input: " << to << "\n" ;
                 }
                 switch(command){
                     case 1:
@@ -109,7 +110,7 @@ void Controller::run()
                 try{
                     command = this->lookupTable.at(from);
                     secondCommand = this->lookupTable.at(to);
-                }catch(std::out_of_range){
+                }catch(std::out_of_range&){
                     std::cout << "Invalid Coordinate\n";
                 }
                 this->interpretCommand(command, secondCommand);
@@ -143,11 +144,16 @@ void Controller::interpretCommand(int from, int to)
                 this->model-> movePiece(1<<from,1<< to);
             }
             break;
+        case ENDED:
+        case INITIALIZED:
+        default:
+            break;
     }
-    }catch(WrongMove e){
+    }catch(WrongMove &e){
         this->model->showState();
         std::cout  << e.what() << " (" << e.getMove() << ")\n";
-    }catch(std::exception e){
+    }catch(std::exception &e){
+        this->model->showState();
         std::cout << e.what() << "\n";
     }
 }
@@ -157,12 +163,16 @@ void Controller::runTestSequence(){
     int command;
     for(auto to: inputs){
         switch(this->action){
+             case ENDSCREEN:
+                this->model->initialize();
+                this->action = MENU;
+                break;
             case MENU:
                 try{
                     command = stoi(to);
-                }catch(std::invalid_argument){
+                }catch(std::invalid_argument&){
                     command = -1;
-                    std::cout << "Invalid input\n";
+                    std::cout << "Invalid input: " << to << "\n";
                 }
                 switch(command){
                     case 1:
