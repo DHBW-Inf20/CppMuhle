@@ -7,6 +7,6 @@
 
 int main()
 {
-    std::cout << (1<<1) << std::endl;
-    
+   // Print the word Congrats as ascii art
+
 }
