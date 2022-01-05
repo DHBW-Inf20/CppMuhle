@@ -3,43 +3,42 @@
 
 #include <exception>
 #include <string>
-class WrongMove: virtual public std::exception {
-    protected:
+class WrongMove : virtual public std::exception
+{
+protected:
+    std::string error_message; ///< Error message
+    std::string move;
 
-    std::string error_message;      ///< Error message
-    std::string move;              
-    
 public:
-
     /** Constructor (C++ STL string, C++ STL).
      *  @param msg The error message
      *  @param err_num Error number
      *  @param err_off Error offset
      */
-    explicit 
-    WrongMove(const std::string& msg, const std::string& move):
-        error_message(msg),
-        move(move)
-        {}
+    explicit WrongMove(const std::string &msg, const std::string &move) : error_message(msg),
+                                                                          move(move)
+    {
+    }
 
     /** Destructor.
      *  Virtual to allow for subclassing.
      */
-    virtual ~WrongMove() throw () {}
+    virtual ~WrongMove() throw() {}
 
     /** Returns a pointer to the (constant) error description.
      *  @return A pointer to a const char*. The underlying memory
      *  is in possession of the Except object. Callers must
      *  not attempt to free the memory.
      */
-    virtual const char* what() const throw () {
-       return error_message.c_str();
-    }
-    
-    virtual const char* getMove() const throw () {
-       return move.c_str();
+    virtual const char *what() const throw()
+    {
+        return error_message.c_str();
     }
 
+    virtual const char *getMove() const throw()
+    {
+        return move.c_str();
+    }
 };
 
 #endif
