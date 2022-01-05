@@ -2,6 +2,7 @@
 #include "KonsolenView.hpp"
 #include "helperTypes.hpp"
 #include "utility.hpp"
+#include "exceptions/WrongMove.hpp"
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -51,7 +52,7 @@ void MuhleLogik::placePiece(int position)
 {
     if (isOccupied(position, this->black.data | this->white.data))
     {
-        throw std::runtime_error("Position is already occupied");
+        throw WrongMove("Dieses Feld ist schon belegt!", this->lookupTable[std::log2(position)]);
     }
     else
     {
@@ -89,35 +90,32 @@ bool MuhleLogik::checkIfValid(int from, int to)
     {
         return false;
     }
-    std::cout << "Start Position is occupied by current player\n";
     // Check if end position is not occupied by a player
     if (isOccupied(to, getCurrentPlayer().data | getOpposingPlayer().data))
     {
         return false;
     }
-    std::cout << "End Position is not occupied a player\n";
 
     return true;
 }
 
 void MuhleLogik::movePiece(int from, int to)
 {
-    std::cout << "Entered Move Piece\n";
     if (!checkIfLegalMove(from, to))
     {
-        throw std::runtime_error("Not a legal move");
+        std::string move = this->lookupTable[std::log2(from)] + " -> " + this->lookupTable[std::log2(to)];    
+        throw WrongMove("Du darfst diesen Zug nicht machen!",move);
     }
-    std::cout << "Is Valid Move\n";
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jumpPiece übernommen werden.
     jumpPiece(from, to);
 }
 
 void MuhleLogik::jumpPiece(int from, int to)
 {
-    std::cout << "Entered jumpPiece\n";
     if ( !checkIfValid(from, to))
     {
-        throw std::runtime_error("Not a valid move");
+        std::string move = this->lookupTable[std::log2(from)] + " -> " + this->lookupTable[std::log2(to)];    
+        throw WrongMove("Du kannst diesen Zug nicht machen!",move);
     }
 
     getCurrentPlayer().data ^= from; // Remove piece from start position
@@ -136,7 +134,6 @@ void MuhleLogik::jumpPiece(int from, int to)
 
 bool MuhleLogik::checkIfLegalMove(int from, int to)
 {
-    std::cout << "Entered checkIfLegalMove\n";
     // TODO: Spielzug prüfen
     // Funktion geht davon aus, das der Zug valide ist (checkIfValid)
     /*
@@ -157,7 +154,6 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
 
     */
     std::string notation = lookupTable[std::log2(from)] + lookupTable[std::log2(to)];
-    std::cout << "Notation: " << notation << "\n";
     int x = xDir[notation.substr(1, 1)];                               // Multiplikator für x-Achse
     int y = yDir[notation.substr(0, 1)];                               // Multiplikator für y-Achse
     std::vector<std::string> ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
@@ -186,13 +182,45 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
     return false;
 }
 
+bool MuhleLogik::checkIf3(int lastMovedPiece, int24& player)
+{
+    if(std::bitset<24>(player.data).count() < 3)
+    {
+        return false;
+    }
+    // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
+    std::vector<int> threeList = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
+    std::vector<int> matching3 = {};
+    // Alle 3er Reihen suchen und in matching3 speichern
+    for(auto i : threeList)
+    {
+        if (std::bitset<24>(i & player.data).count() == 3)
+        {
+            matching3.push_back(i);
+        }
+    }
+
+    // Falls der letzte Bewegte Spielstein in einer dieser 3er Reihen ist, true zurückgeben
+    for(auto i : matching3)
+    {
+        if (i & lastMovedPiece) // Wenn die Bits an einer stelle übereinstimmen kommt irgendwas != 0 raus
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool MuhleLogik::checkIf3(int lastMovedPiece)
 {
+    if(std::bitset<24>(this->getCurrentPlayer().data).count() < 3)
+    {
+        return false;
+    }
     // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
     std::vector<int> threeList = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
     std::vector<int> matching3 = {};
     std::string playerString= this->isWhiteTurn ? "white" : "black";
-    std::cout << "Entered checkIf3 to look for 3 in a row by player:"<< playerString << "\n";
     // Alle 3er Reihen suchen und in matching3 speichern
     for(auto i : threeList)
     {
@@ -216,17 +244,20 @@ bool MuhleLogik::checkIf3(int lastMovedPiece)
 
 void MuhleLogik::attack(int position)
 {
-    if((this->isWhiteTurn = !this->isWhiteTurn) && !checkIf3(position) && (this->isWhiteTurn = !this->isWhiteTurn)) // Wenn der Gegner eine 3er Reihe hat, deshalb den Spieler wechseln.
+    if(checkIf3(position, getOpposingPlayer())) 
     {
-        throw std::runtime_error("Can't attack a 3 in a row");
+        std::string move = this->lookupTable[std::log2(position)];    
+        throw WrongMove("Du darfst eine Mühle nicht schlagen!",move);
     }
+    std::cout << isWhiteTurn << std::endl;
     if (isOccupied(position, getOpposingPlayer().data))
     {
         getOpposingPlayer().data &= ~position;
     }
     else
     {
-        throw std::runtime_error("No piece to attack");
+        std::string move = this->lookupTable[std::log2(position)];    
+        throw WrongMove("Dieses Feld ist leer!",move);
     }
     this->attackMode = false;
     if(this->status == MOVING &&  std::bitset<24>(getOpposingPlayer().data).count() == 2)
@@ -247,9 +278,6 @@ bool MuhleLogik::isOccupied(int position, int player)
 {
     if (player & position)
     {
-        std::cout << "Position: " << std::bitset<24>(position) << std::endl;
-        std::cout << "Player:   " << std::bitset<24>(player) << std::endl;
-        std::cout << "And:      " << std::bitset<24>(position & player) << std::endl;
         return true;
     }
     return false;
