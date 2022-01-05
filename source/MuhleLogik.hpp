@@ -59,7 +59,7 @@ private:
     int black_pieces;
     std::map<std::string, int> x_dir;
     std::map<std::string, int> y_dir;
-    std::vector<std::string> lookup_table;
+    std::vector<std::string> c_lookup_table;
     int24 position_to_bit24(int position);
     std::string bit24_to_coordinate(int position);
     std::string position_to_coordinate(int position);

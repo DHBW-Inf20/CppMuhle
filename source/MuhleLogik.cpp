@@ -32,7 +32,7 @@ muhle_logik::muhle_logik(i_view *view)
         {"e", 1},
         {"d", 1},
     };
-    this->lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
+    this->c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
 }
 
 void muhle_logik::initialize()
@@ -51,7 +51,7 @@ void muhle_logik::place_piece(int position)
 {
     if (is_occupied(position, this->black.data | this->white.data))
     {
-        throw wrong_move("Dieses Feld ist schon belegt!", this->lookup_table[std::log2(position)]);
+        throw wrong_move("Dieses Feld ist schon belegt!", this->c_lookup_table[std::log2(position)]);
     }
     else
     {
@@ -102,7 +102,7 @@ void muhle_logik::move_piece(int from, int to)
 {
     if (!check_if_legal_move(from, to))
     {
-        std::string move = this->lookup_table[std::log2(from)] + " -> " + this->lookup_table[std::log2(to)];    
+        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];    
         throw wrong_move("Du darfst diesen Zug nicht machen!",move);
     }
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jump_piece übernommen werden.
@@ -113,7 +113,7 @@ void muhle_logik::jump_piece(int from, int to)
 {
     if ( !check_if_valid(from, to))
     {
-        std::string move = this->lookup_table[std::log2(from)] + " -> " + this->lookup_table[std::log2(to)];    
+        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];    
         throw wrong_move("Du kannst diesen Zug nicht machen!",move);
     }
 
@@ -162,7 +162,7 @@ bool muhle_logik::check_if_legal_move(int from, int to)
                 a4,d1 -> d1 ist dabei, also ist der Zug legal.
 
     */
-    std::string notation = lookup_table[std::log2(from)] + lookup_table[std::log2(to)];
+    std::string notation = c_lookup_table[std::log2(from)] + c_lookup_table[std::log2(to)];
     int x = x_dir[notation.substr(1, 1)];                               // Multiplikator für x-Achse
     int y = y_dir[notation.substr(0, 1)];                               // Multiplikator für y-Achse
     std::vector<std::string> ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
@@ -254,7 +254,7 @@ void muhle_logik::attack(int position)
 {
     if(check_if_3(position, get_opposing_player())) 
     {
-        std::string move = this->lookup_table[std::log2(position)];    
+        std::string move = this->c_lookup_table[std::log2(position)];    
         throw wrong_move("Du darfst eine Mühle nicht schlagen!",move);
     }
     std::cout << is_white_turn << std::endl;
@@ -264,7 +264,7 @@ void muhle_logik::attack(int position)
     }
     else
     {
-        std::string move = this->lookup_table[std::log2(position)];    
+        std::string move = this->c_lookup_table[std::log2(position)];    
         throw wrong_move("Dieses Feld ist leer!",move);
     }
     this->attack_mode = false;
@@ -300,12 +300,12 @@ int24 muhle_logik::position_to_bit24(int position)
 
 std::string muhle_logik::position_to_coordinate(int position)
 {
-    return lookup_table[position];
+    return c_lookup_table[position];
 }
 
 std::string muhle_logik::bit24_to_coordinate(int bit24)
 {
-    return lookup_table[std::log2(bit24)];
+    return c_lookup_table[std::log2(bit24)];
 }
 
 void muhle_logik::show_state()

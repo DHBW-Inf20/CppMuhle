@@ -113,8 +113,8 @@ void controller::run()
         case ACTION::GAME:
             try
             {
-                command = this->lookup_table.at(from);
-                second_command = this->lookup_table.at(to);
+                command = this->c_lookup_table.at(from);
+                second_command = this->c_lookup_table.at(to);
             }
             catch (std::out_of_range &)
             {
@@ -210,7 +210,7 @@ void controller::run_test_sequence()
             }
             break;
         case ACTION::GAME:
-            command = this->lookup_table.at(to);
+            command = this->c_lookup_table.at(to);
             this->interpret_command(0, command);
             break;
         }
