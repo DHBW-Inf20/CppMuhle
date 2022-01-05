@@ -2,7 +2,7 @@
 #define IVIEW_HPP_GUARD
 #include "helperTypes.hpp"
 #include <string>
-class i_view
+class iview
 {
 public:
     virtual void initialize() = 0;

@@ -21,7 +21,7 @@ controller::controller()
 {
     konsolen_view *view = new konsolen_view();
     this->model = new muhle_logik(view);
-    this->action = ACTION::MENU;
+    this->action = action::MENU;
 }
 
 /*
@@ -41,18 +41,18 @@ bool controller::ask_for_input(std::string &from, std::string &to)
 
     switch (this->model->get_status())
     {
-    case GAMESTATUS::ENDED:
-    case GAMESTATUS::INITIALIZED:
+    case game_status::ENDED:
+    case game_status::INITIALIZED:
         std::cout << "> ";
         std::cin >> to;
         from = to;
         break;
-    case GAMESTATUS::PLACING:
+    case game_status::PLACING:
         std::cout << CUR_RIGHT(5) << "Place: __" << CUR_LEFT(2);
         std::cin >> to;
         from = to;
         break;
-    case GAMESTATUS::MOVING:
+    case game_status::MOVING:
         std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
         std::cin >> from;
         std::cout << CUR_UP(1) << CUR_COL(35);
@@ -82,11 +82,11 @@ void controller::run()
         }
         switch (this->action)
         {
-        case ACTION::ENDSCREEN:
+        case action::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case ACTION::MENU:
+        case action::MENU:
             try
             {
                 command = stoi(to);
@@ -99,7 +99,7 @@ void controller::run()
             switch (command)
             {
             case 1:
-                this->action = ACTION::GAME;
+                this->action = action::GAME;
                 this->model->start_game();
                 break;
             case 3:
@@ -110,7 +110,7 @@ void controller::run()
                 break;
             }
             break;
-        case ACTION::GAME:
+        case action::GAME:
             try
             {
                 command = this->c_lookup_table.at(from);
@@ -137,13 +137,13 @@ void controller::interpret_command(int from, int to)
             this->model->attack(1 << to);
             if (this->model->get_status() == ENDED)
             {
-                this->action = ACTION::ENDSCREEN;
+                this->action = action::ENDSCREEN;
             }
             return;
         }
         switch (this->model->get_status())
         {
-        case GAMESTATUS::PLACING:
+        case game_status::PLACING:
             this->model->place_piece(1 << to);
             break;
         case MOVING:
@@ -156,8 +156,8 @@ void controller::interpret_command(int from, int to)
                 this->model->move_piece(1 << from, 1 << to);
             }
             break;
-        case GAMESTATUS::ENDED:
-        case GAMESTATUS::INITIALIZED:
+        case game_status::ENDED:
+        case game_status::INITIALIZED:
         default:
             break;
         }
@@ -182,11 +182,11 @@ void controller::run_test_sequence()
     {
         switch (this->action)
         {
-        case ACTION::ENDSCREEN:
+        case action::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case ACTION::MENU:
+        case action::MENU:
             try
             {
                 command = stoi(to);
@@ -209,7 +209,7 @@ void controller::run_test_sequence()
                 break;
             }
             break;
-        case ACTION::GAME:
+        case action::GAME:
             command = this->c_lookup_table.at(to);
             this->interpret_command(0, command);
             break;

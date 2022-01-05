@@ -3,7 +3,7 @@
 #include "IView.hpp"
 #include <string>
 
-class konsolen_view: public i_view
+class konsolen_view: public iview
 {
 private:
     std::string print_field[24];

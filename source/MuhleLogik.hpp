@@ -7,7 +7,7 @@
 #include "helperTypes.hpp"
 #include "IView.hpp"
 
-enum GAMESTATUS {
+enum game_status {
     INITIALIZED,
     PLACING,
     MOVING,
@@ -17,7 +17,7 @@ class muhle_logik
 {
 public:
     // (De-)Constructor
-    muhle_logik(i_view* view);
+    muhle_logik(iview* view);
     ~muhle_logik();
 
     // Interface-Functions
@@ -30,7 +30,7 @@ public:
     void attack(int position);
 
     // getter
-    GAMESTATUS get_status();
+    game_status get_status();
     bool get_attack_mode();
     int24& get_black();
     int24& get_white();
@@ -39,7 +39,7 @@ public:
 
     // setter
     void set_attack_mode(bool attack_mode);
-    void set_status(GAMESTATUS status);
+    void set_status(game_status status);
 
 private:
     void end_game();
@@ -49,8 +49,8 @@ private:
     bool check_if_3(int lastMovedPiece);
     bool check_if_3(int lastMovedPiece, int24& player);
     bool check_if_only_3(int24 &player);
-    i_view* view;
-    GAMESTATUS status; 
+    iview* view;
+    game_status status; 
     bool is_white_turn;
     bool attack_mode;
     int24 black;

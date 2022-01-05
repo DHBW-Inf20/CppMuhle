@@ -11,7 +11,7 @@
 #include <vector>
 #include <cmath>
 
-muhle_logik::muhle_logik(i_view *view)
+muhle_logik::muhle_logik(iview *view)
 {
     this->view = view;
     this->x_dir = {
@@ -326,7 +326,7 @@ int24 &muhle_logik::get_white()
 {
     return this->white;
 }
-GAMESTATUS muhle_logik::get_status()
+game_status muhle_logik::get_status()
 {
     return this->status;
 }
@@ -335,7 +335,7 @@ void muhle_logik::set_attack_mode(bool attack_mode)
 {
     this->attack_mode = attack_mode;
 }
-void muhle_logik::set_status(GAMESTATUS status)
+void muhle_logik::set_status(game_status status)
 {
     this->status = status;
 }
