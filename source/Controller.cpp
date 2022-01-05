@@ -5,6 +5,7 @@
 #include "MuhleLogik.hpp"
 #include "exceptions/wrongMove.hpp"
 #include <bitset>
+#include <algorithm>
 
 #define CLEAR_SCREEN "\033[2J\33[H"
 #define CUR_UP(x) "\033[" << x << "A"
@@ -71,9 +72,12 @@ void Controller::run()
     bool exit = false; // To quit the loop safely 
     int command;
     int secondCommand;
-    // runTestSequence();
+    runTestSequence();
     while (std::cin.good() && askForInput(from,to) && !exit)
     {   
+    std::transform(from.begin(), from.end(), from.begin(), ::tolower);
+    std::transform(to.begin(), to.end(), to.begin(), ::tolower);
+
         if(from.compare("exit") == 0 || to.compare("exit") == 0){
             break;
         }
