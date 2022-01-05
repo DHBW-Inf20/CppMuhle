@@ -35,7 +35,7 @@ bool Controller::askForInput(std::string &from, std::string &to)
     // std::cout << CLEAR_SCREEN;
 
     if(this->model->getAttackMode()){
-        std::cout << "Attack: __" << CUR_LEFT(2);
+        std::cout << CUR_RIGHT(5) << "Attack: __" << CUR_LEFT(2);
         std::cin >> to;
         from = to;
         return std::cin.good();
@@ -49,14 +49,14 @@ bool Controller::askForInput(std::string &from, std::string &to)
             from = to;
             break;
         case PLACING:
-            std::cout << "Place: __" << CUR_LEFT(2);
+            std::cout << CUR_RIGHT(5) << "Place: __" << CUR_LEFT(2);
             std::cin >> to;
             from = to;
             break;
         case MOVING:
-            std::cout << "From: __" << CUR_COL(46) << "To: __" << CUR_COL(7);
+            std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
             std::cin >> from;
-            std::cout << CUR_UP(1) << CUR_COL(50);
+            std::cout << CUR_UP(1) << CUR_COL(35);
             std::cin >> to;
             break;
     }
