@@ -18,6 +18,7 @@ private:
     bool askForInput(std::string& to, std::string& from);
     void interpretCommand(int from, int to);
 public:
+    void runTestSequence();
     Controller();
     void dispose();
     void run();

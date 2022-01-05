@@ -71,6 +71,7 @@ void Controller::run()
     bool exit = false; // To quit the loop safely 
     int command;
     int secondCommand;
+    runTestSequence();
     while (std::cin.good() && askForInput(from,to) && !exit)
     {   
         if(from.compare("exit") == 0 || to.compare("exit") == 0){
@@ -138,5 +139,38 @@ void Controller::interpretCommand(int from, int to)
         std::cout << from <<" : " << e.what() << "\n";
     }catch(std::exception e){
         std::cout << e.what() << "\n";
+    }
+}
+
+void Controller::runTestSequence(){
+    std::vector<std::string> inputs = {"1","a1","d1","g1","b2","d2","f2","a4","b4","c4","c3","d3","e3","f4","e4","g4","a7","f6","g7"};
+    int command;
+    for(auto to: inputs){
+        switch(this->action){
+            case MENU:
+                try{
+                    command = stoi(to);
+                }catch(std::invalid_argument){
+                    command = -1;
+                    std::cout << "Invalid input\n";
+                }
+                switch(command){
+                    case 1:
+                        this->action = GAME;
+                        this->model-> startGame();
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        std::cout << "Invalid input\n";
+                        break;
+                }
+                break;
+            case GAME:
+                command = this->lookupTable.at(to);
+                this->interpretCommand(0, command);
+                break;
+
+        }
     }
 }

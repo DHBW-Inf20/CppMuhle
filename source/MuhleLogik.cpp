@@ -188,6 +188,7 @@ bool MuhleLogik::checkIfLegalMove(int from, int to)
 
 bool MuhleLogik::checkIf3(int lastMovedPiece)
 {
+    return false;
     // TODO: Prüfen ob 3 Steine in einer Reihe sind
     /*  Triviale Lösung: Jedes Belegte feld ansehen und nach 3 in einer Reihe suchen (3 mit der selben Zahl), oder 3 in einer Spalte (3 mit gleichem Buchstaben). Einzige Ausnahme: Zahl 4 und Buchstabe d, hier muss nocheinmal verglichen werden.
      */
