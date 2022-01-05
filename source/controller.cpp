@@ -84,7 +84,7 @@ void controller::run()
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
         std::transform(to.begin(), to.end(), to.begin(), ::tolower);
 
-        if (from.compare("exitFlag") == 0 || to.compare("exitFlag") == 0)
+        if (from.compare("exit") == 0 || to.compare("exit") == 0)
         {
             break;
         }
