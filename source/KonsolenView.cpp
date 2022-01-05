@@ -49,7 +49,7 @@ std::string getField (int24 white, int24 black, int position, bool rightField){
 }
 
 void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whitePieces, int blackPieces){
-    // std::cout << CLEAR_SCREEN;
+    std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     
     std::string weiss = "⚪";
