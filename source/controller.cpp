@@ -27,7 +27,7 @@ controller::controller()
 /*
     Asks for input, dependnig on the current status of the Game.
 */
-bool controller::ask_for_input(std::string &from, std::string &to)
+bool controller::ask_for_input(std::string &from, std::string &to) const
 {
     // std::cout << CLEAR_SCREEN;
 
