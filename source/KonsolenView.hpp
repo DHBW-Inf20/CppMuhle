@@ -7,7 +7,7 @@ public:
     virtual void initialize();
     virtual void showBoard(int24 white, int24 black,bool isWhiteMove, int whitePieces, int blackPieces);
     virtual void showStartMenu();
-    virtual void showEndScreen(std::string message);
+    virtual void showEndScreen(bool whiteWins);
 };
 
 #endif

@@ -119,12 +119,6 @@ void MuhleLogik::jumpPiece(int from, int to)
     {
         throw std::runtime_error("Not a valid move");
     }
-    std::cout << "Is Valid Move\n";
-    std::cout << "data: " << std::bitset<24>(getCurrentPlayer().data) << std::endl;
-    std::cout << "From:   " << std::bitset<24>(from) << std::endl;
-    std::cout << "To:      " << std::bitset<24>(to) << std::endl;
-    std::cout << "XOR data, from:   " << std::bitset<24>(getCurrentPlayer().data ^ from) << std::endl;
-    std::cout << "OR data, to" << std::bitset<24>(getCurrentPlayer().data |to) << std::endl;
 
     getCurrentPlayer().data ^= from; // Remove piece from start position
     getCurrentPlayer().data |= to;   // Add piece to end position
@@ -197,7 +191,8 @@ bool MuhleLogik::checkIf3(int lastMovedPiece)
     // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
     std::vector<int> threeList = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
     std::vector<int> matching3 = {};
-
+    std::string playerString= this->isWhiteTurn ? "white" : "black";
+    std::cout << "Entered checkIf3 to look for 3 in a row by player:"<< playerString << "\n";
     // Alle 3er Reihen suchen und in matching3 speichern
     for(auto i : threeList)
     {
@@ -221,8 +216,10 @@ bool MuhleLogik::checkIf3(int lastMovedPiece)
 
 void MuhleLogik::attack(int position)
 {
-    std::cout << std::bitset<24>(getOpposingPlayer().data) << "\n";
-    std::cout << std::bitset<24>(~position) << "\n";
+    if((this->isWhiteTurn = !this->isWhiteTurn) && !checkIf3(position) && (this->isWhiteTurn = !this->isWhiteTurn)) // Wenn der Gegner eine 3er Reihe hat, deshalb den Spieler wechseln.
+    {
+        throw std::runtime_error("Can't attack a 3 in a row");
+    }
     if (isOccupied(position, getOpposingPlayer().data))
     {
         getOpposingPlayer().data &= ~position;
@@ -231,10 +228,21 @@ void MuhleLogik::attack(int position)
     {
         throw std::runtime_error("No piece to attack");
     }
-    this->isWhiteTurn = !this->isWhiteTurn;
     this->attackMode = false;
+    if(this->status == MOVING &&  std::bitset<24>(getOpposingPlayer().data).count() == 2)
+    {
+        endGame();
+    }else{
+   this->isWhiteTurn = !this->isWhiteTurn;
     showState();
+    }
 }
+
+void MuhleLogik::endGame(){
+    this->status = ENDED;
+    this->view->showEndScreen(this->isWhiteTurn);
+}
+
 bool MuhleLogik::isOccupied(int position, int player)
 {
     if (player & position)

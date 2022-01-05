@@ -40,6 +40,7 @@ bool Controller::askForInput(std::string &from, std::string &to)
     }
 
     switch(this->model->getStatus()){
+        case ENDED:
         case INITIALIZED:
             std::cout << "> ";
             std::cin >> to;
@@ -76,6 +77,9 @@ void Controller::run()
             break;
         }
         switch(this->action){
+            case ENDSCREEN:
+                this->model->initialize();
+                this->action = MENU;
             case MENU:
                 try{
                     command = stoi(to);
@@ -108,7 +112,7 @@ void Controller::run()
 
         }
     }
-    std::cout << CLEAR_SCREEN;
+    // std::cout << CLEAR_SCREEN;
 }
 
 
@@ -118,6 +122,9 @@ void Controller::interpretCommand(int from, int to)
 
     if(this->model->getAttackMode()){
         this->model->attack(1<<to);
+        if(this->model->getStatus() == ENDED){
+            this->action = ENDSCREEN;
+        }
         return;
     }
     switch(this->model->getStatus()){
@@ -141,7 +148,7 @@ void Controller::interpretCommand(int from, int to)
 }
 
 void Controller::runTestSequence(){
-    std::vector<std::string> inputs = {"1","a1","d1","g1","b2","d2","f2","a4","b4","c4","c3","d3","e3","f4","e4","g4","a7","f6","g7"};
+    std::vector<std::string> inputs = {"1","a1","a4","d1","a7","g4","d7","g1","a4","g7","g1","g1","g7","g7","g1","g1","g7","g7","g1","g1","g7","g7","g1","g1","g7","g7"};
     int command;
     for(auto to: inputs){
         switch(this->action){
