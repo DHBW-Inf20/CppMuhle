@@ -1,0 +1,36 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-on-ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # install dependencies
+    # - name: boost
+    #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
+    - name: build
+      run: make
+  build-on-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    # install dependencies
+    # - name: boost
+    #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
+    - name: build
+      run: make
+  build-on-macOS:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    # install dependencies
+    # - name: boost
+    #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
+    - name: build
+      run: make

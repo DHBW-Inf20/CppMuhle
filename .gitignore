@@ -1,8 +1,4 @@
 libs/
-out/
-build/
-.vscode/
-
 # Prerequisites
 *.d
 
