@@ -52,9 +52,16 @@ void muhle_logik::place_piece(int position)
             this->status = MOVING; // Gehe in nächste Phase über
         }
     }
-    if (check_if_3(position) && !check_if_only_3(get_opposing_player()))
+    if (check_if_3(position))
     {
-        this->attack_mode = true;
+          if(!check_if_only_3(get_opposing_player())){
+            // Wenn der gegner nur noch eine Mühle besizt, dann hat der momentane Spieler trotzdem gewonnen
+            if(std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING){
+                end_game();
+            }else{
+                attack_mode = true;
+            }
+        }
     }
     else
     {
@@ -101,9 +108,15 @@ void muhle_logik::jump_piece(int from, int to)
     get_current_player().data ^= from; // Remove piece from start position
     get_current_player().data |= to;   // Add piece to end position
     // Check if this move created a 3 in a row
-    if (check_if_3(to) && !check_if_only_3(get_opposing_player()))
+    if (check_if_3(to))
     {
-        attack_mode = true;
+        if(!check_if_only_3(get_opposing_player())){
+            if(std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING){
+                end_game();
+            }else{
+                attack_mode = true;
+            }
+        }
     }
     else
     {
@@ -112,17 +125,17 @@ void muhle_logik::jump_piece(int from, int to)
     show_state();
 }
 
-bool muhle_logik::check_if_only_3(int24 &player) 
+bool muhle_logik::check_if_only_3(int24 &player)
 {
     for (int i = 0; i < 24; i++)
     {
         int check_int = player.data & (1 << i);
-        if (check_int && check_if_3(check_int))
+        if (check_int && !check_if_3(check_int, player))
         {
-            return true;
+            return false;
         }
     }
-    return false;
+    return true;
 }
 
 bool muhle_logik::check_if_legal_move(int from, int to) const
@@ -146,18 +159,22 @@ bool muhle_logik::check_if_legal_move(int from, int to) const
                 a4,d1 -> d1 ist dabei, also ist der Zug legal.
 
     */
-    std::string notation = c_lookup_table[std::log2(from)] + c_lookup_table[std::log2(to)];
+   // Verwandelt die Zahl wieder in Koordinaten um (War anfangs ein anderes System)
+    std::string notation = c_lookup_table.at(std::log2(from)) + c_lookup_table.at(std::log2(to));
+
     int x = c_x_dir.at(notation.substr(1, 1));                         // Multiplikator für x-Achse
     int y = c_y_dir.at(notation.substr(0, 1));                         // Multiplikator für y-Achse
-    std::vector<std::string> ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
-    int a_bis_g_index = std::find(ag.begin(), ag.end(), notation.substr(0, 1)) - ag.begin();
-    int zahlen_anteil = std::stoi(notation.substr(1, 1));
-    for (int i = -1; i <= 1; i += 2)
+    const std::vector<std::string> c_ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
+
+    int a_bis_g_index = std::find(c_ag.begin(), c_ag.end(), notation.substr(0, 1)) - c_ag.begin(); // Index aus dem c_ag Array 
+    int zahlen_anteil = std::stoi(notation.substr(1, 1)); // Zahl aus dem String
+
+    for (int i = -1; i <= 1; i += 2) // Sequenz für -1,1 um in jede Richtung einmal zu laufen
     {
         // x-dirs
         if (!(a_bis_g_index + i * x < 0 || a_bis_g_index + i * x > 6))
         {
-            std::string cord = ag.at(a_bis_g_index + i * x) + notation.substr(1, 1);
+            std::string cord = c_ag.at(a_bis_g_index + i * x) + notation.substr(1, 1);
             if (notation.substr(2, 2) == cord)
             {
                 return true;
@@ -268,7 +285,7 @@ void muhle_logik::end_game()
     this->view->show_end_screen(this->is_white_turn);
 }
 
-bool muhle_logik::is_occupied(int position, int player)const
+bool muhle_logik::is_occupied(int position, int player) const
 {
     if (player & position)
     {
@@ -277,19 +294,19 @@ bool muhle_logik::is_occupied(int position, int player)const
     return false;
 }
 
-int24 muhle_logik::position_to_bit24(int position)const
+int24 muhle_logik::position_to_bit24(int position) const
 {
     int24 bit24;
     bit24.data = 1 << position;
     return bit24;
 }
 
-std::string muhle_logik::position_to_coordinate(int position)const
+std::string muhle_logik::position_to_coordinate(int position) const
 {
     return c_lookup_table[position];
 }
 
-std::string muhle_logik::bit24_to_coordinate(int bit24)const
+std::string muhle_logik::bit24_to_coordinate(int bit24) const
 {
     return c_lookup_table[std::log2(bit24)];
 }
@@ -299,7 +316,7 @@ void muhle_logik::show_state()
     this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces);
 }
 
-bool muhle_logik::get_attack_mode()const
+bool muhle_logik::get_attack_mode() const
 {
     return this->attack_mode;
 }
@@ -312,7 +329,7 @@ int24 &muhle_logik::get_white()
 {
     return this->white;
 }
-game_status muhle_logik::get_status()const
+game_status muhle_logik::get_status() const
 {
     return this->status;
 }

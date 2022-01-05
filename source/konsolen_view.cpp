@@ -8,7 +8,8 @@
 #include <windows.h>
 #endif
 
-#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN "\033[2J\33[H"
+#define CLEAR_SCREEN ""
 #define SIDEBAR_MARGIN " "
 #define PIECEMARGIN " "
 #define MUHLE_PIECE_WHITE "⚪"

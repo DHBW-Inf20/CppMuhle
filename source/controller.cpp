@@ -7,7 +7,8 @@
 #include <bitset>
 #include <algorithm>
 
-#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN "\033[2J\33[H"
+#define CLEAR_SCREEN ""
 #define CUR_UP(x) "\033[" << x << "A"
 #define CUR_RIGHT(x) "\033[" << x << "C"
 #define CUR_LEFT(x) "\033[" << x << "D"
@@ -70,7 +71,7 @@ void controller::run()
     bool exit = false; // To quit the loop safely
     int command;
     int second_command;
-    // run_test_sequence();
+    run_test_sequence();
     while (std::cin.good() && ask_for_input(from, to) && !exit)
     {
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
@@ -157,7 +158,7 @@ void controller::interpret_command(int from, int to)
             }
             break;
         case game_status::ENDED:
-        case game_statWus::INITIALIZED:
+        case game_status::INITIALIZED:
         default:
             break;
         }
@@ -176,7 +177,7 @@ void controller::interpret_command(int from, int to)
 
 void controller::run_test_sequence()
 {
-    std::vector<std::string> inputs = {"1", "a1", "d1", "g1", "b2", "d2", "f2", "a4", "b4", "c4", "c3", "d3", "e3", "f4", "e4", "g4", "a7", "f6", "g7"};
+    std::vector<std::string> inputs = {"1","a1","a7","d1","d7","a4","g7","a4","a4","g4","c4","g1","d1","b4"};
     int command;
     for (auto to : inputs)
     {
@@ -217,7 +218,7 @@ void controller::run_test_sequence()
     }
 }
 
-~controller()
+controller::~controller()
 {
     delete this->model;
 }

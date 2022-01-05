@@ -23,6 +23,7 @@ public:
     void run_test_sequence();
     controller();
     void run();
+    ~controller();
 };
 
 #endif
