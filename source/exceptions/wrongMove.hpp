@@ -3,7 +3,7 @@
 
 #include <exception>
 #include <string>
-class WrongMove : virtual public std::exception
+class wrong_move : virtual public std::exception
 {
 protected:
     std::string error_message; ///< Error message
@@ -15,7 +15,7 @@ public:
      *  @param err_num Error number
      *  @param err_off Error offset
      */
-    explicit WrongMove(const std::string &msg, const std::string &move) : error_message(msg),
+    explicit wrong_move(const std::string &msg, const std::string &move) : error_message(msg),
                                                                           move(move)
     {
     }
@@ -23,7 +23,7 @@ public:
     /** Destructor.
      *  Virtual to allow for subclassing.
      */
-    virtual ~WrongMove() throw() {}
+    virtual ~wrong_move() throw() {}
 
     /** Returns a pointer to the (constant) error description.
      *  @return A pointer to a const char*. The underlying memory
@@ -35,7 +35,7 @@ public:
         return error_message.c_str();
     }
 
-    virtual const char *getMove() const throw()
+    virtual const char *get_move() const throw()
     {
         return move.c_str();
     }

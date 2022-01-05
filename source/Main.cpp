@@ -1,12 +1,8 @@
 #include <iostream>
 #include "Controller.hpp"
 
-
-
-
 int main()
 {
-    Controller controller;
+    controller controller;
     controller.run();
-    // controller.test();
 }

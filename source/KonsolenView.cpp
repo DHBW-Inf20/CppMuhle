@@ -17,15 +17,15 @@
 #define MUHLE_PIECE_EMPTY_RIGHT "+ "
 
 
-void KonsolenView::initialize(){
+void konsolen_view::initialize(){
     // Bei Windows, den Terminal Output auf UTF-8 setzen
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     #endif
-    showStartMenu();
+    show_start_menu();
 }
 
-void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whitePieces, int blackPieces){
+void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int white_pieces, int black_pieces){
     std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
     
@@ -36,53 +36,53 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whi
         blackIndex = (black.data >> i) & 0b1;
 
         if (whiteIndex == 1 && blackIndex == 0){
-            printField[i] = MUHLE_PIECE_WHITE;
+            print_field[i] = MUHLE_PIECE_WHITE;
         }
         else if (blackIndex == 1 && whiteIndex == 0){
-            printField[i] = MUHLE_PIECE_BLACK;
+            print_field[i] = MUHLE_PIECE_BLACK;
         }
         else if (whiteIndex == 0 && blackIndex == 0 && (i+1)%3 == 0){
-            printField[i] =  MUHLE_PIECE_EMPTY_RIGHT;
+            print_field[i] =  MUHLE_PIECE_EMPTY_RIGHT;
         }
         else{
-            printField[i] = MUHLE_PIECE_EMPTY;
+            print_field[i] = MUHLE_PIECE_EMPTY;
         }
     }
 
     for (int i = 0; i < 9; i++){
-        if (i < whitePieces) {
-            whitePiecesArray[i] = MUHLE_PIECE_WHITE;
+        if (i < white_pieces) {
+            white_pieces_array[i] = MUHLE_PIECE_WHITE;
         } else {
-            whitePiecesArray[i] = "  ";
+            white_pieces_array[i] = "  ";
         }
     }
     for (int i = 0; i < 9; i++){
-        if (i < blackPieces) {
-            blackPiecesArray[i] = MUHLE_PIECE_BLACK;
+        if (i < black_pieces) {
+            black_pieces_array[i] = MUHLE_PIECE_BLACK;
         } else {
-            blackPiecesArray[i] = "  ";
+            black_pieces_array[i] = "  ";
         }
     }
 
     //print field
     std::cout << "Spieler: " << farbe << "\n";
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
-    std::cout << "1    " << printField[0] << "-------------" << printField[1] << "-------------" << printField[2] << SIDEBAR_MARGIN << whitePiecesArray[0] << PIECEMARGIN << blackPiecesArray[0] << "\n";
-    std::cout << "     |              |              | " << SIDEBAR_MARGIN << whitePiecesArray[1] << PIECEMARGIN << blackPiecesArray[1] << "\n";
-    std::cout << "2    |    " << printField[3] << "--------" << printField[4] << "--------" << printField[5] << "   | " << SIDEBAR_MARGIN << whitePiecesArray[2] << PIECEMARGIN << blackPiecesArray[2]  << "\n";
-    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << whitePiecesArray[3] << PIECEMARGIN << blackPiecesArray[3] << "\n";
-    std::cout << "3    |    |    "<< printField[6] <<"---" << printField[7] << "---" << printField[8] << "   |    | " << SIDEBAR_MARGIN << whitePiecesArray[4] << PIECEMARGIN << blackPiecesArray[4] << "\n";
-    std::cout << "     |    |    |         |    |    | "<< SIDEBAR_MARGIN << whitePiecesArray[5] << PIECEMARGIN << blackPiecesArray[5]  << "\n";
-    std::cout << "4    " << printField[9] << "---" << printField[10] << "---" << printField[11] << "        " << printField[12] << "---" << printField[13] << "---" << printField[14] << SIDEBAR_MARGIN << whitePiecesArray[6] << PIECEMARGIN << blackPiecesArray[6] << "\n";
-    std::cout << "     |    |    |         |    |    | " << SIDEBAR_MARGIN << whitePiecesArray[7] << PIECEMARGIN << blackPiecesArray[7] << "\n";
-    std::cout << "5    |    |    " << printField[15] << "---" << printField[16] << "---" << printField[17] << "   |    | " << SIDEBAR_MARGIN << whitePiecesArray[8] << PIECEMARGIN << blackPiecesArray[8] << "\n";
+    std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << white_pieces_array[0] << PIECEMARGIN << black_pieces_array[0] << "\n";
+    std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[1] << PIECEMARGIN << black_pieces_array[1] << "\n";
+    std::cout << "2    |    " << print_field[3] << "--------" << print_field[4] << "--------" << print_field[5] << "   | " << SIDEBAR_MARGIN << white_pieces_array[2] << PIECEMARGIN << black_pieces_array[2]  << "\n";
+    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << white_pieces_array[3] << PIECEMARGIN << black_pieces_array[3] << "\n";
+    std::cout << "3    |    |    "<< print_field[6] <<"---" << print_field[7] << "---" << print_field[8] << "   |    | " << SIDEBAR_MARGIN << white_pieces_array[4] << PIECEMARGIN << black_pieces_array[4] << "\n";
+    std::cout << "     |    |    |         |    |    | "<< SIDEBAR_MARGIN << white_pieces_array[5] << PIECEMARGIN << black_pieces_array[5]  << "\n";
+    std::cout << "4    " << print_field[9] << "---" << print_field[10] << "---" << print_field[11] << "        " << print_field[12] << "---" << print_field[13] << "---" << print_field[14] << SIDEBAR_MARGIN << white_pieces_array[6] << PIECEMARGIN << black_pieces_array[6] << "\n";
+    std::cout << "     |    |    |         |    |    | " << SIDEBAR_MARGIN << white_pieces_array[7] << PIECEMARGIN << black_pieces_array[7] << "\n";
+    std::cout << "5    |    |    " << print_field[15] << "---" << print_field[16] << "---" << print_field[17] << "   |    | " << SIDEBAR_MARGIN << white_pieces_array[8] << PIECEMARGIN << black_pieces_array[8] << "\n";
     std::cout << "     |    |         |         |    | " << "\n";
-    std::cout << "6    |    " << printField[18] << "--------" << printField[19] << "--------" << printField[20] <<"   | " << "\n";
+    std::cout << "6    |    " << print_field[18] << "--------" << print_field[19] << "--------" << print_field[20] <<"   | " << "\n";
     std::cout << "     |              |              | " << "\n";
-    std::cout << "7    " << printField[21] << "-------------" << printField[22] << "-------------" << printField[23] << "\n" << std::endl;
+    std::cout << "7    " << print_field[21] << "-------------" << print_field[22] << "-------------" << print_field[23] << "\n" << std::endl;
 }
 
-void KonsolenView::showStartMenu(){
+void konsolen_view::show_start_menu(){
     std::cout << CLEAR_SCREEN;
     std::cout << "==============================================" << std::endl;
     std::cout << "Startmenü Mühle" << std::endl;
@@ -93,7 +93,7 @@ void KonsolenView::showStartMenu(){
     std::cout << "==============================================" << std::endl;
 }
 
-void KonsolenView::showEndScreen(bool whiteWins){
+void konsolen_view::show_end_screen(bool whiteWins){
     std::cout << CLEAR_SCREEN;
     std::cout << "==============================================" << std::endl;
     std::cout << "<Endscreen>" << std::endl;

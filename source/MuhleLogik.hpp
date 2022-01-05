@@ -7,63 +7,62 @@
 #include "helperTypes.hpp"
 #include "IView.hpp"
 
-enum GameStatus {
+enum GAMESTATUS {
     INITIALIZED,
     PLACING,
     MOVING,
     ENDED
 };
-class MuhleLogik
+class muhle_logik
 {
 public:
     // (De-)Constructor
-    MuhleLogik(IView* view);
-    ~MuhleLogik();
+    muhle_logik(i_view* view);
+    ~muhle_logik();
 
     // Interface-Functions
-    void initialize(bool testMode = false);
-    void startGame();
-    void showState();
-    void placePiece(int position);
-    void movePiece(int from, int to);
-    void jumpPiece(int from, int to);
+    void initialize();
+    void start_game();
+    void show_state();
+    void place_piece(int position);
+    void move_piece(int from, int to);
+    void jump_piece(int from, int to);
     void attack(int position);
 
     // getter
-    GameStatus getStatus();
-    bool getAttackMode();
-    int24& getBlack();
-    int24& getWhite();
-    int24& getCurrentPlayer();
-    int24& getOpposingPlayer();
+    GAMESTATUS get_status();
+    bool get_attack_mode();
+    int24& get_black();
+    int24& get_white();
+    int24& get_current_player();
+    int24& get_opposing_player();
 
     // setter
-    void setAttackMode(bool attackMode);
-    void setStatus(GameStatus status);
+    void set_attack_mode(bool attack_mode);
+    void set_status(GAMESTATUS status);
 
 private:
-    void endGame();
-    bool isOccupied(int position, int player);
-    bool checkIfLegalMove(int from, int to);
-    bool checkIfValid(int from, int to);
-    bool checkIf3(int lastMovedPiece);
-    bool checkIf3(int lastMovedPiece, int24& player);
-    bool checkIfOnly3(int24 &player);
-    IView* view;
-    GameStatus status; 
-    bool isWhiteTurn;
-    bool attackMode;
+    void end_game();
+    bool is_occupied(int position, int player);
+    bool check_if_legal_move(int from, int to);
+    bool check_if_valid(int from, int to);
+    bool check_if_3(int lastMovedPiece);
+    bool check_if_3(int lastMovedPiece, int24& player);
+    bool check_if_only_3(int24 &player);
+    i_view* view;
+    GAMESTATUS status; 
+    bool is_white_turn;
+    bool attack_mode;
     int24 black;
     int24 white;
-    int whitePieces;
-    int blackPieces;
-    std::map<std::string, int> xDir;
-    std::map<std::string, int> yDir;
-    std::vector<std::string> lookupTable;
-    int24 positionToBit24(int position);
-    std::string bit24ToCoordinate(int position);
-    std::string positionToCoordinate(int position);
-    bool testMode;
+    int white_pieces;
+    int black_pieces;
+    std::map<std::string, int> x_dir;
+    std::map<std::string, int> y_dir;
+    std::vector<std::string> lookup_table;
+    int24 position_to_bit24(int position);
+    std::string bit24_to_coordinate(int position);
+    std::string position_to_coordinate(int position);
 };
 
 #endif

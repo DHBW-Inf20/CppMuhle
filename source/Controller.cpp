@@ -17,22 +17,21 @@
 #define CUR_SAVE "\033[s"
 #define CUR_RESTORE "\033[u"
 
-// 0,2,9,14,21
-Controller::Controller()
+controller::controller()
 {
-    KonsolenView *view = new KonsolenView();
-    this->model = new MuhleLogik(view);
-    this->action = MENU;
+    konsolen_view *view = new konsolen_view();
+    this->model = new muhle_logik(view);
+    this->action = ACTION::MENU;
 }
 
 /*
     Asks for input, dependnig on the current status of the Game.
 */
-bool Controller::askForInput(std::string &from, std::string &to)
+bool controller::ask_for_input(std::string &from, std::string &to)
 {
     // std::cout << CLEAR_SCREEN;
 
-    if (this->model->getAttackMode())
+    if (this->model->get_attack_mode())
     {
         std::cout << CUR_RIGHT(5) << "Attack: __" << CUR_LEFT(2);
         std::cin >> to;
@@ -40,20 +39,20 @@ bool Controller::askForInput(std::string &from, std::string &to)
         return std::cin.good();
     }
 
-    switch (this->model->getStatus())
+    switch (this->model->get_status())
     {
-    case ENDED:
-    case INITIALIZED:
+    case GAMESTATUS::ENDED:
+    case GAMESTATUS::INITIALIZED:
         std::cout << "> ";
         std::cin >> to;
         from = to;
         break;
-    case PLACING:
+    case GAMESTATUS::PLACING:
         std::cout << CUR_RIGHT(5) << "Place: __" << CUR_LEFT(2);
         std::cin >> to;
         from = to;
         break;
-    case MOVING:
+    case GAMESTATUS::MOVING:
         std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
         std::cin >> from;
         std::cout << CUR_UP(1) << CUR_COL(35);
@@ -63,17 +62,16 @@ bool Controller::askForInput(std::string &from, std::string &to)
     return std::cin.good();
 }
 
-void Controller::run()
+void controller::run()
 {
     this->model->initialize();
-    // Start Input Loop
     std::string to;
     std::string from;
     bool exit = false; // To quit the loop safely
     int command;
-    int secondCommand;
-    // runTestSequence();
-    while (std::cin.good() && askForInput(from, to) && !exit)
+    int second_command;
+    // run_test_sequence();
+    while (std::cin.good() && ask_for_input(from, to) && !exit)
     {
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
         std::transform(to.begin(), to.end(), to.begin(), ::tolower);
@@ -84,11 +82,11 @@ void Controller::run()
         }
         switch (this->action)
         {
-        case ENDSCREEN:
+        case ACTION::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case MENU:
+        case ACTION::MENU:
             try
             {
                 command = stoi(to);
@@ -101,10 +99,10 @@ void Controller::run()
             switch (command)
             {
             case 1:
-                this->action = GAME;
-                this->model->startGame();
+                this->action = ACTION::GAME;
+                this->model->start_game();
                 break;
-            case 2:
+            case 3:
                 exit = true;
                 break;
             default:
@@ -112,71 +110,71 @@ void Controller::run()
                 break;
             }
             break;
-        case GAME:
+        case ACTION::GAME:
             try
             {
-                command = this->lookupTable.at(from);
-                secondCommand = this->lookupTable.at(to);
+                command = this->lookup_table.at(from);
+                second_command = this->lookup_table.at(to);
             }
             catch (std::out_of_range &)
             {
                 std::cout << "Invalid Coordinate\n";
             }
-            this->interpretCommand(command, secondCommand);
+            this->interpret_command(command, second_command);
             break;
         }
     }
     // std::cout << CLEAR_SCREEN;
 }
 
-void Controller::interpretCommand(int from, int to)
+void controller::interpret_command(int from, int to)
 {
     try
     {
 
-        if (this->model->getAttackMode())
+        if (this->model->get_attack_mode())
         {
             this->model->attack(1 << to);
-            if (this->model->getStatus() == ENDED)
+            if (this->model->get_status() == ENDED)
             {
-                this->action = ENDSCREEN;
+                this->action = ACTION::ENDSCREEN;
             }
             return;
         }
-        switch (this->model->getStatus())
+        switch (this->model->get_status())
         {
-        case PLACING:
-            this->model->placePiece(1 << to);
+        case GAMESTATUS::PLACING:
+            this->model->place_piece(1 << to);
             break;
         case MOVING:
-            if (std::bitset<24>(this->model->getCurrentPlayer().data).count() == 3)
+            if (std::bitset<24>(this->model->get_current_player().data).count() == 3)
             {
-                this->model->jumpPiece(1 << from, 1 << to);
+                this->model->jump_piece(1 << from, 1 << to);
             }
             else
             {
-                this->model->movePiece(1 << from, 1 << to);
+                this->model->move_piece(1 << from, 1 << to);
             }
             break;
-        case ENDED:
-        case INITIALIZED:
+        case GAMESTATUS::ENDED:
+        case GAMESTATUS::INITIALIZED:
         default:
             break;
         }
     }
-    catch (WrongMove &e)
+    catch (wrong_move &e)
     {
-        this->model->showState();
-        std::cout << e.what() << " (" << e.getMove() << ")\n";
+        this->model->show_state();
+        std::cout << e.what() << " (" << e.get_move() << ")\n";
     }
     catch (std::exception &e)
     {
-        this->model->showState();
+        this->model->show_state();
         std::cout << e.what() << "\n";
     }
 }
 
-void Controller::runTestSequence()
+void controller::run_test_sequence()
 {
     std::vector<std::string> inputs = {"1", "a1", "d1", "g1", "b2", "d2", "f2", "a4", "b4", "c4", "c3", "d3", "e3", "f4", "e4", "g4", "a7", "f6", "g7"};
     int command;
@@ -184,11 +182,11 @@ void Controller::runTestSequence()
     {
         switch (this->action)
         {
-        case ENDSCREEN:
+        case ACTION::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case MENU:
+        case ACTION::MENU:
             try
             {
                 command = stoi(to);
@@ -202,7 +200,7 @@ void Controller::runTestSequence()
             {
             case 1:
                 this->action = GAME;
-                this->model->startGame();
+                this->model->start_game();
                 break;
             case 2:
                 break;
@@ -211,9 +209,9 @@ void Controller::runTestSequence()
                 break;
             }
             break;
-        case GAME:
-            command = this->lookupTable.at(to);
-            this->interpretCommand(0, command);
+        case ACTION::GAME:
+            command = this->lookup_table.at(to);
+            this->interpret_command(0, command);
             break;
         }
     }

@@ -3,17 +3,17 @@
 #include "IView.hpp"
 #include <string>
 
-class KonsolenView: public IView
+class konsolen_view: public i_view
 {
 private:
-    std::string printField[24];
-    std::string whitePiecesArray[24];
-    std::string blackPiecesArray[24];
+    std::string print_field[24];
+    std::string white_pieces_array[24];
+    std::string black_pieces_array[24];
 public:
     virtual void initialize();
-    virtual void showBoard(int24 white, int24 black,bool isWhiteMove, int whitePieces, int blackPieces);
-    virtual void showStartMenu();
-    virtual void showEndScreen(bool whiteWins);
+    virtual void show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces);
+    virtual void show_start_menu();
+    virtual void show_end_screen(bool whiteWins);
 };
 
 #endif
