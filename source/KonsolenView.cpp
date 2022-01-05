@@ -1,7 +1,8 @@
 #include "KonsolenView.hpp"
 
 #include <iostream>
-
+#include <vector>
+#include <string>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -50,7 +51,6 @@ std::string getField (int24 white, int24 black, int position, bool rightField){
 void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whitePieces, int blackPieces){
     // std::cout << CLEAR_SCREEN;
     std::string farbe = isWhiteMove ? "Weiss" : "Schwarz";
-    std::cout << "==============================================" << std::endl;
     
     std::string weiss = "⚪";
     std::string schwarz = "◯ ";
@@ -86,25 +86,33 @@ void KonsolenView::showBoard(int24 white, int24 black, bool isWhiteMove, int whi
     std::string d7 = getField(white, black, 22, false);
     std::string g7 = getField(white, black, 23, true);
     
-    //print spielfeld
-    std::cout << "     A    B    C    D    E    F    G  \n" << std::endl;
-    std::cout << "1    " << a1 << "-------------" << d1 << "-------------" << g1 << std::endl;
-    std::cout << "     |              |              | " << std::endl;
-    std::cout << "2    |    " << b2 << "--------" << d2 << "--------" << f2 << "   | " << std::endl;
-    std::cout << "     |    |         |         |    | " << std::endl;
-    std::cout << "3    |    |    "<< c3 <<"---" << d3 << "---" << e3 << "   |    | " << std::endl;
-    std::cout << "     |    |    |         |    |    | " << std::endl;
-    std::cout << "4    " << a4 << "---" << b4 << "---" << c4 << "        " << e4 << "---" << f4 << "---" << g4 << std::endl;
-    std::cout << "     |    |    |         |    |    | " << std::endl;
-    std::cout << "5    |    |    " << c5 << "---" << d5 << "---" << e5 << "   |    | " << std::endl;
-    std::cout << "     |    |         |         |    | " << std::endl;
-    std::cout << "6    |    " << b6 << "--------" << d6 << "--------" << f6 <<"   | " << std::endl;
-    std::cout << "     |              |              | " << std::endl;
-    std::cout << "7    " << a7 << "-------------" << d7 << "-------------" << g7 << "\n" <<std::endl;
+    #define SIDEBAR_MARGIN "  "
+    std::vector<std::string> whitePiecesArray = {"  ","  ","  ","  ","  ","  ","  ","  ","  "};
+    std::vector<std::string> blackPiecesArray = {"  ","  ","  ","  ","  ","  ","  ","  ","  "};
+    for (int i = 0; i < whitePieces; i++){
+        whitePiecesArray[i] = weiss;
+    }
+    for (int i = 0; i < blackPieces; i++){
+        blackPiecesArray[i] = schwarz;
+    }
 
-    std::cout << white.data << std::endl << black.data << std::endl;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "Zug-Eingabe <"<< farbe << ">: \n";
+
+    //print spielfeld
+    std::cout << "Spieler: " << farbe << "\n";
+    std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
+    std::cout << "1    " << a1 << "-------------" << d1 << "-------------" << g1 << SIDEBAR_MARGIN << whitePiecesArray[0] << "  " << blackPiecesArray[0] << "\n";
+    std::cout << "     |              |              | " << SIDEBAR_MARGIN << whitePiecesArray[1] << "  " << blackPiecesArray[1] << "\n";
+    std::cout << "2    |    " << b2 << "--------" << d2 << "--------" << f2 << "   | " << SIDEBAR_MARGIN << whitePiecesArray[2] << "  " << blackPiecesArray[2]  << "\n";
+    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << whitePiecesArray[3] << "  " << blackPiecesArray[3] << "\n";
+    std::cout << "3    |    |    "<< c3 <<"---" << d3 << "---" << e3 << "   |    | " << SIDEBAR_MARGIN << whitePiecesArray[4] << "  " << blackPiecesArray[4] << "\n";
+    std::cout << "     |    |    |         |    |    | "<< SIDEBAR_MARGIN << whitePiecesArray[5] << "  " << blackPiecesArray[5]  << "\n";
+    std::cout << "4    " << a4 << "---" << b4 << "---" << c4 << "        " << e4 << "---" << f4 << "---" << g4 << SIDEBAR_MARGIN << whitePiecesArray[6] << "  " << blackPiecesArray[6] << "\n";
+    std::cout << "     |    |    |         |    |    | " << SIDEBAR_MARGIN << whitePiecesArray[7] << "  " << blackPiecesArray[7] << "\n";
+    std::cout << "5    |    |    " << c5 << "---" << d5 << "---" << e5 << "   |    | " << SIDEBAR_MARGIN << whitePiecesArray[8] << "  " << blackPiecesArray[8] << "\n";
+    std::cout << "     |    |         |         |    | " << "\n";
+    std::cout << "6    |    " << b6 << "--------" << d6 << "--------" << f6 <<"   | " << "\n";
+    std::cout << "     |              |              | " << "\n";
+    std::cout << "7    " << a7 << "-------------" << d7 << "-------------" << g7 << "\n" << std::endl;
 }
 
 void KonsolenView::showStartMenu(){
