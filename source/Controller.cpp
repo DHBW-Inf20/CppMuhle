@@ -3,6 +3,7 @@
 #include "Controller.hpp"
 #include "KonsolenView.hpp"
 #include "MuhleLogik.hpp"
+#include "exceptions/wrongMove.hpp"
 #include <bitset>
 
 #define CLEAR_SCREEN "\033[2J\33[H"
@@ -139,9 +140,8 @@ void Controller::interpretCommand(int from, int to)
             }
             break;
     }
-    }catch(std::runtime_error e){
-        this->model->showState();
-        std::cout << from <<" : " << e.what() << "\n";
+    }catch(WrongMove e){
+        std::cout  << e.what() << " (" << e.getMove() << ")\n";
     }catch(std::exception e){
         std::cout << e.what() << "\n";
     }

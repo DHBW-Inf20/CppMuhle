@@ -42,6 +42,7 @@ virtual void jumpPiece(int from, int to);
 virtual bool checkIfLegalMove(int from, int to);
 virtual bool checkIfValid(int from, int to);
 virtual bool checkIf3(int lastMovedPiece);
+virtual bool checkIf3(int lastMovedPiece, int24& player);
 virtual void attack(int position);
 virtual void initialize(bool testMode = false);
 bool getAttackMode();
