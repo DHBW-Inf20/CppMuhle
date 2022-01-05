@@ -4,8 +4,8 @@
 #include <map>
 #include <vector>
 
-#include "helperTypes.hpp"
-#include "IView.hpp"
+#include "helper_types.hpp"
+#include "iview.hpp"
 
 enum game_status {
     INITIALIZED,

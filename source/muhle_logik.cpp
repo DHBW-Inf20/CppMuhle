@@ -1,8 +1,8 @@
-#include "MuhleLogik.hpp"
-#include "KonsolenView.hpp"
-#include "helperTypes.hpp"
+#include "muhle_logik.hpp"
+#include "konsolen_view.hpp"
+#include "helper_types.hpp"
 #include "utility.hpp"
-#include "exceptions/WrongMove.hpp"
+#include "exceptions/wrong_move.hpp"
 #include <iostream>
 #include <string>
 #include <stdexcept>

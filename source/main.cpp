@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Controller.hpp"
+#include "controller.hpp"
 
 int main()
 {

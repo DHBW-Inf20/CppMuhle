@@ -1,6 +1,6 @@
 #ifndef IVIEW_HPP_GUARD
 #define IVIEW_HPP_GUARD
-#include "helperTypes.hpp"
+#include "helper_types.hpp"
 #include <string>
 class iview
 {

@@ -1,6 +1,6 @@
 #ifndef KONSOLENVIEW_HPP_GUARD
 #define KONSOLENVIEW_HPP_GUARD
-#include "IView.hpp"
+#include "iview.hpp"
 #include <string>
 
 class konsolen_view: public iview

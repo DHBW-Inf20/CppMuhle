@@ -27,9 +27,9 @@ endif
 
 
 
-build/Muhle.exe: source/Controller.cpp source/Main.cpp source/MuhleLogik.cpp source/KonsolenView.cpp
-	$(CXX) $(CPPFLAGS) -o build/Muhle.exe source/MuhleLogik.cpp  source/Controller.cpp source/KonsolenView.cpp source/Main.cpp
+build/Muhle.exe: source/Controller.cpp source/main.cpp source/muhle_logik.cpp source/konsolen_view.cpp
+	$(CXX) $(CPPFLAGS) -o build/Muhle.exe source/muhle_logik.cpp  source/controller.cpp source/konsolen_view.cpp source/main.cpp
 
 
 test: tests/test.cpp
-	$(CXX) $(CPPFLAGS) -o tests/test.exe source/MuhleLogik.cpp source/KonsolenView.cpp tests/test.cpp  -lboost_unit_test_framework
+	$(CXX) $(CPPFLAGS) -o tests/test.exe source/muhle_logik.cpp source/konsolen_view.cpp tests/test.cpp  -lboost_unit_test_framework

@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "Controller.hpp"
-#include "KonsolenView.hpp"
-#include "MuhleLogik.hpp"
-#include "exceptions/wrongMove.hpp"
+#include "controller.hpp"
+#include "konsolen_view.hpp"
+#include "muhle_logik.hpp"
+#include "exceptions/wrong_move.hpp"
 #include <bitset>
 #include <algorithm>
 
@@ -21,7 +21,7 @@ controller::controller()
 {
     konsolen_view *view = new konsolen_view();
     this->model = new muhle_logik(view);
-    this->action = action::MENU;
+    this->action = input_type::MENU;
 }
 
 /*
@@ -82,11 +82,11 @@ void controller::run()
         }
         switch (this->action)
         {
-        case action::ENDSCREEN:
+        case input_type::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case action::MENU:
+        case input_type::MENU:
             try
             {
                 command = stoi(to);
@@ -99,7 +99,7 @@ void controller::run()
             switch (command)
             {
             case 1:
-                this->action = action::GAME;
+                this->action = input_type::GAME;
                 this->model->start_game();
                 break;
             case 3:
@@ -110,7 +110,7 @@ void controller::run()
                 break;
             }
             break;
-        case action::GAME:
+        case input_type::GAME:
             try
             {
                 command = this->c_lookup_table.at(from);
@@ -137,7 +137,7 @@ void controller::interpret_command(int from, int to)
             this->model->attack(1 << to);
             if (this->model->get_status() == ENDED)
             {
-                this->action = action::ENDSCREEN;
+                this->action = input_type::ENDSCREEN;
             }
             return;
         }
@@ -182,11 +182,11 @@ void controller::run_test_sequence()
     {
         switch (this->action)
         {
-        case action::ENDSCREEN:
+        case input_type::ENDSCREEN:
             this->model->initialize();
             this->action = MENU;
             break;
-        case action::MENU:
+        case input_type::MENU:
             try
             {
                 command = stoi(to);
@@ -209,7 +209,7 @@ void controller::run_test_sequence()
                 break;
             }
             break;
-        case action::GAME:
+        case input_type::GAME:
             command = this->c_lookup_table.at(to);
             this->interpret_command(0, command);
             break;
