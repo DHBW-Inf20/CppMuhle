@@ -14,25 +14,6 @@
 muhle_logik::muhle_logik(iview *view)
 {
     this->view = view;
-    this->x_dir = {
-        {"1", 3},
-        {"7", 3},
-        {"2", 2},
-        {"6", 2},
-        {"3", 1},
-        {"4", 1},
-        {"5", 1},
-    };
-    this->y_dir = {
-        {"a", 3},
-        {"g", 3},
-        {"b", 2},
-        {"f", 2},
-        {"c", 1},
-        {"e", 1},
-        {"d", 1},
-    };
-    this->c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
 }
 
 void muhle_logik::initialize()
@@ -102,8 +83,8 @@ void muhle_logik::move_piece(int from, int to)
 {
     if (!check_if_legal_move(from, to))
     {
-        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];    
-        throw wrong_move("Du darfst diesen Zug nicht machen!",move);
+        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];
+        throw wrong_move("Du darfst diesen Zug nicht machen!", move);
     }
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jump_piece übernommen werden.
     jump_piece(from, to);
@@ -111,10 +92,10 @@ void muhle_logik::move_piece(int from, int to)
 
 void muhle_logik::jump_piece(int from, int to)
 {
-    if ( !check_if_valid(from, to))
+    if (!check_if_valid(from, to))
     {
-        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];    
-        throw wrong_move("Du kannst diesen Zug nicht machen!",move);
+        std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];
+        throw wrong_move("Du kannst diesen Zug nicht machen!", move);
     }
 
     get_current_player().data ^= from; // Remove piece from start position
@@ -131,17 +112,20 @@ void muhle_logik::jump_piece(int from, int to)
     show_state();
 }
 
-bool muhle_logik::check_if_only_3(int24 &player){
-    for(int i = 0; i < 24; i++){
+bool muhle_logik::check_if_only_3(int24 &player) 
+{
+    for (int i = 0; i < 24; i++)
+    {
         int check_int = player.data & (1 << i);
-        if(check_int && check_if_3(check_int)){
+        if (check_int && check_if_3(check_int))
+        {
             return true;
         }
     }
     return false;
 }
 
-bool muhle_logik::check_if_legal_move(int from, int to)
+bool muhle_logik::check_if_legal_move(int from, int to) const
 {
     // TODO: Spielzug prüfen
     // Funktion geht davon aus, das der Zug valide ist (check_if_valid)
@@ -163,8 +147,8 @@ bool muhle_logik::check_if_legal_move(int from, int to)
 
     */
     std::string notation = c_lookup_table[std::log2(from)] + c_lookup_table[std::log2(to)];
-    int x = x_dir[notation.substr(1, 1)];                               // Multiplikator für x-Achse
-    int y = y_dir[notation.substr(0, 1)];                               // Multiplikator für y-Achse
+    int x = c_x_dir.at(notation.substr(1, 1));                         // Multiplikator für x-Achse
+    int y = c_y_dir.at(notation.substr(0, 1));                         // Multiplikator für y-Achse
     std::vector<std::string> ag = {"a", "b", "c", "d", "e", "f", "g"}; // Lookup um von einer Zahl auf den Buchstaben zu kommen
     int a_bis_g_index = std::find(ag.begin(), ag.end(), notation.substr(0, 1)) - ag.begin();
     int zahlen_anteil = std::stoi(notation.substr(1, 1));
@@ -191,17 +175,17 @@ bool muhle_logik::check_if_legal_move(int from, int to)
     return false;
 }
 
-bool muhle_logik::check_if_3(int last_moved_piece, int24& player)
+bool muhle_logik::check_if_3(int last_moved_piece, int24 &player)
 {
-    if(std::bitset<24>(player.data).count() < 3)
+    if (std::bitset<24>(player.data).count() < 3)
     {
         return false;
     }
     // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
-    std::vector<int> three_list = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
+    std::vector<int> three_list = {7, 56, 448, 3584, 28672, 229376, 1835008, 14680064, 2097665, 263176, 34880, 146, 4784128, 135424, 1056800, 8404996};
     std::vector<int> matching3 = {};
     // Alle 3er Reihen suchen und in matching3 speichern
-    for(auto i : three_list)
+    for (auto i : three_list)
     {
         if (std::bitset<24>(i & player.data).count() == 3)
         {
@@ -210,7 +194,7 @@ bool muhle_logik::check_if_3(int last_moved_piece, int24& player)
     }
 
     // Falls der letzte Bewegte Spielstein in einer dieser 3er Reihen ist, true zurückgeben
-    for(auto i : matching3)
+    for (auto i : matching3)
     {
         if (i & last_moved_piece) // Wenn die Bits an einer stelle übereinstimmen kommt irgendwas != 0 raus
         {
@@ -222,15 +206,15 @@ bool muhle_logik::check_if_3(int last_moved_piece, int24& player)
 
 bool muhle_logik::check_if_3(int last_moved_piece)
 {
-    if(std::bitset<24>(this->get_current_player().data).count() < 3)
+    if (std::bitset<24>(this->get_current_player().data).count() < 3)
     {
         return false;
     }
     // ThreeList = Hält alle Positionskombinationen bei denen 3 in einer Reihe sind (Ist irgendwie das simpleste)
-    std::vector<int> three_list = {7,  56,  448,  3584,  28672,  229376,  1835008,  14680064,  2097665,  263176,  34880,  146,  4784128,  135424,  1056800,  8404996};
+    std::vector<int> three_list = {7, 56, 448, 3584, 28672, 229376, 1835008, 14680064, 2097665, 263176, 34880, 146, 4784128, 135424, 1056800, 8404996};
     std::vector<int> matching3 = {};
     // Alle 3er Reihen suchen und in matching3 speichern
-    for(auto i : three_list)
+    for (auto i : three_list)
     {
         if (std::bitset<24>(i & get_current_player().data).count() == 3)
         {
@@ -239,7 +223,7 @@ bool muhle_logik::check_if_3(int last_moved_piece)
     }
 
     // Falls der letzte Bewegte Spielstein in einer dieser 3er Reihen ist, true zurückgeben
-    for(auto i : matching3)
+    for (auto i : matching3)
     {
         if (i & last_moved_piece) // Wenn die Bits an einer stelle übereinstimmen kommt irgendwas != 0 raus
         {
@@ -249,13 +233,12 @@ bool muhle_logik::check_if_3(int last_moved_piece)
     return false;
 }
 
-
 void muhle_logik::attack(int position)
 {
-    if(check_if_3(position, get_opposing_player())) 
+    if (check_if_3(position, get_opposing_player()))
     {
-        std::string move = this->c_lookup_table[std::log2(position)];    
-        throw wrong_move("Du darfst eine Mühle nicht schlagen!",move);
+        std::string move = this->c_lookup_table[std::log2(position)];
+        throw wrong_move("Du darfst eine Mühle nicht schlagen!", move);
     }
     std::cout << is_white_turn << std::endl;
     if (is_occupied(position, get_opposing_player().data))
@@ -264,25 +247,28 @@ void muhle_logik::attack(int position)
     }
     else
     {
-        std::string move = this->c_lookup_table[std::log2(position)];    
-        throw wrong_move("Dieses Feld ist leer!",move);
+        std::string move = this->c_lookup_table[std::log2(position)];
+        throw wrong_move("Dieses Feld ist leer!", move);
     }
     this->attack_mode = false;
-    if(this->status == MOVING &&  std::bitset<24>(get_opposing_player().data).count() == 2)
+    if (this->status == MOVING && std::bitset<24>(get_opposing_player().data).count() == 2)
     {
         end_game();
-    }else{
-   this->is_white_turn = !this->is_white_turn;
-    show_state();
+    }
+    else
+    {
+        this->is_white_turn = !this->is_white_turn;
+        show_state();
     }
 }
 
-void muhle_logik::end_game(){
+void muhle_logik::end_game()
+{
     this->status = ENDED;
     this->view->show_end_screen(this->is_white_turn);
 }
 
-bool muhle_logik::is_occupied(int position, int player)
+bool muhle_logik::is_occupied(int position, int player)const
 {
     if (player & position)
     {
@@ -291,19 +277,19 @@ bool muhle_logik::is_occupied(int position, int player)
     return false;
 }
 
-int24 muhle_logik::position_to_bit24(int position)
+int24 muhle_logik::position_to_bit24(int position)const
 {
     int24 bit24;
     bit24.data = 1 << position;
     return bit24;
 }
 
-std::string muhle_logik::position_to_coordinate(int position)
+std::string muhle_logik::position_to_coordinate(int position)const
 {
     return c_lookup_table[position];
 }
 
-std::string muhle_logik::bit24_to_coordinate(int bit24)
+std::string muhle_logik::bit24_to_coordinate(int bit24)const
 {
     return c_lookup_table[std::log2(bit24)];
 }
@@ -313,7 +299,7 @@ void muhle_logik::show_state()
     this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces);
 }
 
-bool muhle_logik::get_attack_mode()
+bool muhle_logik::get_attack_mode()const
 {
     return this->attack_mode;
 }
@@ -326,7 +312,7 @@ int24 &muhle_logik::get_white()
 {
     return this->white;
 }
-game_status muhle_logik::get_status()
+game_status muhle_logik::get_status()const
 {
     return this->status;
 }
@@ -339,7 +325,6 @@ void muhle_logik::set_status(game_status status)
 {
     this->status = status;
 }
-
 
 int24 &muhle_logik::get_current_player()
 {
@@ -358,4 +343,5 @@ void muhle_logik::start_game()
 
 muhle_logik::~muhle_logik()
 {
+    delete this->view;
 }

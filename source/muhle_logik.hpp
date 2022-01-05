@@ -30,8 +30,8 @@ public:
     void attack(int position);
 
     // getter
-    game_status get_status();
-    bool get_attack_mode();
+    game_status get_status() const;
+    bool get_attack_mode() const;
     int24& get_black();
     int24& get_white();
     int24& get_current_player();
@@ -43,12 +43,12 @@ public:
 
 private:
     void end_game();
-    bool is_occupied(int position, int player);
-    bool check_if_legal_move(int from, int to);
-    bool check_if_valid(int from, int to);
-    bool check_if_3(int lastMovedPiece);
-    bool check_if_3(int lastMovedPiece, int24& player);
-    bool check_if_only_3(int24 &player);
+    bool is_occupied(int position, int player) const;
+    bool check_if_legal_move(int from, int to) const;
+    bool check_if_valid(int from, int to) ;
+    bool check_if_3(int lastMovedPiece) ;
+    bool check_if_3(int lastMovedPiece, int24& player) ;
+    bool check_if_only_3(int24 &player) ;
     iview* view;
     game_status status; 
     bool is_white_turn;
@@ -57,12 +57,12 @@ private:
     int24 white;
     int white_pieces;
     int black_pieces;
-    std::map<std::string, int> x_dir;
-    std::map<std::string, int> y_dir;
-    std::vector<std::string> c_lookup_table;
-    int24 position_to_bit24(int position);
-    std::string bit24_to_coordinate(int position);
-    std::string position_to_coordinate(int position);
+    const std::map<std::string, int> c_x_dir = {{"1", 3},{"7", 3},{"2", 2},{"6", 2},{"3", 1},{"4", 1},{"5", 1}};
+    const std::map<std::string, int> c_y_dir = {{"a", 3},{"g", 3},{"b", 2},{"f", 2},{"c", 1},{"e", 1},{"d", 1}};
+    const std::vector<std::string> c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
+    int24 position_to_bit24(int position) const;
+    std::string bit24_to_coordinate(int position) const;
+    std::string position_to_coordinate(int position) const;
 };
 
 #endif
