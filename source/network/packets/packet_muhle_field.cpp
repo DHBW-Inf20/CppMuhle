@@ -1,6 +1,6 @@
 #include "packet.hpp"
 #include <string>
-#include "../../helperTypes.hpp"
+#include "../../logic/helper_types.hpp"
 
 #include <bitset>
 #include <iostream>

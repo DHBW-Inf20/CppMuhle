@@ -1,5 +1,5 @@
 #include <iostream>
-#include "network/net_client.hpp"
+#include "../network/net_client.hpp"
 
 int main()
 {    

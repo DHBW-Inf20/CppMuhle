@@ -2,8 +2,8 @@
 #include <string>
 #include "controller.hpp"
 #include "konsolen_view.hpp"
-#include "muhle_logik.hpp"
-#include "exceptions/wrong_move.hpp"
+#include "../logic/muhle_logik.hpp"
+#include "../exceptions/wrong_move.hpp"
 #include <bitset>
 #include <algorithm>
 
