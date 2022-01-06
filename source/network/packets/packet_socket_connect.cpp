@@ -22,6 +22,6 @@ public:
 
     char get_id()
     {
-        return -1;
+        return PACKET_SOCKET_CONNECT_ID;
     }
 };

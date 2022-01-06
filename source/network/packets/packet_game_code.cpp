@@ -28,6 +28,6 @@ public:
 
     char get_id()
     {
-        return 4;
+        return PACKET_GAME_CODE_ID;
     }
 };

@@ -1,4 +1,5 @@
 #include "net_client.hpp"
+#include "packet_ids.hpp"
 #include <iostream>
 #include <string>
 

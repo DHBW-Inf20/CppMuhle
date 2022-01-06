@@ -43,6 +43,6 @@ public:
 
     char get_id()
     {
-        return 2;
+        return PACKET_MUHLE_FIELD_ID;
     }
 };

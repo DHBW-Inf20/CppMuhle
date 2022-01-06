@@ -28,6 +28,6 @@ public:
 
     char get_id()
     {
-        return 0;
+        return PACKET_MESSAGE_ID;
     }
 };

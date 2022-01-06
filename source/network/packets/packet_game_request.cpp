@@ -22,6 +22,6 @@ public:
 
     char get_id()
     {
-        return 3;
+        return PACKET_GAME_REQUEST_ID;
     }
 };
