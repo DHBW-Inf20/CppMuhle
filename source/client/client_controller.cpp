@@ -60,6 +60,9 @@ void client_controller::run(){
         this->view->show_board(packet->white,packet->black,true,9,9);
     });
 
+      this->client->register_packet_listener<packet_message>([this] (packet_message *packet) {
+        this->view->show_message(packet->str);
+    });
 
 
 
@@ -77,6 +80,7 @@ void client_controller::run(){
         this->process_input(to,from, exit_flag);
     }
     // TODO: disconnect the player safely
+    std::cout << "Disconnecting..." << std::endl;
     this->client->join_thread();
 
 }
@@ -166,7 +170,6 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
 
     switch(command){
         case 1:
-            this->current_menu_state = menu_state::CREATE_GAME;
             // Sends a packet to the server to request a game
             // Somehow wait for the server to answer with a game code, then print it to the screen
             // this->view->show_create_game_menu();
@@ -175,6 +178,10 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
                 packet_game_code* pgc = this->client->send_and_receive_packet<packet_game_code>(&pgr);
                 std::cout << "Game Code: " << pgc->code << std::endl;
                 delete pgc;
+                packet_muhle_field* pmf = this->client->wait_for_packet<packet_muhle_field>();
+                delete pmf;
+                this->user_input_type = input_type::SERVER;
+                this->next_move = game_state::PLACING;
             }
             break;
         case 2:

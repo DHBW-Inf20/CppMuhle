@@ -1,6 +1,6 @@
 #include "game_controller.hpp"
 #include "../logic/helper_types.hpp"
-
+#include "../exceptions/wrong_move.hpp"
 #include <exception>
 #include <string>
 
@@ -66,6 +66,7 @@ void game_controller::run(){
     if(!this->can_start()){
         throw std::runtime_error("Not enough players");
     }
+    this->current_player = this->player1_id;
     this->game->initialize();
 }
 
@@ -101,3 +102,18 @@ void game_controller::show_message(std::string message){
     this->server->send_packet(&packet, this->current_player);
 }
 
+void game_controller::change_player(){
+    if(this->current_player == this->player1_id){
+        this->current_player = this->player2_id;
+    }else{
+        this->current_player = this->player1_id;
+    }
+}
+
+void game_controller::place_piece(int player, int command){
+    if(!this->is_players_turn(player)){
+        throw wrong_move("Not your turn", get_game()->c_lookup_table.at(command));
+    }
+    this->game->place_piece(command);
+    this->change_player();
+}

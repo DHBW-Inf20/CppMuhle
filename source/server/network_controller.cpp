@@ -108,18 +108,26 @@ void network_controller::initializePackageListeners()
 
     server->register_packet_listener<packet_game_place>([this](int id, packet_game_place *packet){
         std::cout << "Game place from " << id << ": " << packet->to <<  std::endl;
-        auto game = player_game_controller_map.find(id);
-        if(game == player_game_controller_map.end()){
+        auto gameController = player_game_controller_map.find(id);
+        if(gameController == player_game_controller_map.end()){
             player_game_controller_map.at(id)->show_message("You are not in a game");
             return;
         }
         try{
-
-            player_game_controller_map.at(id)->get_game()->place_piece(packet->to);
+            gameController->second->place_piece(id, packet->to);
         }
         catch(wrong_move &e){
             std::cout << "Player " << id << " tried an unvaild move" << std::endl;
             player_game_controller_map.at(id)->show_message(e.what());
         }
     });
+
+    server->register_packet_listener<packet_socket_disconnect>([this](int id, packet_socket_disconnect *packet){
+        std::cout << "Client disconnected: " << id << std::endl;
+        auto gameController = player_game_controller_map.find(id);
+        if(gameController != player_game_controller_map.end()){
+            gameController->second->leave_game(id);	
+        }
+    });
+
 }

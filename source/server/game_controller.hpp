@@ -41,6 +41,8 @@ class game_controller : public iview{
         bool can_start();
         bool is_players_turn(int player);
 
+        void place_piece(int player, int command);
+
         muhle_logik *get_game(){
             return this->game;
         }
@@ -48,6 +50,7 @@ class game_controller : public iview{
         void process_input(int player, std::string input);
 
     private:
+        void change_player();
         net_server *server;
         int player1_id;
         int player2_id;

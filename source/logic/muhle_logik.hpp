@@ -41,6 +41,7 @@ public:
     // setter
     void set_attack_mode(bool attack_mode);
     void set_status(game_status status);
+    const std::vector<std::string> c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
 
 private:
     void end_game();
@@ -60,7 +61,6 @@ private:
     int black_pieces;
     const std::map<std::string, int> c_x_dir = {{"1", 3},{"7", 3},{"2", 2},{"6", 2},{"3", 1},{"4", 1},{"5", 1}};
     const std::map<std::string, int> c_y_dir = {{"a", 3},{"g", 3},{"b", 2},{"f", 2},{"c", 1},{"e", 1},{"d", 1}};
-    const std::vector<std::string> c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
     int24 position_to_bit24(int position) const;
     std::string bit24_to_coordinate(int position) const;
     std::string position_to_coordinate(int position) const;
