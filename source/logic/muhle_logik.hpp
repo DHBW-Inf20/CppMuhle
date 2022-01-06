@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "helper_types.hpp"
+#include "../client/client_controller.hpp"
 #include "iview.hpp"
 
 enum game_status {
@@ -13,6 +14,16 @@ enum game_status {
     MOVING,
     ENDED
 };
+/*
+enum game_state{
+    WAITING_FOR_OPPONENT,
+    PLACING,
+    MOVING,
+    JUMPING,
+    ATTACKING,
+    ENDED
+};
+*/
 class muhle_logik
 {
 public:
@@ -23,10 +34,10 @@ public:
     // Interface-Functions
     void initialize();
     void start_game();
-    void show_state();
-    void place_piece(int position);
-    void move_piece(int from, int to);
-    void jump_piece(int from, int to);
+    void show_state(game_state state);
+    game_state place_piece(int position);
+    game_state move_piece(int from, int to);
+    game_state jump_piece(int from, int to);
     void attack(int position);
 
     // getter

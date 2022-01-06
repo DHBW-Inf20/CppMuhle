@@ -16,7 +16,7 @@ public:
      *  @param err_off Error offset
      */
     explicit wrong_move(const std::string &msg, const std::string &move) : error_message(msg),
-                                                                          move(move)
+                                                                           move(move)
     {
     }
 
@@ -41,4 +41,12 @@ public:
     }
 };
 
+class not_your_turn : virtual public std::exception
+{
+public:
+    virtual const char *what() const throw()
+    {
+        return "Du bist nicht dran, du Hund!";
+    }
+};
 #endif

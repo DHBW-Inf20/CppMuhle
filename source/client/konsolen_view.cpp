@@ -195,7 +195,7 @@ std::cout << "2: Beenden" << '\n';
 }
 
 
-void konsolen_view::show_message(std::string message)
+void konsolen_view::show_message(std::string message, int player)
 {
     // TODO: Es richtig implementieren (Den letzten Board stand speichern und beim aufruf von show_message alles clearen, dann das board zeichnen und dann die message)
     std::cout << message << '\n';

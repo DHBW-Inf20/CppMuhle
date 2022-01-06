@@ -108,17 +108,23 @@ void network_controller::initializePackageListeners()
 
     server->register_packet_listener<packet_game_place>([this](int id, packet_game_place *packet){
         std::cout << "Game place from " << id << ": " << packet->to <<  std::endl;
-        auto gameController = player_game_controller_map.find(id);
-        if(gameController == player_game_controller_map.end()){
-            player_game_controller_map.at(id)->show_message("You are not in a game");
+        auto game_controller = player_game_controller_map.find(id);
+        if(game_controller == player_game_controller_map.end()){
+            player_game_controller_map.at(id)->show_message("You are not in a game", game_controller->second->get_current_player());
             return;
         }
         try{
-            gameController->second->place_piece(id, packet->to);
+            std::cout << "Game Move input: " << packet->to << std::endl;
+            game_controller->second->place_piece(id, packet->to);
+            
         }
         catch(wrong_move &e){
             std::cout << "Player " << id << " tried an unvaild move" << std::endl;
-            player_game_controller_map.at(id)->show_message(e.what());
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_current_player());
+        }
+        catch(not_your_turn &e){
+            std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
         }
     });
 

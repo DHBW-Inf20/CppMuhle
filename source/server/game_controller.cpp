@@ -83,7 +83,7 @@ void game_controller::process_input(int player, std::string input){
 
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
-void game_controller::show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces){
+void game_controller::show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces, game_state state){
     packet_muhle_field packet;
     std::vector<int> player = {this->player1_id, this->player2_id};
     packet.white = white;
@@ -96,10 +96,10 @@ void game_controller::show_end_screen(bool whiteWins){
     //TODO: Send the right data to the client
 }
 
-void game_controller::show_message(std::string message){
+void game_controller::show_message(std::string message, int player){
     packet_message packet;
     packet.str = message;
-    this->server->send_packet(&packet, this->current_player);
+    this->server->send_packet(&packet, player);
 }
 
 void game_controller::change_player(){
@@ -112,8 +112,17 @@ void game_controller::change_player(){
 
 void game_controller::place_piece(int player, int command){
     if(!this->is_players_turn(player)){
-        throw wrong_move("Not your turn", get_game()->c_lookup_table.at(command));
+        throw not_your_turn();
     }
-    this->game->place_piece(command);
-    this->change_player();
+    game_state state = this->game->place_piece(1<<command);
+    if(state != game_state::ATTACKING){
+        this->change_player();
+    }
+}
+
+int game_controller::get_current_player(){
+    return this->current_player;
+}
+int game_controller::get_opposing_player(){
+    return this->current_player == this->player1_id ? this->player2_id : this->player1_id;
 }

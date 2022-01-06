@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <vector>
-
 #include "../network/net_server.hpp"
 #include "game_controller.hpp"
 

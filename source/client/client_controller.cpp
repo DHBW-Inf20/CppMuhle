@@ -79,7 +79,7 @@ void client_controller::run(){
     while(!exit_flag && this->ask_for_input(to,from, exit_flag)){
         this->process_input(to,from, exit_flag);
     }
-    // TODO: disconnect the player safely
+    // TODO: disconnect the player safely (wird überbewertet)
     std::cout << "Disconnecting..." << std::endl;
     this->client->join_thread();
 

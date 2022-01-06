@@ -25,11 +25,12 @@ void muhle_logik::initialize()
     this->attack_mode = false;
     this->white_pieces = 9;
     this->black_pieces = 9;
-    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces);
+    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces, game_state::PLACING);
 }
 
-void muhle_logik::place_piece(int position)
+game_state muhle_logik::place_piece(int position)
 {
+    game_state state;
     if (is_occupied(position, this->black.data | this->white.data))
     {
         throw wrong_move("Dieses Feld ist schon belegt!", this->c_lookup_table[std::log2(position)]);
@@ -47,9 +48,11 @@ void muhle_logik::place_piece(int position)
             this->black_pieces--;
         }
 
+
         if (this->black_pieces == 0 && this->white_pieces == 0)
         {                          // Wenn 18 Steine gesetzt wurden
             this->status = MOVING; // Gehe in nächste Phase über
+            state = game_state::MOVING;
         }
     }
     if (check_if_triplets(position))
@@ -58,19 +61,24 @@ void muhle_logik::place_piece(int position)
         {
             if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
             {
+                state = game_state::ENDED;
+                this->status = ENDED;
                 end_game();
             }
         }
         else
         {
             attack_mode = true;
+            state = game_state::ATTACKING;
         }
     }
     else
     {
         this->is_white_turn = !this->is_white_turn;
     }
-    show_state();
+
+    show_state(state);
+    return state;
 }
 
 bool muhle_logik::check_if_valid(int from, int to)
@@ -89,7 +97,7 @@ bool muhle_logik::check_if_valid(int from, int to)
     return true;
 }
 
-void muhle_logik::move_piece(int from, int to)
+game_state muhle_logik::move_piece(int from, int to)
 {
     if (!check_if_legal_move(from, to))
     {
@@ -97,11 +105,12 @@ void muhle_logik::move_piece(int from, int to)
         throw wrong_move("Du darfst diesen Zug nicht machen!", move);
     }
     // Da chechIfLegalMove checkt ob sich der Spieler nur um ein "Feld" bewegt hat, kann hier quasi nur ein "Feld" gesprungen werden und die funktionalität von jump_piece übernommen werden.
-    jump_piece(from, to);
+    return jump_piece(from, to);
 }
 
-void muhle_logik::jump_piece(int from, int to)
+game_state muhle_logik::jump_piece(int from, int to)
 {
+    game_state state;
     if (!check_if_valid(from, to))
     {
         std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];
@@ -117,11 +126,13 @@ void muhle_logik::jump_piece(int from, int to)
         {
             if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
             {
+                state = game_state::ENDED;
                 end_game();
             }
         }
         else
         {
+            state = game_state::ATTACKING;
             attack_mode = true;
         }
     }
@@ -129,7 +140,9 @@ void muhle_logik::jump_piece(int from, int to)
     {
         this->is_white_turn = !this->is_white_turn;
     }
-    show_state();
+
+    show_state(state);
+    return state;
 }
 
 bool muhle_logik::check_if_only_triplets(int24 &player)
@@ -259,6 +272,7 @@ bool muhle_logik::check_if_triplets(int last_moved_piece)
 
 void muhle_logik::attack(int position)
 {
+    game_state state;
     if (check_if_triplets(position, get_opposing_player()))
     {
         std::string move = this->c_lookup_table[std::log2(position)];
@@ -282,7 +296,20 @@ void muhle_logik::attack(int position)
     else
     {
         this->is_white_turn = !this->is_white_turn;
-        show_state();
+        switch(this->status){
+            case PLACING:
+                show_state(game_state::PLACING);
+                break;
+            case MOVING:
+                if(std::bitset<24>(get_current_player().data).count() == 3){
+                    show_state(game_state::JUMPING);
+                }else{
+                    show_state(game_state::MOVING);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -323,9 +350,9 @@ std::string muhle_logik::bit24_to_coordinate(int bit24) const
     return c_lookup_table[std::log2(bit24)];
 }
 
-void muhle_logik::show_state()
+void muhle_logik::show_state(game_state state)
 {
-    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces);
+    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces, state);
 }
 
 bool muhle_logik::get_attack_mode() const
@@ -367,7 +394,7 @@ int24 &muhle_logik::get_opposing_player()
 void muhle_logik::start_game()
 {
     this->status = PLACING;
-    this->show_state();
+    this->show_state(game_state::PLACING);
 }
 
 muhle_logik::~muhle_logik()
