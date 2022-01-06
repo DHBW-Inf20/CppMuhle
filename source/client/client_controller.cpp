@@ -68,8 +68,8 @@ void client_controller::run(){
 
 
     this->view->initialize();
-    this->input_type = input_type::LOCAL;
-    this->menu_state = menu_state::MAIN_MENU;
+    this->user_input_type = input_type::LOCAL;
+    this->current_menu_state = menu_state::MAIN_MENU;
     std::string to;
     std::string from;
     bool exit_flag = false;
@@ -83,7 +83,7 @@ void client_controller::run(){
 
 bool client_controller::ask_for_input(std::string &to, std::string &from, bool &exit_flag) const{
 
-    switch(this->input_type){
+    switch(this->user_input_type){
         case input_type::LOCAL:
             std::cout << "> ";
             std::cin >> to;
@@ -130,7 +130,7 @@ bool client_controller::ask_for_input(std::string &to, std::string &from, bool &
 }
 
 void client_controller::process_input(std::string &to, std::string &from, bool &exit_flag){
-    switch(this->input_type){
+    switch(this->user_input_type){
             case input_type::LOCAL:
                 this->process_local_input(to, exit_flag);
                 break;
@@ -141,7 +141,7 @@ void client_controller::process_input(std::string &to, std::string &from, bool &
 }
 
 void client_controller::process_local_input(std::string &to, bool &exit_flag){
-    switch(this->menu_state){
+    switch(this->current_menu_state){
         case menu_state::MAIN_MENU:
             this->process_main_menu_input(to, exit_flag);
             break;
@@ -166,7 +166,7 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
 
     switch(command){
         case 1:
-            this->menu_state = menu_state::CREATE_GAME;
+            this->current_menu_state = menu_state::CREATE_GAME;
             // Sends a packet to the server to request a game
             // Somehow wait for the server to answer with a game code, then print it to the screen
             // this->view->show_create_game_menu();
@@ -176,7 +176,7 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
             }
             break;
         case 2:
-            this->menu_state = menu_state::JOIN_GAME;
+            this->current_menu_state = menu_state::JOIN_GAME;
             this->view->show_join_game_menu();
             break;
         case 3:
@@ -206,8 +206,8 @@ void client_controller::process_join_game_input(std::string &to, bool  &exit_fla
     pgc.code = to;
     std::cout << "Debug game code: " << pgc.code << std::endl;
     this->client->send_packet(&pgc);
-    this->menu_state = menu_state::MAIN_MENU;
-    this->input_type = input_type::SERVER;
+    this->current_menu_state = menu_state::MAIN_MENU;
+    this->user_input_type = input_type::SERVER;
     this->next_move = game_state::PLACING;
 }
 

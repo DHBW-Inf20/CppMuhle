@@ -42,8 +42,8 @@ class client_controller{
         game_state next_move;
         net_client *client;
         konsolen_view *view;
-        input_type input_type;
-        menu_state menu_state;
+        input_type user_input_type;
+        menu_state current_menu_state;
         int client_id;
         bool ask_for_input(std::string &to, std::string &from, bool  &exit_flag) const;
         void process_input(std::string &to, std::string &from, bool  &exit_flag);
