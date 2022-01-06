@@ -6,6 +6,10 @@
 #include <iostream>
 
 
+/*
+* packet_muhle_field
+* Used to send the updated muhle data to the client
+*/
 class packet_muhle_field: public packet
 {
 public:

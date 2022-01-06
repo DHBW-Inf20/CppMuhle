@@ -1,5 +1,5 @@
-#ifndef MuhleLogik_HPP_GUARD
-#define MuhleLogik_HPP_GUARD
+#ifndef MuhleLogik_HPP
+#define MuhleLogik_HPP
 #include <string>
 #include <map>
 #include <vector>

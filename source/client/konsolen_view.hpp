@@ -1,5 +1,5 @@
-#ifndef KONSOLENVIEW_HPP_GUARD
-#define KONSOLENVIEW_HPP_GUARD
+#ifndef KONSOLENVIEW_HPP
+#define KONSOLENVIEW_HPP
 #include "logic/iview.hpp"
 #include <string>
 

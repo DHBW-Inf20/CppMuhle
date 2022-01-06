@@ -1,5 +1,5 @@
-#ifndef WRONG_MOVE_HPP_INCLUDE_GUARD
-#define WRONG_MOVE_HPP_INCLUDE_GUARD
+#ifndef WRONG_MOVE_HPP_INCLUDE
+#define WRONG_MOVE_HPP_INCLUDE
 
 #include <exception>
 #include <string>

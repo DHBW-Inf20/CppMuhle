@@ -1,5 +1,5 @@
-#ifndef helperTypes_HPP_GUARD
-#define helperTypes_HPP_GUARD
+#ifndef helperTypes_HPP
+#define helperTypes_HPP
 
 typedef struct int24
 {

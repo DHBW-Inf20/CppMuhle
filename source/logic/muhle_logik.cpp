@@ -1,7 +1,7 @@
 #include "muhle_logik.hpp"
-#include "konsolen_view.hpp"
 #include "helper_types.hpp"
 #include "utility.hpp"
+#include "iview.hpp"
 #include "exceptions/wrong_move.hpp"
 #include <iostream>
 #include <string>

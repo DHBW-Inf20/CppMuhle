@@ -1,5 +1,5 @@
-#ifndef UTILIY_HPP_GUARD
-#define UTILIY_HPP_GUARD
+#ifndef UTILIY_HPP
+#define UTILIY_HPP
 
 #include <string>
 #include <sstream>

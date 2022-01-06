@@ -1,0 +1,11 @@
+{
+    "id_usage":{
+        "-2": "packet_socket_disconnect",
+        "-1": "packet_socket_connect",
+        "0"  : "packet_message",
+        "1"  : "packet_login",
+        "2"  : "packet_muhle_field",
+        "3"  : "packet_game_request",
+        "4"  : "packet_game_code"
+    }
+}

@@ -1,6 +1,6 @@
-#ifndef CONTROLLER_HPP_GUARD
-#define CONTROLLER_HPP_GUARD
-#include "muhle_logik.hpp"
+#ifndef CONTROLLER_HPP
+#define CONTROLLER_HPP
+#include "../logic/muhle_logik.hpp"
 #include <map>
 #include <string>
 
