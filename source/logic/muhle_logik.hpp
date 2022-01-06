@@ -39,6 +39,9 @@ public:
     void set_status(game_state status);
     const std::vector<std::string> c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
 
+    // Für game_controller
+    bool is_white_turn;
+
 private:
     void end_game();
     bool is_occupied(int position, int player) const;
@@ -49,7 +52,6 @@ private:
     bool check_if_only_triplets(int24 &player) ;
     iview* view;
     game_state status; 
-    bool is_white_turn;
     bool attack_mode;
     int24 black;
     int24 white;

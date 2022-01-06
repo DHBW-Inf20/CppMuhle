@@ -66,12 +66,12 @@ void game_controller::run(){
     if(!this->can_start()){
         throw std::runtime_error("Not enough players");
     }
-    this->current_player = this->player1_id;
     this->game->initialize();
+    this->game->start_game();
 }
 
 bool game_controller::is_players_turn(int player){
-    return this->current_player == player;
+    return this->get_current_player() == player;
 }
 
 void game_controller::process_input(int player, std::string input){
@@ -92,7 +92,7 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
     packet.current_game_state = state;
     server->send_packet(&packet,get_current_player());
     packet_muhle_field packet2 = packet;
-    packet.current_game_state = game_state::WAITING_FOR_OPPONENT;
+    packet2.current_game_state = game_state::WAITING_FOR_OPPONENT;
     server->send_packet(&packet2,get_opposing_player());
     std::cout << "send show board packet" << std::endl;
 }
@@ -107,27 +107,16 @@ void game_controller::show_message(std::string message, int player){
     this->server->send_packet(&packet, player);
 }
 
-void game_controller::change_player(){
-    if(this->current_player == this->player1_id){
-        this->current_player = this->player2_id;
-    }else{
-        this->current_player = this->player1_id;
-    }
-}
-
 void game_controller::place_piece(int player, int command){
     if(!this->is_players_turn(player)){
         throw not_your_turn();
     }
-    game_state state = this->game->place_piece(1<<command);
-    if(state != game_state::ATTACKING){
-        this->change_player();
-    }
+    this->game->place_piece(1<<command);
 }
 
 int game_controller::get_current_player(){
-    return this->current_player;
+    return this->game->is_white_turn ? player1_id : player2_id;
 }
 int game_controller::get_opposing_player(){
-    return this->current_player == this->player1_id ? this->player2_id : this->player1_id;
+    return this->game->is_white_turn ? player2_id : player1_id;
 }

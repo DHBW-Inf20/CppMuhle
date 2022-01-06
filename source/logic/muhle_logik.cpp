@@ -25,12 +25,12 @@ void muhle_logik::initialize()
     this->attack_mode = false;
     this->white_pieces = 9;
     this->black_pieces = 9;
-    this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, game_state::PLACING);
+    // this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, this->status);
 }
 
 game_state muhle_logik::place_piece(int position)
 {
-    game_state state;
+    game_state state = this->status;
     if (is_occupied(position, this->black.data | this->white.data))
     {
         throw wrong_move("Dieses Feld ist schon belegt!", this->c_lookup_table[std::log2(position)]);
@@ -110,7 +110,7 @@ game_state muhle_logik::move_piece(int from, int to)
 
 game_state muhle_logik::jump_piece(int from, int to)
 {
-    game_state state;
+    game_state state = this->status;
     if (!check_if_valid(from, to))
     {
         std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];

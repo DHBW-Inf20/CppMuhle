@@ -53,11 +53,9 @@ class game_controller : public iview{
         void process_input(int player, std::string input);
 
     private:
-        void change_player();
         net_server *server;
         int player1_id;
         int player2_id;
-        int current_player;
         muhle_logik *game;
         
 };
