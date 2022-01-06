@@ -53,6 +53,8 @@ void client_controller::run(){
     // TODO: register all package listeners for sever messages
 
     this->view->show_start_menu();
+    this->input_type = input_type::LOCAL;
+    this->menu_state = menu_state::MAIN_MENU;
     std::string to;
     std::string from;
     bool exit_flag = false;
