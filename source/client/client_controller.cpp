@@ -172,8 +172,7 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
             // this->view->show_create_game_menu();
             {
                 packet_game_request pgr;
-                this->client->send_packet(&pgr);
-                packet_game_code* pgc = this->client->wait_for_packet<packet_game_code>();
+                packet_game_code* pgc = this->client->send_and_receive_packet<packet_game_code>(&pgr);
                 std::cout << "Game Code: " << pgc->code << std::endl;
                 delete pgc;
             }

@@ -89,6 +89,13 @@ public:
 
         return packet;
     }
+
+    template <class P>
+    P* send_and_receive_packet(packet* packet)
+    {
+        send_packet(packet);
+        return wait_for_packet<P>();
+    }
 };
 
 #endif
