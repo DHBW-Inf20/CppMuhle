@@ -41,6 +41,9 @@ class game_controller : public iview{
         bool can_start();
         bool is_players_turn(int player);
 
+        muhle_logik *get_game(){
+            return this->game;
+        }
         // Processes a game Input, the client needs to filter out whats menu-input and whats game input
         void process_input(int player, std::string input);
 

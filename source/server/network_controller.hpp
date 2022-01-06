@@ -31,6 +31,7 @@ class network_controller
         std::map<int, std::string> names;
         std::string create_new_game_id();
         bool is_game_id_valid(std::string gameCode);
+        void initializePackageListeners();
         net_server *server;
         std::map<std::string, game_controller*> game_controller_map;
         std::map<int, game_controller*> player_game_controller_map;

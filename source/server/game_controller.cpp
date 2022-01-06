@@ -96,6 +96,8 @@ void game_controller::show_end_screen(bool whiteWins){
 }
 
 void game_controller::show_message(std::string message){
-    //TODO: Send the message through to the client;
+    packet_message packet;
+    packet.str = message;
+    this->server->send_packet(&packet, this->current_player);
 }
 

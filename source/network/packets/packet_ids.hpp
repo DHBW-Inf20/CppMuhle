@@ -9,5 +9,5 @@
 #define PACKET_GAME_REQUEST_ID 3
 #define PACKET_GAME_CODE_ID 4
 #define PACKET_ABORT_GAME_ID 5
-
+#define PACKET_GAME_PLACE 6
 #endif

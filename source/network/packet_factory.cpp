@@ -25,6 +25,7 @@ void packet_factory::initialize()
     this->register_packet(new packet_muhle_field());
     this->register_packet(new packet_game_request());
     this->register_packet(new packet_game_code());
+    this->register_packet(new packet_game_place());
 }
 
 packet* packet_factory::get_packet_from_id(char id)
