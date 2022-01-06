@@ -51,8 +51,7 @@ void client_controller::run(){
 
     
     // TODO: register all package listeners for sever messages
-
-    this->view->show_start_menu();
+    this->view->initialize();
     this->input_type = input_type::LOCAL;
     this->menu_state = menu_state::MAIN_MENU;
     std::string to;
@@ -61,6 +60,7 @@ void client_controller::run(){
     while(!exit_flag && this->ask_for_input(to,from, exit_flag)){
         this->process_input(to,from, exit_flag);
     }
+    // TODO: disconnect the player safely
     this->client->join_thread();
 
 }
@@ -162,6 +162,7 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
         case 3:
             this->view->show_instructions();
             SHOW_PRESS_ANY_KEY;
+            this->view->show_start_menu();
             break;
         case 4:
             exit_flag = true;
