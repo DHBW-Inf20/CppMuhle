@@ -3,10 +3,7 @@
 
 #include <exception>
 #include <string>
-game_controller::game_controller()
-{
-    
-}
+
 
 void game_controller::join_game(int player){
     if(this->player1_id == 0){
@@ -34,7 +31,7 @@ void game_controller::join_player2(int player){
     }
 }
 
-void game_controller::join_game(int player){
+void game_controller::leave_game(int player){
     if(this->player1_id == player){
         this->leave_player1();
     }else if(this->player2_id == player){

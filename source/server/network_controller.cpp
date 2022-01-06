@@ -1,4 +1,5 @@
 #include "network_controller.hpp"
+#include "../network/net_server.hpp"
 
 network_controller::network_controller()
 {
@@ -13,6 +14,26 @@ network_controller::~network_controller()
 void network_controller::run()
 {
     // TODO: Initialize the server and start listening for connections (Implementing the listeners)
+    server->register_packet_listener<packet_socket_connect>([](int id, packet_socket_connect *packet) {
+        std::cout << "Client connected: " << id << std::endl;
+    });
+
+    server->register_packet_listener<packet_socket_disconnect>([](int id, packet_socket_disconnect *packet) {
+        std::cout << "Client disconnected: " << id << std::endl;
+    });
+
+    server->register_packet_listener<packet_login>([this](int id, packet_login *packet) {
+        std::cout << "Login from " << id << ": " << packet->name << std::endl;
+        names[id] = packet->name;
+    });
+
+    server->register_packet_listener<packet_game_request>([this](int id, packet_game_request *packet){
+
+    });
+    
+
+    server->start();
+    server->join_thread();
 }
 
 void network_controller::join_game(int player, unsigned int gameCode)

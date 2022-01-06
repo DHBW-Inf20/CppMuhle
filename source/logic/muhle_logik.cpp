@@ -2,7 +2,7 @@
 #include "helper_types.hpp"
 #include "utility.hpp"
 #include "iview.hpp"
-#include "exceptions/wrong_move.hpp"
+#include "../exceptions/wrong_move.hpp"
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -18,7 +18,6 @@ muhle_logik::muhle_logik(iview *view)
 
 void muhle_logik::initialize()
 {
-    this->view->initialize();
     this->is_white_turn = true;
     this->status = INITIALIZED;
     this->black.data = 0;

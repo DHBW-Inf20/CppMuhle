@@ -27,7 +27,8 @@ class network_controller
 
     
     private:   
-        unsigned int id_seed;
+        unsigned int id_seed;   
+        std::map<int, std::string> names;
         unsigned int create_new_game_id();
         net_server *server;
         std::map<unsigned int, game_controller*> game_controller_map;
