@@ -21,17 +21,18 @@ class network_controller
         void run();
         
         // Search for a game with the given game Code, if it exists, join it by addding the player and with the game to the player_game_controller_map
-        void join_game(int player, unsigned int gameCode);
+        void join_game(int player, std::string gameCode);
         // Create a new game
-        unsigned int create_new_game(int playerid);
+        std::string create_new_game(int playerid);
 
     
     private:   
-        unsigned int id_seed;   
+        std::string id_seed;   
         std::map<int, std::string> names;
-        unsigned int create_new_game_id();
+        std::string create_new_game_id();
+        bool is_game_id_valid(std::string gameCode);
         net_server *server;
-        std::map<unsigned int, game_controller*> game_controller_map;
+        std::map<std::string, game_controller*> game_controller_map;
         std::map<int, game_controller*> player_game_controller_map;
 };
 

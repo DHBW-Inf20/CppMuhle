@@ -51,6 +51,18 @@ void client_controller::run(){
 
     
     // TODO: register all package listeners for sever messages
+    this->client->register_packet_listener<packet_game_code>([](packet_game_code *packet) {
+        std::cout << "Game code: " << packet->code << std::endl;   
+    });
+
+
+
+
+
+
+
+
+
     this->view->initialize();
     this->input_type = input_type::LOCAL;
     this->menu_state = menu_state::MAIN_MENU;
@@ -139,7 +151,7 @@ void client_controller::process_local_input(std::string &to, bool &exit_flag){
 }
 
 void client_controller::process_main_menu_input(std::string &to, bool &exit_flag){
-    int command;
+    int command = 4;
     try{
         command = std::stoi(to);
     }
@@ -154,7 +166,10 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
             // Sends a packet to the server to request a game
             // Somehow wait for the server to answer with a game code, then print it to the screen
             // this->view->show_create_game_menu();
-            throw std::runtime_error("Not implemented");
+            {
+                packet_game_request pgr;
+                this->client->send_packet(&pgr);
+            }
             break;
         case 2:
             this->menu_state = menu_state::JOIN_GAME;
@@ -177,7 +192,6 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
 
 void client_controller::process_create_game_input(std::string &to, bool  &exit_flag){
     // TODO: Implement create game input
-    
     throw std::runtime_error("Not implemented");
 }
 

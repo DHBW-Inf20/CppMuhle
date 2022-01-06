@@ -1,6 +1,8 @@
 #include "network_controller.hpp"
 #include "../network/net_server.hpp"
-
+#include <stdlib.h>
+#include <time.h>
+std::string gen_random(const int len);
 network_controller::network_controller()
 {
     this->server = new net_server(42069);
@@ -13,6 +15,7 @@ network_controller::~network_controller()
 
 void network_controller::run()
 {
+    srand (time(NULL));
     // TODO: Initialize the server and start listening for connections (Implementing the listeners)
     server->register_packet_listener<packet_socket_connect>([](int id, packet_socket_connect *packet) {
         std::cout << "Client connected: " << id << std::endl;
@@ -40,7 +43,7 @@ void network_controller::run()
     server->join_thread();
 }
 
-void network_controller::join_game(int player, unsigned int gameCode)
+void network_controller::join_game(int player, std::string gameCode)
 {
     auto game = game_controller_map.find(gameCode);
     if (game != game_controller_map.end()){
@@ -55,20 +58,37 @@ void network_controller::join_game(int player, unsigned int gameCode)
 }
 
 /* generate a longer code than just a simple integer while still having a simple way of identifying the game 
-Hash-Function from Thomas Mueller: https://stackoverflow.com/a/12996028/14379859
-*/
-unsigned int network_controller::create_new_game_id(){
-    unsigned int x = ++this->id_seed;
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = (x >> 16) ^ x;
-    return x;
+Hash-Function from Thomas Mueller: https://stackoverflow.com/a/12996028/14379859 */
+std::string network_controller::create_new_game_id(){
+    std::string game_id;
+    do {
+        game_id = gen_random(4);
+    } while(is_game_id_valid(game_id));
+    return game_id;
 }
 
-unsigned int network_controller::create_new_game(int playerid)
+bool network_controller::is_game_id_valid(std::string game_id){
+    return game_controller_map.find(game_id) != game_controller_map.end();
+}
+
+/* https://stackoverflow.com/questions/440133/how-do-i-create-a-random-alpha-numeric-string-in-c */
+std::string gen_random(const int len) {
+    
+    static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string tmp_s;
+    tmp_s.reserve(len);
+
+    for (int i = 0; i < len; ++i) {
+        tmp_s += alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+    
+    return tmp_s;
+}
+
+std::string network_controller::create_new_game(int playerid)
 {
     game_controller *game = new game_controller();
-    unsigned int gameCode = create_new_game_id();
+    std::string gameCode = create_new_game_id();
     game_controller_map[gameCode] = game;
     player_game_controller_map[playerid] = game;
     return gameCode;
