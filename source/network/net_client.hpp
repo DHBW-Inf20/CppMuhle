@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <thread>
+#include <future>
 #include <map>
 #include <boost/asio.hpp>
 #include "packet_factory.hpp"
@@ -30,7 +31,8 @@ class net_client
 private:
     ::packet_factory packet_factory;
 
-    std::map<int, std::vector<std::function<void(packet* packet)>>> listeners;
+    std::map<char, std::vector<std::function<void(packet* packet)>>> listeners;
+    std::map<char, std::promise<packet*>*> promises;
 
     boost::asio::io_service io_service;
     std::string address;
@@ -39,6 +41,7 @@ private:
 
     void handle_read();
     void receive_packet(char packet_id, int32_t size);
+    bool call_promises(packet*);
     void call_listeners(packet*);
 
     packet_buf_t get_packet_buf(packet*, packet_data_t &packet_data);
@@ -57,7 +60,7 @@ public:
 
     void send_packet(packet*);
     
-    template <typename P>
+    template <class P>
     void register_packet_listener(std::function<void(P *packet)> method)
     {
         char packet_id = P().get_id();
@@ -68,6 +71,23 @@ public:
         listeners[packet_id].push_back([method](packet *packet) {
             method((P*) packet);
         });
+    }
+
+    template <class P>
+    P* wait_for_packet()
+    {
+        char packet_id = P().get_id();
+
+        std::promise<packet*> promise;
+        std::future<packet*> future = promise.get_future();
+
+        promises[packet_id] = &promise;
+
+        P* packet = (P*) future.get();
+
+        promises.erase(packet_id);
+
+        return packet;
     }
 };
 

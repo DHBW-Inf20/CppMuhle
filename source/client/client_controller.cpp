@@ -51,9 +51,9 @@ void client_controller::run(){
 
     
     // TODO: register all package listeners for sever messages
-    this->client->register_packet_listener<packet_game_code>([](packet_game_code *packet) {
-        std::cout << "Game code: " << packet->code << std::endl;   
-    });
+    // this->client->register_packet_listener<packet_game_code>([](packet_game_code *packet) {
+    //     std::cout << "Game code: " << packet->code << std::endl;   
+    // });
 
     this->client->register_packet_listener<packet_muhle_field>([this] ( packet_muhle_field *packet) {
         std::cout << "RECIEVED MUHLE PACKAGE" << std::endl;
@@ -171,8 +171,11 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
             // Somehow wait for the server to answer with a game code, then print it to the screen
             // this->view->show_create_game_menu();
             {
-                packet_game_request pgc;
-                this->client->send_packet(&pgc);
+                packet_game_request pgr;
+                this->client->send_packet(&pgr);
+                packet_game_code* pgc = this->client->wait_for_packet<packet_game_code>();
+                std::cout << "Game Code: " << pgc->code << std::endl;
+                delete pgc;
             }
             break;
         case 2:

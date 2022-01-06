@@ -89,7 +89,10 @@ void net_client::receive_packet(char packet_id, int32_t size)
                     packet_data.data = data_buf;
                     packet->deserialize(packet_data);
                     this->call_listeners(packet);
-                    delete packet;
+                    if (!this->call_promises(packet))
+                    {
+                        delete packet;
+                    } // else: SELBER DELETEN!
                 }
                 else
                 {
@@ -112,6 +115,16 @@ void net_client::receive_packet(char packet_id, int32_t size)
             std::cout << "Packet with id " << packet_id << " not found" << std::endl;
         }
     }
+}
+
+bool net_client::call_promises(packet* packet)
+{
+    if (promises.find(packet->get_id()) != promises.end())
+    {
+        promises[packet->get_id()]->set_value(packet);
+        return true;
+    }
+    return false;
 }
 
 void net_client::call_listeners(packet* packet)
