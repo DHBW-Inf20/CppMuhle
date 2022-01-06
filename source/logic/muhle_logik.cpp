@@ -25,6 +25,7 @@ void muhle_logik::initialize()
     this->attack_mode = false;
     this->white_pieces = 9;
     this->black_pieces = 9;
+    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces);
 }
 
 void muhle_logik::place_piece(int position)

@@ -15,8 +15,10 @@
 class game_controller : public iview{
     public:
 
-        game_controller(){
+        game_controller(net_server *server) : server(server) {
             this->game = new muhle_logik(this);
+            this->player1_id = 0;
+            this->player2_id = 0;
         };
         ~game_controller(){
             delete this->game;

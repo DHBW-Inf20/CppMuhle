@@ -15,7 +15,7 @@ network_controller::~network_controller()
 
 void network_controller::run()
 {
-    srand (time(NULL));
+    srand(time(NULL));
     // TODO: Initialize the server and start listening for connections (Implementing the listeners)
     server->register_packet_listener<packet_socket_connect>([](int id, packet_socket_connect *packet) {
         std::cout << "Client connected: " << id << std::endl;
@@ -38,7 +38,11 @@ void network_controller::run()
         this->server->send_packet(&pgc, id);
     });
     
-
+    server->register_packet_listener<packet_game_code>([this](int id, packet_game_code *packet){
+        std::cout << "Game code from " << id << ": " << packet->code << std::endl;
+        join_game(id, packet->code);
+    });
+    
     server->start();
     server->join_thread();
 }
@@ -87,10 +91,10 @@ std::string gen_random(const int len) {
 
 std::string network_controller::create_new_game(int playerid)
 {
-    game_controller *game = new game_controller();
+    game_controller *game = new game_controller(this->server);
     std::string gameCode = create_new_game_id();
     game_controller_map[gameCode] = game;
     player_game_controller_map[playerid] = game;
+    game->join_game(playerid);
     return gameCode;
-
 }

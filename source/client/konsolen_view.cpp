@@ -8,14 +8,23 @@
 #include <windows.h>
 #endif
 
-#define CLEAR_SCREEN "\033[2J\33[H"
-// #define CLEAR_SCREEN ""
+// #define CLEAR_SCREEN "\033[2J\33[H"
+#define CLEAR_SCREEN ""
 #define SIDEBAR_MARGIN " "
 #define PIECEMARGIN " "
 #define MUHLE_PIECE_WHITE "⚪"
 #define MUHLE_PIECE_BLACK "◯ "
 #define MUHLE_PIECE_EMPTY "+-"
 #define MUHLE_PIECE_EMPTY_RIGHT "+ "
+
+#define CUR_UP(x) "\033[" << x << "A"
+#define CUR_RIGHT(x) "\033[" << x << "C"
+#define CUR_LEFT(x) "\033[" << x << "D"
+#define CUR_COL(x) "\033[" << x << "G"
+#define CUR_ROW(x) "\033[" << x << "d"
+#define ERAZE_LINE "\033[K"
+#define CUR_SAVE "\033[s"
+#define CUR_RESTORE "\033[u"
 
 
 void konsolen_view::initialize(){
@@ -194,5 +203,5 @@ void konsolen_view::show_message(std::string message)
 
 void konsolen_view::show_join_game_menu()
 {
-    // TODO: Einen Hinweis printen mit der Nachricht, dass ein code eingegeben werden muss.
+    std::cout << "Gibt den Spielcode ein: ____" << CUR_LEFT(4);
 }
