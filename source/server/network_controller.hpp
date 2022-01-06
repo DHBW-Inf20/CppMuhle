@@ -31,7 +31,7 @@ class network_controller
         unsigned int create_new_game_id();
         net_server *server;
         std::map<unsigned int, game_controller*> game_controller_map;
-        std::map<int, game_controller*> player_game_controller_map;
+        std::map<int, unsigned int> player_game_controller_map;
 };
 
 #endif
