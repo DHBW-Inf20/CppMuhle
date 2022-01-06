@@ -4,31 +4,14 @@
 
 #include "../network/net_client.hpp"
 #include "konsolen_view.hpp"
+#include "../logic/helper_types.hpp"
 
 // To keep track if the current user input should be processed by the server, or locally
-enum input_type{
-    LOCAL,
-    SERVER
-};
 
-// To keep track of the current menu the user is in
-enum menu_state{
-    MAIN_MENU,
-    CREATE_GAME,
-    JOIN_GAME,
-};
-
-enum game_state{
-    WAITING_FOR_OPPONENT,
-    PLACING,
-    MOVING,
-    JUMPING,
-    ATTACKING,
-    ENDED
-};
 /*  client_controller
     Processes the input from cin of a user and either forwards it either to the server or a menu handler
 */
+
 class client_controller{
     
     public:

@@ -19,13 +19,13 @@ muhle_logik::muhle_logik(iview *view)
 void muhle_logik::initialize()
 {
     this->is_white_turn = true;
-    this->status = INITIALIZED;
+    this->status = game_state::WAITING_FOR_OPPONENT;
     this->black.data = 0;
     this->white.data = 0;
     this->attack_mode = false;
     this->white_pieces = 9;
     this->black_pieces = 9;
-    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces, game_state::PLACING);
+    this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, game_state::PLACING);
 }
 
 game_state muhle_logik::place_piece(int position)
@@ -59,7 +59,7 @@ game_state muhle_logik::place_piece(int position)
     {
         if (check_if_only_triplets(get_opposing_player()))
         {
-            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
+            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_state::MOVING)
             {
                 state = game_state::ENDED;
                 this->status = ENDED;
@@ -124,7 +124,7 @@ game_state muhle_logik::jump_piece(int from, int to)
     {
         if (check_if_only_triplets(get_opposing_player()))
         {
-            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_status::MOVING)
+            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_state::MOVING)
             {
                 state = game_state::ENDED;
                 end_game();
@@ -272,7 +272,6 @@ bool muhle_logik::check_if_triplets(int last_moved_piece)
 
 void muhle_logik::attack(int position)
 {
-    game_state state;
     if (check_if_triplets(position, get_opposing_player()))
     {
         std::string move = this->c_lookup_table[std::log2(position)];
@@ -352,7 +351,7 @@ std::string muhle_logik::bit24_to_coordinate(int bit24) const
 
 void muhle_logik::show_state(game_state state)
 {
-    this->view->show_board(this->white, this->black, this->is_white_turn, this->white_pieces, this->black_pieces, state);
+    this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, state);
 }
 
 bool muhle_logik::get_attack_mode() const
@@ -368,7 +367,7 @@ int24 &muhle_logik::get_white()
 {
     return this->white;
 }
-game_status muhle_logik::get_status() const
+game_state muhle_logik::get_status() const
 {
     return this->status;
 }
@@ -377,7 +376,7 @@ void muhle_logik::set_attack_mode(bool attack_mode)
 {
     this->attack_mode = attack_mode;
 }
-void muhle_logik::set_status(game_status status)
+void muhle_logik::set_status(game_state status)
 {
     this->status = status;
 }

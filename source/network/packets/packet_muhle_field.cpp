@@ -1,11 +1,19 @@
 #include "packet.hpp"
 #include <string>
 #include "../../logic/helper_types.hpp"
-
 #include <bitset>
 #include <iostream>
 
-
+/*
+enum game_state{
+    WAITING_FOR_OPPONENT, = 0
+    PLACING, = 1
+    MOVING, .. "
+    JUMPING,
+    ATTACKING,
+    ENDED
+};
+*/
 /*
 * packet_muhle_field
 * Used to send the updated muhle data to the client
@@ -19,15 +27,12 @@ public:
     char black_pieces_left;
     char white_pieces_left;
 
-    char game_state;
 
-    char message;
-
-    bool own_turn;
+    game_state current_game_state;
 
     packet_data_t serialize() 
     {
-        char* data = (char*) malloc(2 * sizeof(int24) + 4 * sizeof(char) + 1 * sizeof(bool));
+        char* data = (char*) malloc(2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state));
 
         memcpy(data, &black, sizeof(int24));
         memcpy(data + sizeof(int24), &white, sizeof(int24));
@@ -35,14 +40,11 @@ public:
         memcpy(data + 2 * sizeof(int24), &black_pieces_left, sizeof(char));
         memcpy(data + 2 * sizeof(int24) + sizeof(char), &white_pieces_left, sizeof(char));
 
-        memcpy(data + 2 * sizeof(int24) + 2 * sizeof(char), &game_state, sizeof(char));
-        memcpy(data + 2 * sizeof(int24) + 3 * sizeof(char), &message, sizeof(char));
-
-        memcpy(data + 2 * sizeof(int24) + 4 * sizeof(char), &own_turn, sizeof(bool));
+        memcpy(data + 2 * sizeof(int24) + 2 * sizeof(char), &current_game_state, sizeof(game_state));
 
         packet_data_t packet_data;
         packet_data.data = data;
-        packet_data.size = 2 * sizeof(int24) + 4 * sizeof(char) + 1 * sizeof(bool);
+        packet_data.size = 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state);
         // std::cout << std::bitset<64>(data) << std::endl;
         return packet_data;
     }
@@ -55,12 +57,8 @@ public:
         memcpy(&black_pieces_left, packet_data.data + 2 * sizeof(int24), sizeof(char));
         memcpy(&white_pieces_left, packet_data.data + 2 * sizeof(int24) + sizeof(char), sizeof(char));
         
-        memcpy(&game_state, packet_data.data + 2 * sizeof(int24) + 2 * sizeof(char), sizeof(char));
+        memcpy(&current_game_state, packet_data.data + 2 * sizeof(int24) +  2 * sizeof(char), sizeof(game_state));
         
-        memcpy(&message, packet_data.data + 2 * sizeof(int24) +  3 * sizeof(char), sizeof(char));
-        
-        memcpy(&own_turn, packet_data.data + 2 * sizeof(int24) + 4 * sizeof(char), sizeof(bool));
-
         // std::cout << std::bitset<64>(&packet_data.data) << std::endl;
 
     }

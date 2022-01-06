@@ -83,13 +83,18 @@ void game_controller::process_input(int player, std::string input){
 
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
-void game_controller::show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces, game_state state){
+void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
     packet_muhle_field packet;
-    std::vector<int> player = {this->player1_id, this->player2_id};
     packet.white = white;
     packet.black = black; 
+    packet.black_pieces_left = black_pieces;
+    packet.white_pieces_left = white_pieces;
+    packet.current_game_state = state;
+    server->send_packet(&packet,get_current_player());
+    packet_muhle_field packet2 = packet;
+    packet.current_game_state = game_state::WAITING_FOR_OPPONENT;
+    server->send_packet(&packet2,get_opposing_player());
     std::cout << "send show board packet" << std::endl;
-    server->send_packet(&packet,player);
 }
 
 void game_controller::show_end_screen(bool whiteWins){

@@ -1,5 +1,4 @@
 #include "client_controller.hpp"
-#include "konsolen_view.hpp"
 #include "../network/net_client.hpp"
 
 #ifdef _WIN32
@@ -8,8 +7,8 @@
 #define SHOW_PRESS_ANY_KEY system("read");
 #endif
 
-// #define CLEAR_SCREEN "\033[2J\33[H"
-#define CLEAR_SCREEN ""
+#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN ""
 #define CUR_UP(x) "\033[" << x << "A"
 #define CUR_RIGHT(x) "\033[" << x << "C"
 #define CUR_LEFT(x) "\033[" << x << "D"
@@ -57,7 +56,7 @@ void client_controller::run(){
 
     this->client->register_packet_listener<packet_muhle_field>([this] ( packet_muhle_field *packet) {
         std::cout << "RECIEVED MUHLE PACKAGE" << std::endl;
-        this->view->show_board(packet->white,packet->black,true,9,9);
+        this->view->show_board(packet->white,packet->black,packet->white_pieces_left,packet->black_pieces_left,packet->current_game_state);
     });
 
       this->client->register_packet_listener<packet_message>([this] (packet_message *packet) {

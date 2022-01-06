@@ -8,8 +8,8 @@
 #include <windows.h>
 #endif
 
-// #define CLEAR_SCREEN "\033[2J\33[H"
-#define CLEAR_SCREEN ""
+#define CLEAR_SCREEN "\033[2J\33[H"
+// #define CLEAR_SCREEN ""
 #define SIDEBAR_MARGIN " "
 #define PIECEMARGIN " "
 #define MUHLE_PIECE_WHITE "⚪"
@@ -35,15 +35,22 @@ void konsolen_view::initialize(){
     show_start_menu();
 }
 
-void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int white_pieces, int black_pieces){
+void konsolen_view::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
+    this->cached_black = black;
+    this->cached_white = white;
+    this->cached_white_pieces = white_pieces;
+    this->cached_black_pieces = black_pieces;
+    this->cached_state = state;
+    this->print_board("");
+}
+
+void konsolen_view::print_board(std::string message){
     std::cout << CLEAR_SCREEN;
-    std::string farbe = isWhiteMove ? MUHLE_PIECE_WHITE: MUHLE_PIECE_BLACK;
-    
     int whiteIndex;
     int blackIndex;
     for (int i = 0; i < 24; i++){
-        whiteIndex = (white.data >> i) & 0b1;
-        blackIndex = (black.data >> i) & 0b1;
+        whiteIndex = (cached_white.data >> i) & 0b1;
+        blackIndex = (cached_black.data >> i) & 0b1;
 
         if (whiteIndex == 1 && blackIndex == 0){
             print_field[i] = MUHLE_PIECE_WHITE;
@@ -60,14 +67,14 @@ void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int w
     }
 
     for (int i = 0; i < 9; i++){
-        if (i < white_pieces) {
+        if (i < cached_white_pieces) {
             white_pieces_array[i] = MUHLE_PIECE_WHITE;
         } else {
             white_pieces_array[i] = "  ";
         }
     }
     for (int i = 0; i < 9; i++){
-        if (i < black_pieces) {
+        if (i < cached_black_pieces) {
             black_pieces_array[i] = MUHLE_PIECE_BLACK;
         } else {
             black_pieces_array[i] = "  ";
@@ -75,7 +82,13 @@ void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int w
     }
 
     //print field
-    std::cout << "     Am Zug: " << farbe << "\n";
+    if(cached_state != game_state::WAITING_FOR_OPPONENT){
+        std::cout << "Du bist am Zug!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Warte auf Gegner..." << std::endl;
+    }
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
     std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << white_pieces_array[0] << PIECEMARGIN << black_pieces_array[0] << "\n";
     std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[1] << PIECEMARGIN << black_pieces_array[1] << "\n";
@@ -197,8 +210,7 @@ std::cout << "2: Beenden" << '\n';
 
 void konsolen_view::show_message(std::string message, int player)
 {
-    // TODO: Es richtig implementieren (Den letzten Board stand speichern und beim aufruf von show_message alles clearen, dann das board zeichnen und dann die message)
-    std::cout << message << '\n';
+    print_board(message);
 }
 
 void konsolen_view::show_join_game_menu()

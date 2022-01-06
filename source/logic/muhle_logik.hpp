@@ -5,25 +5,10 @@
 #include <vector>
 
 #include "helper_types.hpp"
-#include "../client/client_controller.hpp"
 #include "iview.hpp"
 
-enum game_status {
-    INITIALIZED,
-    PLACING,
-    MOVING,
-    ENDED
-};
-/*
-enum game_state{
-    WAITING_FOR_OPPONENT,
-    PLACING,
-    MOVING,
-    JUMPING,
-    ATTACKING,
-    ENDED
-};
-*/
+
+
 class muhle_logik
 {
 public:
@@ -42,7 +27,7 @@ public:
 
     // getter
     iview *get_view();
-    game_status get_status() const;
+    game_state get_status() const;
     bool get_attack_mode() const;
     int24& get_black();
     int24& get_white();
@@ -51,7 +36,7 @@ public:
 
     // setter
     void set_attack_mode(bool attack_mode);
-    void set_status(game_status status);
+    void set_status(game_state status);
     const std::vector<std::string> c_lookup_table = {"a1", "d1", "g1", "b2", "d2", "f2", "c3", "d3", "e3", "a4", "b4", "c4", "e4", "f4", "g4", "c5", "d5", "e5", "b6", "d6", "f6", "a7", "d7", "g7"};
 
 private:
@@ -63,7 +48,7 @@ private:
     bool check_if_triplets(int lastMovedPiece, int24& player) ;
     bool check_if_only_triplets(int24 &player) ;
     iview* view;
-    game_status status; 
+    game_state status; 
     bool is_white_turn;
     bool attack_mode;
     int24 black;

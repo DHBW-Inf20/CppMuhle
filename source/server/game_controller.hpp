@@ -5,7 +5,6 @@
 #include "../logic/iview.hpp"
 #include "../network/net_server.hpp"
 #include "../logic/helper_types.hpp"
-#include "../client/client_controller.hpp"
 #include <string>
 
 /*  game_controller.hpp
@@ -27,7 +26,7 @@ class game_controller : public iview{
         void run();
 
         // iview interface to update the client about the current game state
-        void show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces, game_state state);
+        void show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state);
         void show_end_screen(bool whiteWins);
         void show_message(std::string message, int player);
 
