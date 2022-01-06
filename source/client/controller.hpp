@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_HPP
 #define CONTROLLER_HPP
 #include "../logic/muhle_logik.hpp"
+#include "konsolen_view.hpp"
 #include <map>
 #include <string>
 
@@ -24,6 +25,7 @@ public:
     controller();
     void run();
     ~controller();
+
 };
 
 #endif

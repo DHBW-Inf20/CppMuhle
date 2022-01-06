@@ -79,7 +79,7 @@ void controller::run()
     int command;
     int second_command;
     // run_test_sequence();
-    while (std::cin.good() && !exitFlag &&  ask_for_input(from, to) )
+    while (!exitFlag &&  ask_for_input(from, to) )
     {
         std::transform(from.begin(), from.end(), from.begin(), ::tolower);
         std::transform(to.begin(), to.end(), to.begin(), ::tolower);

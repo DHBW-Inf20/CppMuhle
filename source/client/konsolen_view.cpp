@@ -85,12 +85,13 @@ void konsolen_view::show_board(int24 white, int24 black, bool isWhiteMove, int w
 
 void konsolen_view::show_start_menu(){
     std::cout << CLEAR_SCREEN;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "Startmenü Mühle" << std::endl;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "1. Spiel starten" << std::endl;
-    std::cout << "2. Anleitung anzeigen" << std::endl;
-    std::cout << "3. Spiel beenden" << std::endl;
+    std::cout << "==============================================\n";
+    std::cout << "Startmenü Mühle\n";
+    std::cout << "==============================================\n";
+    std::cout << "1. Neues Spiel erstellen\n";
+    std::cout << "2. Einem Spiel beitreten\n";
+    std::cout << "3. Anleitung anzeigen\n";
+    std::cout << "4. Spiel Beenden\n";
     std::cout << "==============================================" << std::endl;
 }
 
@@ -182,4 +183,16 @@ void konsolen_view::show_end_screen(bool whiteWins){
     }
 std::cout << "1: Zurück zum Menü" << '\n';
 std::cout << "2: Beenden" << '\n';
+}
+
+
+void konsolen_view::show_message(std::string message)
+{
+    // TODO: Es richtig implementieren (Den letzten Board stand speichern und beim aufruf von show_message alles clearen, dann das board zeichnen und dann die message)
+    std::cout << message << '\n';
+}
+
+void konsolen_view::show_join_game_menu()
+{
+    // TODO: Einen Hinweis printen mit der Nachricht, dass ein code eingegeben werden muss.
 }

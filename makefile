@@ -28,5 +28,5 @@ Client: build/client.exe
 build/server.exe:   source/network/packet_factory.cpp source/network/net_client.cpp source/server/main_server.cpp
 	$(CXX) $(CPPFLAGS) -o build/server.exe source/network/packet_factory.cpp source/network/net_server.cpp source/server/main_server.cpp $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
 
-build/client.exe:  source/network/packet_factory.cpp source/network/net_client.cpp source/MainClient.cpp
-	$(CXX) $(CPPFLAGS) -o build/client.exe source/network/packet_factory.cpp source/network/net_client.cpp source/MainClient.cpp $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
+build/client.exe:  source/network/packet_factory.cpp source/network/net_client.cpp source/client/main_client.cpp
+	$(CXX) $(CPPFLAGS) -o build/client.exe source/client/konsolen_view.cpp source/network/packet_factory.cpp source/network/net_client.cpp source/client/client_controller.cpp  source/client/main_client.cpp  $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread

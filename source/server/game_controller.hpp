@@ -26,6 +26,7 @@ class game_controller : public iview{
         // iview interface to update the client about the current game state
         void show_board(int24 white, int24 black,bool isWhiteMove, int white_pieces, int black_pieces);
         void show_end_screen(bool whiteWins);
+        void show_message(std::string message);
 
         void join_game(int player);
         void join_player1(int player);

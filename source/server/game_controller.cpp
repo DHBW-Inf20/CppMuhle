@@ -92,3 +92,7 @@ void game_controller::show_end_screen(bool whiteWins){
     //TODO: Send the right data to the client
 }
 
+void game_controller::show_message(std::string message){
+    //TODO: Send the message through to the client;
+}
+
