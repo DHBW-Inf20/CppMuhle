@@ -17,7 +17,6 @@ void network_controller::run()
 
 void network_controller::join_game(int player, unsigned int gameCode)
 {
-    // TODO: Update map
     auto game = game_controller_map.find(gameCode);
     if (game != game_controller_map.end()){
         game->second->join_game(player);
@@ -45,4 +44,5 @@ void network_controller::create_new_game()
 {
     game_controller *game = new game_controller();
     game_controller_map[this->create_new_game_id()] = game;
+
 }
