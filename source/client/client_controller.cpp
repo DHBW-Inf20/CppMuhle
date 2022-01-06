@@ -57,16 +57,12 @@ void client_controller::run(){
     this->client->register_packet_listener<packet_muhle_field>([this] ( packet_muhle_field *packet) {
         std::cout << "RECIEVED MUHLE PACKAGE" << std::endl;
         this->view->show_board(packet->white,packet->black,packet->white_pieces_left,packet->black_pieces_left,packet->current_game_state);
+        this->next_move = packet->current_game_state;
     });
 
       this->client->register_packet_listener<packet_message>([this] (packet_message *packet) {
         this->view->show_message(packet->str);
     });
-
-
-
-
-
 
 
     this->view->initialize();
@@ -95,8 +91,8 @@ bool client_controller::ask_for_input(std::string &to, std::string &from, bool &
         case input_type::SERVER:
             switch(this->next_move){
                 case game_state::WAITING_FOR_OPPONENT:
-                    
-                    std::cout << "Waiting for opponent..." << std::endl;
+                    // std::cout << "Waiting for opponent..." << std::endl;
+                    std::cin >> to;
                     break;
                 case game_state::ATTACKING:
                     std::cout << CUR_RIGHT(5) << "Schlagen: __" << CUR_LEFT(2);
@@ -177,10 +173,8 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
                 packet_game_code* pgc = this->client->send_and_receive_packet<packet_game_code>(&pgr);
                 std::cout << "Game Code: " << pgc->code << std::endl;
                 delete pgc;
-                packet_muhle_field* pmf = this->client->wait_for_packet<packet_muhle_field>();
-                delete pmf;
+                delete this->client->wait_for_packet<packet_muhle_field>();
                 this->user_input_type = input_type::SERVER;
-                this->next_move = game_state::PLACING;
             }
             break;
         case 2:
@@ -223,6 +217,7 @@ void client_controller::process_server_input(std::string &to, std::string &from,
     
         switch(this->next_move){
             case game_state::WAITING_FOR_OPPONENT:
+                this->view->print_board("Bitte warte bis du am Zug bist!");
                 // this->process_waiting_for_opponent_input(to, exit_flag);
                 break;
             case game_state::ATTACKING:
