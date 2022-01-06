@@ -11,6 +11,7 @@
 #include "packets/packet_muhle_field.cpp"
 #include "packets/packet_game_request.cpp"
 #include "packets/packet_game_code.cpp"
+#include "packets/packet_game_place.cpp"
 
 class packet_factory
 {

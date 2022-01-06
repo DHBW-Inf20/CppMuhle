@@ -207,7 +207,6 @@ void client_controller::process_join_game_input(std::string &to, bool  &exit_fla
     
     packet_game_code pgc;
     pgc.code = to;
-    std::cout << "Debug game code: " << pgc.code << std::endl;
     this->client->send_packet(&pgc);
     this->current_menu_state = menu_state::MAIN_MENU;
     this->user_input_type = input_type::SERVER;
@@ -216,5 +215,34 @@ void client_controller::process_join_game_input(std::string &to, bool  &exit_fla
 
 
 void client_controller::process_server_input(std::string &to, std::string &from, bool  &exit_flag){
-    throw std::runtime_error("Not implemented");
+    
+        switch(this->next_move){
+            case game_state::WAITING_FOR_OPPONENT:
+                // this->process_waiting_for_opponent_input(to, exit_flag);
+                break;
+            case game_state::ATTACKING:
+                // this->process_attacking_input(to, exit_flag);
+                break;
+            case game_state::PLACING:
+                try{
+                packet_game_place pgp;
+                pgp.to = this->c_lookup_table.at(to);
+                this->client->send_packet(&pgp);
+                }
+                catch(std::out_of_range& e){
+                    this->view->show_message(e.what());
+                    return;
+                }
+                // this->process_placing_input(to, exit_flag);
+                break;
+            case game_state::MOVING:
+                // this->process_moving_input(to, exit_flag);
+                break;
+            case game_state::JUMPING:
+                // this->process_jumping_input(to, exit_flag);
+                break;
+            case game_state::ENDED:
+                // this->process_ended_input(to, exit_flag);
+                break;
+        }
 }
