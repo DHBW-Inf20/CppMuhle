@@ -76,6 +76,7 @@ bool client_controller::ask_for_input(std::string &to, std::string &from, bool &
         case input_type::SERVER:
             switch(this->next_move){
                 case game_state::WAITING_FOR_OPPONENT:
+                    
                     std::cout << "Waiting for opponent..." << std::endl;
                     break;
                 case game_state::ATTACKING:
@@ -176,6 +177,7 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
 
 void client_controller::process_create_game_input(std::string &to, bool  &exit_flag){
     // TODO: Implement create game input
+    
     throw std::runtime_error("Not implemented");
 }
 
