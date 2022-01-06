@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-int new_id = 0;
+int new_id = 1;
 connection::connection(boost::asio::io_service &io_service) : socket(io_service)
 {
     id = new_id++;
