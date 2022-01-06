@@ -22,6 +22,6 @@ public:
 
     char get_id()
     {
-        return -2;
+        return PACKET_SOCKET_DISCONNECT_ID;
     }
 };

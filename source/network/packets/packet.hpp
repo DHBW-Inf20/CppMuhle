@@ -1,6 +1,7 @@
 #ifndef PACKET_HPP
 #define PACKET_HPP
 
+#include "packet_ids.hpp"
 #include <cstdint>
 #include <cstring>
 
