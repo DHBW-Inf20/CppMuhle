@@ -23,7 +23,7 @@ class network_controller
         // Search for a game with the given game Code, if it exists, join it by addding the player and with the game to the player_game_controller_map
         void join_game(int player, unsigned int gameCode);
         // Create a new game
-        void create_new_game();
+        unsigned int create_new_game(int playerid);
 
     
     private:   

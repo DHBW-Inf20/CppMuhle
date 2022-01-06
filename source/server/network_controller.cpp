@@ -28,7 +28,11 @@ void network_controller::run()
     });
 
     server->register_packet_listener<packet_game_request>([this](int id, packet_game_request *packet){
-
+        auto game_code = create_new_game(id);
+        std::cout << "Game request from " << id << ": " << game_code << std::endl;
+        packet_game_code pgc;
+        pgc.code = game_code;
+        this->server->send_packet(&pgc, id);
     });
     
 
@@ -61,9 +65,12 @@ unsigned int network_controller::create_new_game_id(){
     return x;
 }
 
-void network_controller::create_new_game()
+unsigned int network_controller::create_new_game(int playerid)
 {
     game_controller *game = new game_controller();
-    game_controller_map[this->create_new_game_id()] = game;
+    unsigned int gameCode = create_new_game_id();
+    game_controller_map[gameCode] = game;
+    player_game_controller_map[playerid] = game;
+    return gameCode;
 
 }
