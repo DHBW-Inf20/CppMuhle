@@ -1,47 +1,16 @@
 #include <iostream>
 #include "client_controller.hpp"
-
-int main()
+#include <string>
+int main(int argc, char** argv)
 {    
-    client_controller controller;
-    controller.run();
-    // net_client client("localhost", 42069);
-    // client.start();
-
-    // client.register_packet_listener<packet_message>([](packet_message* packet) {
-        // std::cout << packet->str << std::endl;
-    // });
-
-    // client.register_packet_listener<packet_game_code>([](packet_game_code* packet){
-        // std::cout << "Game-Code: " << packet->code << std::endl;
-    // });
-
-    // client.register_packet_listener<packet_muhle_field>([](packet_muhle_field* packet){
-        // std::cout << packet->white.data << "\n" << packet->black.data << std::endl;
-    // });
-
-    // std::string name;
-    // std::cout << "Enter Name: ";
-    // std::cin >> name;
-
-    // packet_login pl;
-    // pl.name = name;
-    // client.send_packet(&pl);
-
-    // packet_game_request pgr;
-    // client.send_packet(&pgr);
-
-    // packet_message* phw = new packet_message();
-    // while (std::cin.good())
-    // {
-    //     std::string msg;
-    //     std::getline(std::cin, msg);
-    //     if (msg.length() > 0) {
-    //         phw->str = msg;
-
-    //         client.send_packet(phw);
-    //     }
-    // }
-
-    // client.join_thread();
+    if(argc  == 1){
+        client_controller controller;
+        controller.run();
+    }else if(argc == 2){
+        client_controller controller(argv[1]);
+        controller.run();
+    }else if(argc == 3){
+        client_controller controller(std::string(argv[1]), stoi(std::string(argv[2])));
+        controller.run();
+    }
 }
