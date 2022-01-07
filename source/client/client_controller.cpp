@@ -65,7 +65,12 @@ void client_controller::run()
 
 
     // Always show the start menu on start
-    this->client->start();
+    try {
+        this->client->start();
+    } catch (boost::system::system_error& ex) {
+        std::cout << "Server konnte nicht erreicht werden." << std::endl;
+        return;
+    }
     // Login to the server
     std::cout << "Namen eingeben: ";
     std::cin >> this->name;

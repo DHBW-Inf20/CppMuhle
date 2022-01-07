@@ -20,7 +20,6 @@ net_server::net_server(int port)
 
 net_server::~net_server()
 {
-    std::cout << "Server stopped" << std::endl;
 }
 
 int net_server::get_port()

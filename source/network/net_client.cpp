@@ -17,7 +17,6 @@ net_client::net_client(std::string address, int port)
 
 net_client::~net_client()
 {
-    std::cout << "Client stopped" << std::endl;
 }
 
 std::string net_client::get_address()
