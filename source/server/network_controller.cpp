@@ -128,6 +128,72 @@ void network_controller::initializePackageListeners()
         }
     });
 
+    server->register_packet_listener<packet_game_attack>([this](int id, packet_game_attack *packet){
+        std::cout << "Game attack from " << id << ": " << packet->to <<  std::endl;
+        auto game_controller = player_game_controller_map.find(id);
+        if(game_controller == player_game_controller_map.end()){
+            player_game_controller_map.at(id)->show_message("You are not in a game", game_controller->second->get_current_player());
+            return;
+        }
+        try{
+            std::cout << "Game Move input: " << packet->to << std::endl;
+            game_controller->second->attack_piece(id, packet->to);
+            
+        }
+        catch(wrong_move &e){
+            std::cout << "Player " << id << " tried an unvaild move" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_current_player());
+        }
+        catch(not_your_turn &e){
+            std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
+        }
+    });
+
+    server->register_packet_listener<packet_game_move>([this](int id, packet_game_move *packet){
+        std::cout << "Game attack from " << id << ": " << packet->to <<  std::endl;
+        auto game_controller = player_game_controller_map.find(id);
+        if(game_controller == player_game_controller_map.end()){
+            player_game_controller_map.at(id)->show_message("You are not in a game", game_controller->second->get_current_player());
+            return;
+        }
+        try{
+            std::cout << "Game Move input: " << packet->to << std::endl;
+            game_controller->second->move_piece(id, packet->from, packet->to);
+            
+        }
+        catch(wrong_move &e){
+            std::cout << "Player " << id << " tried an unvaild move" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_current_player());
+        }
+        catch(not_your_turn &e){
+            std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
+        }
+    });
+
+    server->register_packet_listener<packet_game_jump>([this](int id, packet_game_jump *packet){
+        std::cout << "Game attack from " << id << ": " << packet->to <<  std::endl;
+        auto game_controller = player_game_controller_map.find(id);
+        if(game_controller == player_game_controller_map.end()){
+            player_game_controller_map.at(id)->show_message("You are not in a game", game_controller->second->get_current_player());
+            return;
+        }
+        try{
+            std::cout << "Game Move input: " << packet->to << std::endl;
+            game_controller->second->jump_piece(id,packet->from, packet->to);
+            
+        }
+        catch(wrong_move &e){
+            std::cout << "Player " << id << " tried an unvaild move" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_current_player());
+        }
+        catch(not_your_turn &e){
+            std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
+            player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
+        }
+    });
+
     server->register_packet_listener<packet_socket_disconnect>([this](int id, packet_socket_disconnect *packet){
         std::cout << "Client disconnected: " << id << std::endl;
         auto gameController = player_game_controller_map.find(id);
@@ -135,5 +201,4 @@ void network_controller::initializePackageListeners()
             gameController->second->leave_game(id);	
         }
     });
-
 }

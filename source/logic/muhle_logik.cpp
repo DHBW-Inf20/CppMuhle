@@ -110,7 +110,7 @@ game_state muhle_logik::move_piece(int from, int to)
 
 game_state muhle_logik::jump_piece(int from, int to)
 {
-    game_state state = this->status;
+    game_state state = game_state::MOVING;
     if (!check_if_valid(from, to))
     {
         std::string move = this->c_lookup_table[std::log2(from)] + " -> " + this->c_lookup_table[std::log2(to)];
@@ -139,6 +139,11 @@ game_state muhle_logik::jump_piece(int from, int to)
     else
     {
         this->is_white_turn = !this->is_white_turn;
+        if(std::bitset<24>(get_current_player().data).count() == 3){
+            state = game_state::JUMPING;
+        }else{
+            state = game_state::MOVING;
+        }
     }
 
     show_state(state);

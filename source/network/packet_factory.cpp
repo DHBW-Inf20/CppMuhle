@@ -26,6 +26,9 @@ void packet_factory::initialize()
     this->register_packet(new packet_game_request());
     this->register_packet(new packet_game_code());
     this->register_packet(new packet_game_place());
+    this->register_packet(new packet_game_attack());
+    this->register_packet(new packet_game_move());
+    this->register_packet(new packet_game_jump());
 }
 
 packet* packet_factory::get_packet_from_id(char id)

@@ -12,6 +12,9 @@
 #include "packets/packet_game_request.cpp"
 #include "packets/packet_game_code.cpp"
 #include "packets/packet_game_place.cpp"
+#include "packets/packet_game_attack.cpp"
+#include "packets/packet_game_move.cpp"
+#include "packets/packet_game_jump.cpp"
 
 class packet_factory
 {

@@ -114,6 +114,28 @@ void game_controller::place_piece(int player, int command){
     this->game->place_piece(1<<command);
 }
 
+void game_controller::attack_piece(int player, int command){
+    if(!this->is_players_turn(player)){
+        throw not_your_turn();
+    }
+    this->game->attack(1<<command);
+}
+
+void game_controller::move_piece(int player,int from, int to){
+    if(!this->is_players_turn(player)){
+        throw not_your_turn();
+    }
+    this->game->move_piece(1<<from,1<<to);
+}
+
+void game_controller::jump_piece(int player,int from, int to){
+    if(!this->is_players_turn(player)){
+        throw not_your_turn();
+    }
+    this->game->jump_piece(1<<from,1<<to);
+}
+
+
 int game_controller::get_current_player(){
     return this->game->is_white_turn ? player1_id : player2_id;
 }

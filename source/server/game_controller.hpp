@@ -42,6 +42,9 @@ class game_controller : public iview{
         bool is_players_turn(int player);
 
         void place_piece(int player, int command);
+        void attack_piece(int player, int command);
+        void move_piece(int player, int from, int to);
+        void jump_piece(int player, int from, int to);
 
         int get_current_player();
         int get_opposing_player();

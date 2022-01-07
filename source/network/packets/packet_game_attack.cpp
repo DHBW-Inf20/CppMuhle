@@ -8,11 +8,10 @@
 * packet_muhle_field
 * Used to send the updated muhle data to the client
 */
-class packet_game_place: public packet
+class packet_game_attack: public packet
 {
 public:
     int to;
-    
     packet_data_t serialize() 
     {
         char* data = (char*) malloc(sizeof(int));
@@ -30,11 +29,11 @@ public:
 
     packet* clone()
     {
-        return new packet_game_place();
+        return new packet_game_attack();
     }
 
     char get_id()
     {
-        return PACKET_GAME_PLACE_ID;
+        return PACKET_GAME_ATTACK_ID;
     }
 };
