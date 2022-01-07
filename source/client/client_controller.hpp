@@ -28,6 +28,7 @@ class client_controller{
         void clear_input();
         bool next_input();
         void ask_for_input();
+        std::string name;
 
         // Information about the current game, sent by the server to differentiate input and output
         game_state next_move;
@@ -41,7 +42,6 @@ class client_controller{
         void process_server_input(bool &exit_flag);
         void process_local_input(std::string &in, bool  &exit_flag);
         void process_main_menu_input(std::string &in, bool  &exit_flag);
-        void process_create_game_input(std::string &in, bool  &exit_flag);
         void process_join_game_input(std::string &in, bool  &exit_flag);
 };
 

@@ -41,18 +41,12 @@ void client_controller::run()
     // Always show the start menu on start
     this->client->start();
     // Login to the server
-    std::string name;
     std::cout << "Namen eingeben: ";
-    std::cin >> name;
+    std::cin >> this->name;
 
     packet_login pl;
-    pl.name = name;
+    pl.name = this->name;
     this->client->send_packet(&pl);
-
-    // TODO: register all package listeners for sever messages
-    // this->client->register_packet_listener<packet_game_code>([](packet_game_code *packet) {
-    //     std::cout << "Game code: " << packet->code << std::endl;
-    // });
 
     this->client->register_packet_listener<packet_muhle_field>([this](packet_muhle_field *packet)
                                                                {
@@ -64,6 +58,15 @@ void client_controller::run()
                                                            {
         this->view->print_board(packet->str);
         this->ask_for_input(); });
+
+    this->client->register_packet_listener<packet_game_ended>([this](packet_game_ended *packet)
+                                                              {
+        this->view->show_end_screen(packet->won);
+        this->user_input_type = input_type::LOCAL;
+        this->next_move = game_state::ENDED;
+        this->current_menu_state = menu_state::END_SCREEN;
+        this->ask_for_input(); });
+
 
     this->view->initialize();
     this->user_input_type = input_type::LOCAL;
@@ -79,9 +82,7 @@ void client_controller::run()
             this->process_input(exit_flag);
         }
     }
-    // TODO: disconnect the player safely (wird überbewertet)
     std::cout << "Disconnecting..." << std::endl;
-    this->client->join_thread();
 }
 
 void client_controller::clear_input()
@@ -155,7 +156,7 @@ void client_controller::ask_for_input()
             reference_in = 2;
             break;
         case game_state::ENDED:
-            std::cout << "Nochmal? (y/n): _" << CUR_LEFT(1);
+            std::cout << "> " << CUR_LEFT(1);
             reference_in = 1;
             break;
         }
@@ -184,10 +185,37 @@ void client_controller::process_local_input(std::string &in, bool &exit_flag)
         this->process_main_menu_input(in, exit_flag);
         break;
     case menu_state::CREATE_GAME:
-        this->process_create_game_input(in, exit_flag);
         break;
     case menu_state::JOIN_GAME:
         this->process_join_game_input(in, exit_flag);
+        break;
+    case menu_state::END_SCREEN:
+
+        try
+        {
+            int command = std::stoi(in);
+            switch(command){
+                case 1:
+                    this->current_menu_state = menu_state::MAIN_MENU;
+                case 2:
+                    exit_flag = true;
+                    break;
+                default:
+                    this->view->show_end_screen();
+                    std::cout << "Ungültige Eingabe" << std::endl;
+                    break;
+            }   
+                    this->ask_for_input();
+        }
+        catch (std::invalid_argument &e)
+        {
+            this->view->show_message(e.what());
+            return;
+        }
+        catch (std::exception &e)
+        {
+            this->view->show_message(e.what());
+        }
         break;
     }
 }
@@ -204,6 +232,10 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
         this->view->show_message(e.what());
         return;
     }
+    catch (std::exception &e)
+    {
+        this->view->show_message(e.what());
+    }
 
     switch (command)
     {
@@ -216,6 +248,7 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
             packet_game_code *pgc = this->client->send_and_receive_packet<packet_game_code>(&pgr);
             std::cout << "Game Code: " << pgc->code << std::endl;
             this->user_input_type = input_type::SERVER;
+            this->next_move = game_state::PLACING;
             delete pgc;
             delete this->client->wait_for_packet<packet_muhle_field>();
         }
@@ -240,12 +273,6 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
     }
 }
 
-void client_controller::process_create_game_input(std::string &to, bool &exit_flag)
-{
-    // TODO: Implement create game input
-    throw std::runtime_error("Not implemented");
-}
-
 void client_controller::process_join_game_input(std::string &to, bool &exit_flag)
 {
     // TODO: Implement join game input
@@ -255,7 +282,7 @@ void client_controller::process_join_game_input(std::string &to, bool &exit_flag
     this->client->send_packet(&pgc);
     this->current_menu_state = menu_state::MAIN_MENU;
     this->user_input_type = input_type::SERVER;
-    this->next_move = game_state::PLACING;
+    this->next_move = game_state::WAITING_FOR_OPPONENT;
 }
 
 void client_controller::process_server_input(bool &exit_flag)
@@ -280,6 +307,10 @@ void client_controller::process_server_input(bool &exit_flag)
             ask_for_input();
             return;
         }
+        catch (std::exception &e)
+        {
+            this->view->show_message(e.what());
+        }
         // this->process_attacking_input(to, exit_flag);
         break;
     case game_state::PLACING:
@@ -294,6 +325,10 @@ void client_controller::process_server_input(bool &exit_flag)
             this->view->print_board("Dieses Feld existiert nicht!");
             ask_for_input();
             return;
+        }
+        catch (std::exception &e)
+        {
+            this->view->show_message(e.what());
         }
         // this->process_placing_input(to, exit_flag);
         break;
@@ -311,10 +346,14 @@ void client_controller::process_server_input(bool &exit_flag)
             ask_for_input();
             return;
         }
+        catch (std::exception &e)
+        {
+            this->view->show_message(e.what());
+        }
         // this->process_moving_input(to, exit_flag);
         break;
     case game_state::JUMPING:
-    try
+        try
         {
             packet_game_jump pgj;
             pgj.from = this->c_lookup_table.at(input_queue[0]);
@@ -327,10 +366,17 @@ void client_controller::process_server_input(bool &exit_flag)
             ask_for_input();
             return;
         }
+        catch (std::exception &e)
+        {
+            this->view->show_message(e.what());
+        }
         // this->process_jumping_input(to, exit_flag);
         break;
     case game_state::ENDED:
         // this->process_ended_input(to, exit_flag);
+        this->user_input_type = input_type::LOCAL;
+        this->current_menu_state = menu_state::MAIN_MENU;
+
         break;
     }
 }

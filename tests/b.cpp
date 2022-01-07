@@ -8,14 +8,16 @@ enum game_state{
 };
 int main()
 {
-    game_state state = HALLO;
-    std::cout << state << std::endl;
-    
-    char* data = (char*) malloc(sizeof(game_state));
-    memcpy(data, &state, sizeof(game_state));
+    std::cout << R"(
 
-    game_state result;
-    memcpy(&result, data, sizeof(game_state));
+                                         
+   __ _  _____      _____  _ __  _ __   ___ _ __  
+  / _` |/ _ \ \ /\ / / _ \| '_ \| '_ \ / _ \ '_ \ 
+ | (_| |  __/\ V  V / (_) | | | | | | |  __/ | | |
+  \__, |\___| \_/\_/ \___/|_| |_|_| |_|\___|_| |_|
+   __/ |                                          
+  |___/                                                                                                                    
 
-    std::cout << result << std::endl;
+
+)" << '\n';
 }

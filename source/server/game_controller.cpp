@@ -13,7 +13,6 @@ void game_controller::join_game(int player){
     }else{
         throw std::runtime_error("Game is already full");
     }
-    std::cout << this->player1_id << " " << this->player2_id << std::endl;
 }
 
 void game_controller::join_player1(int player){
@@ -38,7 +37,7 @@ void game_controller::leave_game(int player){
     }else if(this->player2_id == player){
         this->leave_player2();
     }else{
-        throw std::runtime_error("Player is not in game");
+        throw not_in_game(player);
     }
 }
 
@@ -74,16 +73,20 @@ bool game_controller::is_players_turn(int player){
     return this->get_current_player() == player;
 }
 
-void game_controller::process_input(int player, std::string input){
-    if(!this->is_players_turn(player)){
-        throw std::runtime_error("Not your turn");
-    // TODO: Process the Game-Input
-    }
-}
+
 
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
 void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
+    if(state == game_state::ENDED){
+        packet_game_ended pge;
+        pge.won = true;
+        this->server->send_packet(&pge, get_current_player());
+        auto pge2 = pge;
+        pge2.won = false;
+        this->server->send_packet(&pge2, get_opposing_player());
+        return;
+    }
     packet_muhle_field packet;
     packet.white = white;
     packet.black = black; 
@@ -94,7 +97,6 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
     packet_muhle_field packet2 = packet;
     packet2.current_game_state = game_state::WAITING_FOR_OPPONENT;
     server->send_packet(&packet2,get_opposing_player());
-    std::cout << "send show board packet" << std::endl;
 }
 
 void game_controller::show_end_screen(bool whiteWins){

@@ -20,9 +20,9 @@ C++ Projekt für die implementation des Brettspiel Mühle auf der Konsole
 
 ## Projektteilnehmer
 
-- [Fabian Klimpel](https://github.com/FabiKl) (@FabiKl)
-- [Jan Perthel](https://github.com/jan510) (@jan510)
-- [Raphael Sack](https://github.com/Raqhael) (@Raqhael)
+- [Fabian Klimpel](https://github.com/FabiKl)
+- [Jan Perthel](https://github.com/jan510)
+- [Raphael Sack](https://github.com/Raqhael)
 
 ## Usage
 

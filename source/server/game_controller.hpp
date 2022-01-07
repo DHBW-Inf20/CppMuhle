@@ -53,7 +53,6 @@ class game_controller : public iview{
             return this->game;
         }
         // Processes a game Input, the client needs to filter out whats menu-input and whats game input
-        void process_input(int player, std::string input);
 
     private:
         net_server *server;
