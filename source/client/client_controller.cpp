@@ -202,6 +202,8 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
     {
         this->view->show_message(e.what());
         return;
+    }catch(std::exception &e){
+                this->view->show_message(e.what());
     }
 
     switch (command)
@@ -273,6 +275,8 @@ void client_controller::process_server_input(bool &exit_flag)
             this->view->print_board("Dieses Feld existiert nicht!");
             ask_for_input();
             return;
+        }catch(std::exception &e){
+                this->view->show_message(e.what());
         }
         // this->process_attacking_input(to, exit_flag);
         break;
@@ -288,7 +292,9 @@ void client_controller::process_server_input(bool &exit_flag)
             this->view->print_board("Dieses Feld existiert nicht!");
             ask_for_input();
             return;
-        }
+        }catch(std::exception &e){
+                this->view->show_message(e.what());
+    }
         // this->process_placing_input(to, exit_flag);
         break;
     case game_state::MOVING:
@@ -304,6 +310,8 @@ void client_controller::process_server_input(bool &exit_flag)
             this->view->print_board("Dieses Feld existiert nicht!");
             ask_for_input();
             return;
+        }catch(std::exception &e){
+                this->view->show_message(e.what());
         }
         // this->process_moving_input(to, exit_flag);
         break;
@@ -320,6 +328,8 @@ void client_controller::process_server_input(bool &exit_flag)
             this->view->print_board("Dieses Feld existiert nicht!");
             ask_for_input();
             return;
+        }catch(std::exception &e){
+                this->view->show_message(e.what());
         }
         // this->process_jumping_input(to, exit_flag);
         break;

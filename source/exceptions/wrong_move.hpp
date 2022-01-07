@@ -65,4 +65,25 @@ public:
     }
 
 };
+
+class game_not_found : virtual public std::exception
+{
+public:
+    std::string game_code;
+    explicit game_not_found(std::string game_code) : game_code(game_code)
+    {
+    }
+
+    virtual ~game_not_found() throw() {}
+    virtual const char *what() const throw()
+    {
+        std::string wh = "Spiel mit Code \"" + game_code + "\" nicht gefunden";
+        return wh.c_str();
+    }
+    virtual const std::string get_game_code() const throw()
+    {
+        return game_code;
+    }
+
+};
 #endif
