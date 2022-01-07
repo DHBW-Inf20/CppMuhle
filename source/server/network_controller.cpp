@@ -25,9 +25,10 @@ void network_controller::run()
     server->join_thread();
 }
 
-void network_controller::join_game(int player, std::string gameCode)
+void network_controller::join_game(int player, std::string game_code)
 {
-    auto game = game_controller_map.find(gameCode);
+
+    auto game = game_controller_map.find(game_code);
     if (game != game_controller_map.end()){
         game->second->join_game(player);
         player_game_controller_map[player] = game->second;
@@ -35,7 +36,7 @@ void network_controller::join_game(int player, std::string gameCode)
             game->second->run();
         }
     }else{
-        throw game_not_found(gameCode);
+        throw game_not_found(game_code);
     }
 }
 
@@ -67,14 +68,39 @@ std::string gen_random(const int len) {
 
 std::string network_controller::create_new_game(int playerid)
 {
-    game_controller *game = new game_controller(this->server);
-    std::string gameCode = create_new_game_id();
-    game_controller_map[gameCode] = game;
+    std::string game_code = create_new_game_id();
+    game_controller *game = new game_controller(game_code, this->server,*this);
+    game_controller_map[game_code] = game;
     player_game_controller_map[playerid] = game;
     game->join_game(playerid);
-    return gameCode;
+    return game_code;
 }
 
+void network_controller::delete_game(game_controller *game)
+{
+    try{
+        this->game_controller_map.erase(game->get_game_code());
+    }
+    catch(std::exception &e){
+        std::cout << e.what() << " in delete_game" << std::endl;
+    }
+}
+
+void network_controller::leave_game(game_controller *game, int player)
+{
+    std::cout << "tries to leave game in network_controller" << std::endl;
+    try{
+    std::cout << "entered try" << std::endl;
+        player_game_controller_map.erase(player);
+    std::cout << "erased player from map" << std::endl;
+        if(game->is_empty()){
+            this->delete_game(game);
+        }
+    }
+    catch(std::exception &e){
+        std::cout << e.what() << " in leave_game" << std::endl;
+    }
+}
 
 void network_controller::initializePackageListeners()
 {
@@ -103,10 +129,12 @@ void network_controller::initializePackageListeners()
         }
         catch(game_not_found &e){
             std::cout << "Game code does not exist: " << e.get_game_code() << std::endl;
-            player_game_controller_map.at(id)->show_message(e.what(),id);
+            packet_game_code_not_found pgcnf;
+            pgcnf.code = e.get_game_code();
+            this->server->send_packet(&pgcnf, id);
         }
         catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
+              std::cout << e.what() << " in packet_game_code listener" << std::endl;
         }
     });
 
@@ -207,16 +235,21 @@ void network_controller::initializePackageListeners()
 
     server->register_packet_listener<packet_socket_disconnect>([this](int id, packet_socket_disconnect *packet){
         std::cout << "Client disconnected: " << id << std::endl;
-        auto gameController = player_game_controller_map.find(id);
-        if(gameController != player_game_controller_map.end()){
+        auto game_controller = player_game_controller_map.find(id);
+        if(game_controller != player_game_controller_map.end()){
             try{
-            gameController->second->leave_game(id);	
+                std::cout << "tires to leave the game" << std::endl;
+            game_controller->second->leave_game(id);	
             }
             catch(not_in_game &e){
                 std::cout << "Player " << id << " tried to leave a game, when he wasnt in one" << std::endl;
                 player_game_controller_map.at(id)->show_message(e.what(), e.get_player());
             }catch(std::exception &e){
                 player_game_controller_map.at(id)->show_message(e.what(),id);
+                std::cout << e.what() << std::endl;
+        }
+        catch(...){
+            std::cout << "WEIRD ERROR" << std::endl;
         }
         }
     });
