@@ -68,7 +68,7 @@ Die binarys befinden sich im Ordner ./build
 
 Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, nennt man eine „Mühle“. Wenn ein Spieler eine Mühle schließt, darf er einen beliebigen Stein des Gegners aus dem Spiel nehmen, sofern dieser Stein nicht ebenfalls Bestandteil einer Mühle ist.
 
-## Screenshot
+## Demo
 
 ![GIF Demo](.github/demo/MuhleGif.gif)
 
