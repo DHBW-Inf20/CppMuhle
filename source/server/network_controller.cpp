@@ -39,8 +39,6 @@ void network_controller::join_game(int player, std::string gameCode)
     }
 }
 
-/* generate a longer code than just a simple integer while still having a simple way of identifying the game 
-Hash-Function from Thomas Mueller: https://stackoverflow.com/a/12996028/14379859 */
 std::string network_controller::create_new_game_id(){
     std::string game_id;
     do {

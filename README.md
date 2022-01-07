@@ -2,6 +2,45 @@
 
 C++ Projekt für die implementation des Brettspiel Mühle auf der Konsole
 
+## Umgesetzte Anforderungen
+
+### Must Have
+
+- [x] Spielbrett auf der Konsole ausgeben
+- [x] Grundlegende Spiellogik implementieren
+- [x] Spielbrett anhand der Spiellogik aktualisieren
+
+### Should Have
+
+- [x] Eine schönere GUI in der Konsole mit Menü
+
+### Nice to Have
+
+- [x] Multiplayer übers Netzwerk implementieren
+
+## Projektteilnehmer
+
+- [Fabian Klimpel](https://github.com/FabiKl)
+- [Jan Perthel](https://github.com/jan510)
+- [Raphael Sack](https://github.com/Raqhael)
+
+
+## Usage
+
+```plain
+Server:
+    server.exe <port=42069>
+
+        Führt einen Server aus, der die Logik des Spiels hält.
+        Falls kein Parameter mitgegeben wird, wird der Server auf Port 42069 hören.
+
+Client:
+    client.exe <ip=localhost> <port=42069>
+
+    Führt einen Client aus, welcher mit dem Server kommuniziert. 
+    Falls keine Parameter mitgegeben werden, versucht er auf localhost:42069 zu senden.
+```
+
 ## Dependencies
 
 C++ Boost Library (Entwickelt mit Version 1_78)
@@ -17,6 +56,7 @@ make includePath=$BOOSTINCLUDE libraryPath=$BOOSTLIBRARY
 ./build/Muhle.exe
 ```
 
+
 ## Anleitung
 
 1. Die Züge werden wie in Schach über eine Notation gelöst. Das Mühle-Feld lässt sich aufteilen in a-g Spalten und 1-7 Zeilen.
@@ -27,3 +67,7 @@ make includePath=$BOOSTINCLUDE libraryPath=$BOOSTLIBRARY
     - Endphase: Sobald ein Spieler nur noch drei Steine hat, darf er mit seinen Steinen springen, das heißt, er darf nun pro Runde mit einem Stein an einen beliebigen freien Punkt springen. Sobald ihm ein weiterer Stein abgenommen wird, hat er das Spiel verloren.
 
 Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, nennt man eine „Mühle“. Wenn ein Spieler eine Mühle schließt, darf er einen beliebigen Stein des Gegners aus dem Spiel nehmen, sofern dieser Stein nicht ebenfalls Bestandteil einer Mühle ist.
+
+## Screenshot
+
+![GIF Demo](.github/demo/MuhleGif.gif)
