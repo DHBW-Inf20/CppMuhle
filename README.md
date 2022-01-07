@@ -20,22 +20,21 @@ C++ Projekt für die implementation des Brettspiel Mühle auf der Konsole
 
 ## Projektteilnehmer
 
-- [Fabian Klimpel](https://github.com/FabiKl)
-- [Jan Perthel](https://github.com/jan510)
-- [Raphael Sack](https://github.com/Raqhael)
-
+- [Fabian Klimpel](https://github.com/FabiKl) (@FabiKl)
+- [Jan Perthel](https://github.com/jan510) (@jan510)
+- [Raphael Sack](https://github.com/Raqhael) (@Raqhael)
 
 ## Usage
 
 ```plain
 Server:
-    server.exe <port=42069>
+    server <port=42069>
 
         Führt einen Server aus, der die Logik des Spiels hält.
         Falls kein Parameter mitgegeben wird, wird der Server auf Port 42069 hören.
 
 Client:
-    client.exe <ip=localhost> <port=42069>
+    client <ip=localhost> <port=42069>
 
     Führt einen Client aus, welcher mit dem Server kommuniziert. 
     Falls keine Parameter mitgegeben werden, versucht er auf localhost:42069 zu senden.
@@ -43,7 +42,8 @@ Client:
 
 ## Dependencies
 
-C++ Boost Library (Entwickelt mit Version 1_78)
+- GCC 4.8.1+
+- C++ Boost Library (Entwickelt mit Version 1_78)
 
 ## Building
 
@@ -53,9 +53,9 @@ Falls der Include-Path und Library-Path zu Boost nicht standartmäßig vom Compi
 
 ```bash
 make includePath=$BOOSTINCLUDE libraryPath=$BOOSTLIBRARY
-./build/Muhle.exe
 ```
 
+Die binarys befinden sich im Ordner ./build
 
 ## Anleitung
 
@@ -71,3 +71,15 @@ Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, 
 ## Screenshot
 
 ![GIF Demo](.github/demo/MuhleGif.gif)
+
+## Projekt-Struktur
+
+```bash
+├───source 
+    ├───client <-- Code für die Konsolen-Ausgabe und die Verbindung zum Server
+    ├───exceptions 
+    ├───logic <-- Code für die Implementierung von Mühle + misc.
+    ├───network <-- Alles zum Thema Networking
+    │   └───packets
+    └───server <-- Code für das Handling der Client-Anfragen / Interface zwischen Spieler und Spiel
+```

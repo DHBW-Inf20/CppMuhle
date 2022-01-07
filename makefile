@@ -31,15 +31,15 @@ ClientOBJECTS := $(patsubst %.cpp,%.o,$(ClientSOURCES))
 
 all: Server Client
 
-Server: build/server.exe
-Client: build/client.exe
+Server: build/server
+Client: build/client
 
 
-build/server.exe: $(ServerOBJECTS)
-	$(CXX) $(CXXFLAGS) $(WARNING) -o build/server.exe $(ServerOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
+build/server: $(ServerOBJECTS)
+	$(CXX) $(CXXFLAGS) $(WARNING) -o build/server $(ServerOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
 
-build/client.exe: $(ClientOBJECTS)
-	$(CXX) $(CXXFLAGS) $(WARNING) -o build/client.exe $(ClientOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
+build/client: $(ClientOBJECTS)
+	$(CXX) $(CXXFLAGS) $(WARNING) -o build/client $(ClientOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
 
 
 

@@ -1,3 +1,7 @@
+/* 
+Grüße gehen Raus an Torsten 
+https://github.com/HopfTorsten/dhbw-cpp-journey/blob/master/day3/Task1/Split.hpp
+*/
 #ifndef UTILIY_HPP
 #define UTILIY_HPP
 
