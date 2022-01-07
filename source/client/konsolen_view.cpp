@@ -135,9 +135,10 @@ void konsolen_view::show_instructions(){
 
 }
 
-void konsolen_view::show_end_screen(bool whiteWins){
+void konsolen_view::show_end_screen(bool won){
+    this->cached_won = won;
     std::cout << CLEAR_SCREEN;
-    if (whiteWins){
+    if (won){
             std::cout << R"(
 ⠀⠀⠘⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀           ⠀⠀⠀⡜⠀⠀⠀
 ⠀⠀⠀⠑⡀⠀⠀⠀⠀⠀Spieler Weiß⠀⠀  ⠀⡔⠁⠀⠀⠀
@@ -215,6 +216,10 @@ std::cout << "2: Beenden" << '\n';
 void konsolen_view::show_message(std::string message, int player)
 {
     std::cout << message << std::endl;
+}
+
+void konsolen_view::show_end_screen(){
+    this->show_end_screen(this->cached_won);
 }
 
 void konsolen_view::show_join_game_menu()

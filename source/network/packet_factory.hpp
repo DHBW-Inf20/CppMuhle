@@ -15,6 +15,7 @@
 #include "packets/packet_game_attack.cpp"
 #include "packets/packet_game_move.cpp"
 #include "packets/packet_game_jump.cpp"
+#include "packets/packet_game_ended.cpp"
 
 class packet_factory
 {

@@ -13,5 +13,6 @@
 #define PACKET_GAME_ATTACK_ID 7
 #define PACKET_GAME_MOVE_ID 8
 #define PACKET_GAME_JUMP_ID 9
+#define PACKET_GAME_ENDED_ID 10
 
 #endif

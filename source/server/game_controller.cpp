@@ -78,6 +78,15 @@ bool game_controller::is_players_turn(int player){
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
 void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
+    if(state == game_state::ENDED){
+        packet_game_ended pge;
+        pge.won = true;
+        this->server->send_packet(&pge, get_current_player());
+        auto pge2 = pge;
+        pge2.won = false;
+        this->server->send_packet(&pge2, get_opposing_player());
+        return;
+    }
     packet_muhle_field packet;
     packet.white = white;
     packet.black = black; 
