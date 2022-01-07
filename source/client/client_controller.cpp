@@ -39,7 +39,7 @@ client_controller::~client_controller()
 void client_controller::run()
 {
     this->client->register_packet_listener<packet_socket_disconnect>([this](packet_socket_disconnect *packet)
-                                                               {
+                                                                     {
         std::cout << "Disconnected from Server" << std::endl;
         exit(0); });
 
@@ -63,18 +63,20 @@ void client_controller::run()
         this->ask_for_input(); });
 
     this->client->register_packet_listener<packet_game_code_not_found>([this](packet_game_code_not_found *packet)
-                                                                 {
+                                                                       {
         this->view->show_start_menu();
         std::cout << "Spielcode nicht gefunden: " << packet->code << std::endl;
         this->user_input_type = input_type::LOCAL;
         this->current_menu_state = menu_state::MAIN_MENU;
-        this->ask_for_input();
-                                                                 });
+        this->ask_for_input(); });
 
     // Always show the start menu on start
-    try {
+    try
+    {
         this->client->start();
-    } catch (boost::system::system_error& ex) {
+    }
+    catch (boost::system::system_error &ex)
+    {
         std::cout << "Server konnte nicht erreicht werden." << std::endl;
         return;
     }
@@ -213,19 +215,22 @@ void client_controller::process_local_input(std::string &in, bool &exit_flag)
         try
         {
             int command = std::stoi(in);
-            switch(command){
-                case 1:
-                    this->current_menu_state = menu_state::MAIN_MENU;
-                    this->ask_for_input();
-                case 2:
-                    exit_flag = true;
-                    break;
-                default:
-                    this->view->show_end_screen();
-                    std::cout << "Ungültige Eingabe" << std::endl;
-                    break;
-            }   
-                    this->ask_for_input();
+            switch (command)
+            {
+            case 1:
+                this->current_menu_state = menu_state::MAIN_MENU;
+                this->view->show_start_menu();
+                this->ask_for_input();
+                break;
+            case 2:
+                exit_flag = true;
+                break;
+            default:
+                this->view->show_end_screen();
+                std::cout << "Ungültige Eingabe" << std::endl;
+                this->ask_for_input();
+                break;
+            }
         }
         catch (std::invalid_argument &e)
         {
@@ -288,7 +293,9 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
         exit_flag = true;
         break;
     default:
+        this->view->show_start_menu();
         this->view->show_message("Invalid command");
+        ask_for_input();
         break;
     }
 }
@@ -298,6 +305,9 @@ void client_controller::process_join_game_input(std::string &to, bool &exit_flag
     // TODO: Implement join game input
 
     packet_game_code pgc;
+    std::transform(to.begin(), to.end(), to.begin(),
+                   [](unsigned char c)
+                   { return std::toupper(c); });
     pgc.code = to;
     this->client->send_packet(&pgc);
     this->current_menu_state = menu_state::MAIN_MENU;
@@ -318,6 +328,9 @@ void client_controller::process_server_input(bool &exit_flag)
         try
         {
             packet_game_attack pgp;
+            std::transform(input_queue[0].begin(), input_queue[0].end(), input_queue[0].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
             pgp.to = this->c_lookup_table.at(input_queue[0]);
             this->client->send_packet(&pgp);
         }
@@ -337,6 +350,9 @@ void client_controller::process_server_input(bool &exit_flag)
         try
         {
             packet_game_place pga;
+            std::transform(input_queue[0].begin(), input_queue[0].end(), input_queue[0].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
             pga.to = this->c_lookup_table.at(input_queue[0]);
             this->client->send_packet(&pga);
         }
@@ -356,6 +372,12 @@ void client_controller::process_server_input(bool &exit_flag)
         try
         {
             packet_game_move pgm;
+            std::transform(input_queue[0].begin(), input_queue[0].end(), input_queue[0].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
+            std::transform(input_queue[1].begin(), input_queue[1].end(), input_queue[1].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
             pgm.from = this->c_lookup_table.at(input_queue[0]);
             pgm.to = this->c_lookup_table.at(input_queue[1]);
             this->client->send_packet(&pgm);
@@ -376,6 +398,12 @@ void client_controller::process_server_input(bool &exit_flag)
         try
         {
             packet_game_jump pgj;
+            std::transform(input_queue[0].begin(), input_queue[0].end(), input_queue[0].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
+            std::transform(input_queue[1].begin(), input_queue[1].end(), input_queue[1].begin(),
+                           [](unsigned char c)
+                           { return std::tolower(c); });
             pgj.from = this->c_lookup_table.at(input_queue[0]);
             pgj.to = this->c_lookup_table.at(input_queue[1]);
             this->client->send_packet(&pgj);

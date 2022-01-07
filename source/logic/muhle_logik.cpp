@@ -325,7 +325,7 @@ iview *muhle_logik::get_view()
 void muhle_logik::end_game()
 {
     this->status = ENDED;
-    this->view->show_end_screen(this->is_white_turn);
+    this->show_state(game_state::ENDED);
 }
 
 bool muhle_logik::is_occupied(int position, int player) const
