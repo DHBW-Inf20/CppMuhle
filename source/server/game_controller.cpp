@@ -33,8 +33,10 @@ void game_controller::join_player2(int player){
 
 void game_controller::leave_game(int player){
     if(this->player1_id == player){
+        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player1();
     }else if(this->player2_id == player){
+        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player2();
     }else{
         throw not_in_game(player);
@@ -44,6 +46,8 @@ void game_controller::leave_game(int player){
 void game_controller::leave_player1(){
     if (this->player1_id != 0){
         this->player1_id = 0;
+        std::cout << "player 1 left game in game_controller" << std::endl;
+        this->parent.leave_game(this,player1_id);
     }else{
         throw std::runtime_error("Player 1 not joined");
     }
@@ -52,9 +56,14 @@ void game_controller::leave_player1(){
 void game_controller::leave_player2(){
     if (this->player1_id != 0){
         this->player1_id = 0;
+        this->parent.leave_game(this, player2_id);
     }else{
         throw std::runtime_error("Player 2 not joined");
     }
+}
+
+bool game_controller::is_empty(){
+    return this->player1_id == 0 && this->player2_id == 0;
 }
 
 bool game_controller::can_start(){
@@ -73,8 +82,21 @@ bool game_controller::is_players_turn(int player){
     return this->get_current_player() == player;
 }
 
+void game_controller::end_game(){
+    this->parent.delete_game(this);
+}
 
+std::string game_controller::get_game_code(){
+    return this->game_code;
+}
 
+int game_controller::get_player1_id(){
+    return this->player1_id;
+}
+
+int game_controller::get_player2_id(){
+    return this->player2_id;
+}
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
 void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
@@ -85,6 +107,8 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
         auto pge2 = pge;
         pge2.won = false;
         this->server->send_packet(&pge2, get_opposing_player());
+        this->leave_player1();
+        this->leave_player2();
         return;
     }
     packet_muhle_field packet;
@@ -100,7 +124,7 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
 }
 
 void game_controller::show_end_screen(bool whiteWins){
-    //TODO: Send the right data to the client
+    // Neded because Interface, but not used
 }
 
 void game_controller::show_message(std::string message, int player){

@@ -67,6 +67,14 @@ void client_controller::run()
         this->current_menu_state = menu_state::END_SCREEN;
         this->ask_for_input(); });
 
+    this->client->register_packet_listener<packet_game_code_not_found>([this](packet_game_code_not_found *packet)
+                                                                 {
+        this->view->show_start_menu();
+        std::cout << "Spielcode nicht gefunden: " << packet->code << std::endl;
+        this->user_input_type = input_type::LOCAL;
+        this->current_menu_state = menu_state::MAIN_MENU;
+        this->ask_for_input();
+                                                                 });
 
     this->view->initialize();
     this->user_input_type = input_type::LOCAL;

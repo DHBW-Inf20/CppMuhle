@@ -5,6 +5,7 @@
 #include "../logic/iview.hpp"
 #include "../network/net_server.hpp"
 #include "../logic/helper_types.hpp"
+#include "network_controller.hpp"
 #include <string>
 
 /*  game_controller.hpp
@@ -12,10 +13,11 @@
  *  Controls one instance of a game.
  * iview is used to forward the events to the client.
  */
+class network_controller;
 class game_controller : public iview{
     public:
 
-        game_controller(net_server *server) : server(server) {
+        game_controller(std::string game_code, net_server *server, network_controller &parent) : game_code(game_code), server(server), parent(parent){
             this->game = new muhle_logik(this);
             this->player1_id = 0;
             this->player2_id = 0;
@@ -37,6 +39,7 @@ class game_controller : public iview{
         void leave_game(int player);
         void leave_player1();
         void leave_player2();
+        void end_game();
 
         bool can_start();
         bool is_players_turn(int player);
@@ -46,8 +49,12 @@ class game_controller : public iview{
         void move_piece(int player, int from, int to);
         void jump_piece(int player, int from, int to);
 
+        std::string get_game_code();
         int get_current_player();
         int get_opposing_player();
+        int get_player1_id();
+        int get_player2_id();
+        bool is_empty();
 
         muhle_logik *get_game(){
             return this->game;
@@ -55,10 +62,12 @@ class game_controller : public iview{
         // Processes a game Input, the client needs to filter out whats menu-input and whats game input
 
     private:
+        std::string game_code;
         net_server *server;
         int player1_id;
         int player2_id;
         muhle_logik *game;
+        network_controller &parent;
         
 };
 

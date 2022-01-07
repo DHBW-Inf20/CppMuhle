@@ -12,6 +12,7 @@
  *
  *  Used as a main interface between the server and business-Logic
 */
+class game_controller;
 class network_controller
 {
     public:
@@ -23,10 +24,11 @@ class network_controller
         void join_game(int player, std::string gameCode);
         // Create a new game
         std::string create_new_game(int playerid);
+        void delete_game(game_controller *game);
+        void leave_game(game_controller *game, int player);
 
-    
-    private:   
-        std::string id_seed;   
+    private : 
+        std::string id_seed;
         std::map<int, std::string> names;
         std::string create_new_game_id();
         bool is_game_id_valid(std::string gameCode);
