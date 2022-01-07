@@ -40,7 +40,6 @@ void client_controller::run()
 {
     this->client->register_packet_listener<packet_socket_disconnect>([this](packet_socket_disconnect *packet)
                                                                {
-        this->exit_flag = true;
         std::cout << "Disconnected from Server" << std::endl;
         exit(0); });
 
@@ -93,7 +92,7 @@ void client_controller::run()
 
     ask_for_input();
 
-    exit_flag = false;
+    bool exit_flag = false;
     while (!exit_flag && this->next_input())
     {
         if (actual_in == reference_in)
@@ -217,6 +216,7 @@ void client_controller::process_local_input(std::string &in, bool &exit_flag)
             switch(command){
                 case 1:
                     this->current_menu_state = menu_state::MAIN_MENU;
+                    this->ask_for_input();
                 case 2:
                     exit_flag = true;
                     break;

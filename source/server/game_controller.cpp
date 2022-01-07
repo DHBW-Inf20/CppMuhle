@@ -54,8 +54,8 @@ void game_controller::leave_player1(){
 }
 
 void game_controller::leave_player2(){
-    if (this->player1_id != 0){
-        this->player1_id = 0;
+    if (this->player2_id != 0){
+        this->player2_id = 0;
         this->parent.leave_game(this, player2_id);
     }else{
         throw std::runtime_error("Player 2 not joined");
@@ -104,7 +104,7 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
         packet_game_ended pge;
         pge.won = true;
         this->server->send_packet(&pge, get_current_player());
-        auto pge2 = pge;
+        packet_game_ended pge2 = pge;
         pge2.won = false;
         this->server->send_packet(&pge2, get_opposing_player());
         this->leave_player1();

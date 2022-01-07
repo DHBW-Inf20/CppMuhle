@@ -21,8 +21,6 @@ class client_controller{
         void run();
 
     private:
-        bool exit_flag;
-
         std::vector<std::string> input_queue;
         std::vector<std::string> message_after_input;
         int actual_in;
