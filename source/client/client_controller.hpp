@@ -41,7 +41,6 @@ class client_controller{
         void process_server_input(bool &exit_flag);
         void process_local_input(std::string &in, bool  &exit_flag);
         void process_main_menu_input(std::string &in, bool  &exit_flag);
-        void process_create_game_input(std::string &in, bool  &exit_flag);
         void process_join_game_input(std::string &in, bool  &exit_flag);
 };
 

@@ -10,11 +10,6 @@ protected:
     std::string move;
 
 public:
-    /** Constructor (C++ STL string, C++ STL).
-     *  @param msg The error message
-     *  @param err_num Error number
-     *  @param err_off Error offset
-     */
     explicit wrong_move(const std::string &msg, const std::string &move) : error_message(msg),
                                                                            move(move)
     {
@@ -32,7 +27,8 @@ public:
      */
     virtual const char *what() const throw()
     {
-        return error_message.c_str();
+        std::string wh = error_message + ": " + move;
+        return wh.c_str();
     }
 
     virtual const char *get_move() const throw()
@@ -46,7 +42,27 @@ class not_your_turn : virtual public std::exception
 public:
     virtual const char *what() const throw()
     {
-        return "Du bist nicht dran, du Hund!";
+        return "Du bist nicht dran!";
     }
+};
+
+class not_in_game : virtual public std::exception
+{
+public:
+    int player;
+    explicit not_in_game(int player) : player(player)
+    {
+    }
+
+    virtual ~not_in_game() throw() {}
+    virtual const char *what() const throw()
+    {
+        return "Du bist in keinem Spiel";
+    }
+    virtual const int get_player() const throw()
+    {
+        return player;
+    }
+
 };
 #endif

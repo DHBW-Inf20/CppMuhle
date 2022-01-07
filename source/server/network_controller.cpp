@@ -51,7 +51,7 @@ bool network_controller::is_game_id_valid(std::string game_id){
     return game_controller_map.find(game_id) != game_controller_map.end();
 }
 
-/* https://stackoverflow.com/questions/440133/how-do-i-create-a-random-alpha-numeric-string-in-c */
+/* Source: https://stackoverflow.com/a/440240/14379859 */
 std::string gen_random(const int len) {
     
     static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -117,7 +117,7 @@ void network_controller::initializePackageListeners()
             
         }
         catch(wrong_move &e){
-            std::cout << "Player " << id << " tried an unvaild move" << std::endl;
+            std::cout << "Player " << id << " tried an unvaild move: " << e.get_move() << std::endl;
             player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_current_player());
         }
         catch(not_your_turn &e){
@@ -196,7 +196,13 @@ void network_controller::initializePackageListeners()
         std::cout << "Client disconnected: " << id << std::endl;
         auto gameController = player_game_controller_map.find(id);
         if(gameController != player_game_controller_map.end()){
+            try{
             gameController->second->leave_game(id);	
+            }
+            catch(not_in_game &e){
+                std::cout << "Player " << id << " tried to leave a game, when he wasnt in one" << std::endl;
+                player_game_controller_map.at(id)->show_message(e.what(), e.get_player());
+            }
         }
     });
 }

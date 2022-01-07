@@ -38,7 +38,7 @@ void game_controller::leave_game(int player){
     }else if(this->player2_id == player){
         this->leave_player2();
     }else{
-        throw std::runtime_error("Player is not in game");
+        throw not_in_game(player);
     }
 }
 
@@ -74,12 +74,7 @@ bool game_controller::is_players_turn(int player){
     return this->get_current_player() == player;
 }
 
-void game_controller::process_input(int player, std::string input){
-    if(!this->is_players_turn(player)){
-        throw std::runtime_error("Not your turn");
-    // TODO: Process the Game-Input
-    }
-}
+
 
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client

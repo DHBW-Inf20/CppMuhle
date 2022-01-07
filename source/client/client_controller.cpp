@@ -184,7 +184,6 @@ void client_controller::process_local_input(std::string &in, bool &exit_flag)
         this->process_main_menu_input(in, exit_flag);
         break;
     case menu_state::CREATE_GAME:
-        this->process_create_game_input(in, exit_flag);
         break;
     case menu_state::JOIN_GAME:
         this->process_join_game_input(in, exit_flag);
@@ -240,11 +239,6 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
     }
 }
 
-void client_controller::process_create_game_input(std::string &to, bool &exit_flag)
-{
-    // TODO: Implement create game input
-    throw std::runtime_error("Not implemented");
-}
 
 void client_controller::process_join_game_input(std::string &to, bool &exit_flag)
 {
