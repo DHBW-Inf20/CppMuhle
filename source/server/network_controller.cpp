@@ -83,10 +83,6 @@ void network_controller::initializePackageListeners()
         std::cout << "Client connected: " << id << std::endl;
     });
 
-    server->register_packet_listener<packet_socket_disconnect>([](int id, packet_socket_disconnect *packet) {
-        std::cout << "Client disconnected: " << id << std::endl;
-    });
-
     server->register_packet_listener<packet_login>([this](int id, packet_login *packet) {
         std::cout << "Login from " << id << ": " << packet->name << std::endl;
         names[id] = packet->name;

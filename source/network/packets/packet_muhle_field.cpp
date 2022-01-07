@@ -38,7 +38,6 @@ public:
         packet_data_t packet_data;
         packet_data.data = data;
         packet_data.size = 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state);
-        // std::cout << std::bitset<64>(data) << std::endl;
         return packet_data;
     }
 
@@ -52,7 +51,6 @@ public:
         
         memcpy(&current_game_state, packet_data.data + 2 * sizeof(int24) +  2 * sizeof(char), sizeof(game_state));
         
-        // std::cout << std::bitset<64>(&packet_data.data) << std::endl;
 
     }
 

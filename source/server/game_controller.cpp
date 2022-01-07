@@ -13,7 +13,6 @@ void game_controller::join_game(int player){
     }else{
         throw std::runtime_error("Game is already full");
     }
-    std::cout << this->player1_id << " " << this->player2_id << std::endl;
 }
 
 void game_controller::join_player1(int player){
@@ -89,7 +88,6 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
     packet_muhle_field packet2 = packet;
     packet2.current_game_state = game_state::WAITING_FOR_OPPONENT;
     server->send_packet(&packet2,get_opposing_player());
-    std::cout << "send show board packet" << std::endl;
 }
 
 void game_controller::show_end_screen(bool whiteWins){
