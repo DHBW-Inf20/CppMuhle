@@ -27,7 +27,7 @@ ClientSOURCES := source/client/konsolen_view.cpp source/network/packet_factory.c
 ServerOBJECTS := $(patsubst %.cpp,%.o,$(ServerSOURCES))
 ClientOBJECTS := $(patsubst %.cpp,%.o,$(ClientSOURCES))
 
-WARNING := -Wall -Wextra
+# WARNING := -Wall -Wextra
 
 all: Server Client
 
@@ -47,3 +47,7 @@ ServerDEPENDS := $(patsubst %.cpp,%.d,$(ServerSOURCES))
 ClientDEPENDS := $(patsubst %.cpp,%.d,$(ClientSOURCES))
 -include $(ServerDEPENDS)
 -include $(ClientDEPENDS)
+
+
+%.o: %.cpp makefile
+	$(CXX) $(WARNING) $(CXXFLAGS) -MMD -MP -c $< -o $@
