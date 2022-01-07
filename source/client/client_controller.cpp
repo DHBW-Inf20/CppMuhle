@@ -112,8 +112,11 @@ void client_controller::ask_for_input()
     switch (this->user_input_type)
     {
     case input_type::LOCAL:
-        std::cout << "> ";
         reference_in = 1;
+        if (this->current_menu_state != menu_state::JOIN_GAME)
+        {
+            std::cout << "> ";
+        }
         break;
     case input_type::SERVER:
         switch (this->next_move)

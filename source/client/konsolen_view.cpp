@@ -103,7 +103,10 @@ void konsolen_view::print_board(std::string message){
     std::cout << "6    |    " << print_field[18] << "--------" << print_field[19] << "--------" << print_field[20] <<"   | " << "\n";
     std::cout << "     |              |              | " << "\n";
     std::cout << "7    " << print_field[21] << "-------------" << print_field[22] << "-------------" << print_field[23] << "\n" << std::endl;
-    std::cout << message << std::endl;
+
+    if (message.length() > 0) {
+        std::cout << message << std::endl;
+    }
 }
 
 void konsolen_view::show_start_menu(){
