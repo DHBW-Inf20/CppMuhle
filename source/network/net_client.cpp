@@ -53,6 +53,7 @@ void net_client::stop()
 {
     server_con->socket.close();
     io_service.stop();
+    client_thread->detach();
 }
 
 void net_client::join_thread()
@@ -79,7 +80,7 @@ void net_client::handle_read()
             packet_socket_disconnect psd;
             this->call_listeners(&psd);
 
-            this->start();
+            this->stop();
         }
     });
 }

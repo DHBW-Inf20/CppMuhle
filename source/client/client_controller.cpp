@@ -38,15 +38,11 @@ client_controller::~client_controller()
 
 void client_controller::run()
 {
-    // Always show the start menu on start
-    this->client->start();
-    // Login to the server
-    std::cout << "Namen eingeben: ";
-    std::cin >> this->name;
-
-    packet_login pl;
-    pl.name = this->name;
-    this->client->send_packet(&pl);
+    this->client->register_packet_listener<packet_socket_disconnect>([this](packet_socket_disconnect *packet)
+                                                               {
+        this->exit_flag = true;
+        std::cout << "Disconnected from Server" << std::endl;
+        exit(0); });
 
     this->client->register_packet_listener<packet_muhle_field>([this](packet_muhle_field *packet)
                                                                {
@@ -68,13 +64,23 @@ void client_controller::run()
         this->ask_for_input(); });
 
 
+    // Always show the start menu on start
+    this->client->start();
+    // Login to the server
+    std::cout << "Namen eingeben: ";
+    std::cin >> this->name;
+
+    packet_login pl;
+    pl.name = this->name;
+    this->client->send_packet(&pl);
+
     this->view->initialize();
     this->user_input_type = input_type::LOCAL;
     this->current_menu_state = menu_state::MAIN_MENU;
 
     ask_for_input();
 
-    bool exit_flag = false;
+    exit_flag = false;
     while (!exit_flag && this->next_input())
     {
         if (actual_in == reference_in)
@@ -83,6 +89,7 @@ void client_controller::run()
         }
     }
     std::cout << "Disconnecting..." << std::endl;
+    this->client->stop();
 }
 
 void client_controller::clear_input()

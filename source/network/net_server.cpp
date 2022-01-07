@@ -44,12 +44,15 @@ void net_server::start()
 
 void net_server::stop()
 {
+    packet_socket_disconnect psd;
     for (auto &map : clients)
     {
+        this->call_listeners(map.first, &psd);
         map.second->socket.close();
     }
     clients.clear();
     io_service.stop();
+    server_thread->detach();
 }
 
 void net_server::join_thread()
