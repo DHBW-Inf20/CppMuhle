@@ -53,6 +53,7 @@ public:
     ~net_server();
     int get_port();
     void start();
+    void stop();
     void join_thread();
 
     bool is_connected(int client_id);

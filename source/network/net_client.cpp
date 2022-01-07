@@ -40,10 +40,19 @@ void net_client::start()
 
     boost::asio::connect(server_con->socket, it);
 
+    packet_socket_connect psc;
+    this->call_listeners(&psc);
+
     handle_read();
 
     // client_thread = std::make_unique<std::thread>([this]() { io_service.run(); }); // C++14
     client_thread = std::unique_ptr<std::thread>(new std::thread([this]() { io_service.run(); }));
+}
+
+void net_client::stop()
+{
+    server_con->socket.close();
+    io_service.stop();
 }
 
 void net_client::join_thread()
@@ -67,7 +76,10 @@ void net_client::handle_read()
         else
         {
             // Server disconnected
-            server_con->socket.close();
+            packet_socket_disconnect psd;
+            this->call_listeners(&psd);
+
+            this->start();
         }
     });
 }

@@ -42,6 +42,16 @@ void net_server::start()
     server_thread = std::unique_ptr<std::thread>(new std::thread([this]() { io_service.run(); }));
 }
 
+void net_server::stop()
+{
+    for (auto &map : clients)
+    {
+        map.second->socket.close();
+    }
+    clients.clear();
+    io_service.stop();
+}
+
 void net_server::join_thread()
 {
     server_thread->join();
@@ -56,9 +66,8 @@ void net_server::handle_accept()
             clients[con->id] = con;
             this->handle_read(con);
 
-            packet_socket_connect* packet = new packet_socket_connect();
-            this->call_listeners(con->id, packet);
-            delete packet;
+            packet_socket_connect psc;
+            this->call_listeners(con->id, &psc);
         }
         this->handle_accept();
     });
@@ -81,9 +90,8 @@ void net_server::handle_read(std::shared_ptr<connection_t> con)
         else
         {
             // Client disconnected
-            packet_socket_disconnect* packet = new packet_socket_disconnect();
-            this->call_listeners(con->id, packet);
-            delete packet;
+            packet_socket_disconnect psd;
+            this->call_listeners(con->id, &psd);
 
             clients.erase(con->id);
             con->socket.close();

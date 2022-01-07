@@ -56,6 +56,7 @@ public:
     std::string get_address();
     int get_port();
     void start();
+    void stop();
     void join_thread();
 
     void send_packet(packet*);
