@@ -5,14 +5,7 @@
 #include <iostream>
 
 /*
-enum game_state{
-    WAITING_FOR_OPPONENT, = 0
-    PLACING, = 1
-    MOVING, .. "
-    JUMPING,
-    ATTACKING,
-    ENDED
-};
+
 */
 /*
 * packet_muhle_field
