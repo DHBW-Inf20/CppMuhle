@@ -211,7 +211,7 @@ std::cout << "2: Beenden" << '\n';
 
 void konsolen_view::show_message(std::string message, int player)
 {
-    print_board(message);
+    std::cout << message << std::endl;
 }
 
 void konsolen_view::show_join_game_menu()

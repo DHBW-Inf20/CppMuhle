@@ -55,24 +55,28 @@ void client_controller::run(){
     // });
 
     this->client->register_packet_listener<packet_muhle_field>([this] ( packet_muhle_field *packet) {
-        std::cout << "RECIEVED MUHLE PACKAGE" << std::endl;
         this->view->show_board(packet->white,packet->black,packet->white_pieces_left,packet->black_pieces_left,packet->current_game_state);
         this->next_move = packet->current_game_state;
+        this->ask_for_input();
     });
 
-      this->client->register_packet_listener<packet_message>([this] (packet_message *packet) {
-        this->view->show_message(packet->str);
+    this->client->register_packet_listener<packet_message>([this] (packet_message *packet) {
+        this->view->print_board(packet->str);
+        this->ask_for_input();
     });
 
 
     this->view->initialize();
     this->user_input_type = input_type::LOCAL;
     this->current_menu_state = menu_state::MAIN_MENU;
-    std::string to;
-    std::string from;
+
+    ask_for_input();
+
     bool exit_flag = false;
-    while(!exit_flag && this->ask_for_input(to,from, exit_flag)){
-        this->process_input(to,from, exit_flag);
+    while(!exit_flag && this->next_input()) {
+        if (actual_in == reference_in) {
+            this->process_input(exit_flag);
+        }
     }
     // TODO: disconnect the player safely (wird überbewertet)
     std::cout << "Disconnecting..." << std::endl;
@@ -80,83 +84,108 @@ void client_controller::run(){
 
 }
 
-bool client_controller::ask_for_input(std::string &to, std::string &from, bool &exit_flag) const{
+void client_controller::clear_input()
+{
+    input_queue.clear();
+    message_after_input.clear();
+    actual_in = 0;
+    reference_in = 0;
+}
 
+bool client_controller::next_input()
+{
+    std::string in;
+    std::cin >> in;
+    input_queue.push_back(in);
+    if (message_after_input.size() > (size_t) actual_in)
+    {
+        std::cout << message_after_input[actual_in] << std::flush;
+    }
+    actual_in++;
+    return std::cin.good();
+}
+
+void client_controller::ask_for_input() {
+    // std::cout << "ASK FOR INPUT " << this->user_input_type << "-" << this->next_move << std::endl; 
+    clear_input();
     switch(this->user_input_type){
         case input_type::LOCAL:
             std::cout << "> ";
-            std::cin >> to;
-            from = to;
+            reference_in = 1;
             break;  
         case input_type::SERVER:
             switch(this->next_move){
                 case game_state::WAITING_FOR_OPPONENT:
                     // std::cout << "Waiting for opponent..." << std::endl;
-                    std::cin >> to;
+                    reference_in = 1;
                     break;
                 case game_state::ATTACKING:
                     std::cout << CUR_RIGHT(5) << "Schlagen: __" << CUR_LEFT(2);
-                    std::cin >> to;
-                    from = to;
+                    reference_in = 1;
                     break;
                 case game_state::PLACING:
                     std::cout << CUR_RIGHT(5) << "Setzen: __" << CUR_LEFT(2);
-                    std::cin >> to;
-                    from = to;                
+                    reference_in = 1;           
                     break;
                 case game_state::MOVING:
                     // TODO: show what type of move it is (and change to german (?))
                     std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
-                    std::cin >> from;
-                    std::cout << CUR_UP(1) << CUR_COL(35);
-                    std::cin >> to;
+                    {
+                        std::stringstream ss;
+                        ss << CUR_UP(1) << CUR_COL(35);
+                        std::vector<std::string> msg = { ss.str() };
+                        message_after_input = msg;
+                    }
+                    reference_in = 2;
                     break;
                 case game_state::JUMPING:
                     std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
-                    std::cin >> from;
-                    std::cout << CUR_UP(1) << CUR_COL(35);
-                    std::cin >> to;
+                    {
+                        std::stringstream ss;
+                        ss << CUR_UP(1) << CUR_COL(35);
+                        std::vector<std::string> msg = { ss.str() };
+                        message_after_input = msg;
+                    }
+                    reference_in = 2;
                     break;
                 case game_state::ENDED:
                     std::cout << "Nochmal? (y/n): _" << CUR_LEFT(1);
-                    std::cin >> to;
-                    from = to;
+                    reference_in = 1;
                     break;
             }
     }
-
-    return std::cin.good();
+    std::cout << std::flush;
 }
 
-void client_controller::process_input(std::string &to, std::string &from, bool &exit_flag){
+void client_controller::process_input(bool &exit_flag){
     switch(this->user_input_type){
             case input_type::LOCAL:
-                this->process_local_input(to, exit_flag);
+                this->process_local_input(input_queue[0], exit_flag);
                 break;
             case input_type::SERVER:
-                this->process_server_input(to, from, exit_flag);
+                this->process_server_input(exit_flag);
                 break;
         }
 }
 
-void client_controller::process_local_input(std::string &to, bool &exit_flag){
+void client_controller::process_local_input(std::string &in, bool &exit_flag){
     switch(this->current_menu_state){
         case menu_state::MAIN_MENU:
-            this->process_main_menu_input(to, exit_flag);
+            this->process_main_menu_input(in, exit_flag);
             break;
         case menu_state::CREATE_GAME:
-            this->process_create_game_input(to, exit_flag);
+            this->process_create_game_input(in, exit_flag);
             break;
         case menu_state::JOIN_GAME:
-            this->process_join_game_input(to, exit_flag);
+            this->process_join_game_input(in, exit_flag);
             break;
     }
 }
 
-void client_controller::process_main_menu_input(std::string &to, bool &exit_flag){
+void client_controller::process_main_menu_input(std::string &in, bool &exit_flag){
     int command = 4;
     try{
-        command = std::stoi(to);
+        command = std::stoi(in);
     }
     catch(std::invalid_argument& e){
         this->view->show_message(e.what());
@@ -172,19 +201,21 @@ void client_controller::process_main_menu_input(std::string &to, bool &exit_flag
                 packet_game_request pgr;
                 packet_game_code* pgc = this->client->send_and_receive_packet<packet_game_code>(&pgr);
                 std::cout << "Game Code: " << pgc->code << std::endl;
+                this->user_input_type = input_type::SERVER;
                 delete pgc;
                 delete this->client->wait_for_packet<packet_muhle_field>();
-                this->user_input_type = input_type::SERVER;
             }
             break;
         case 2:
             this->current_menu_state = menu_state::JOIN_GAME;
             this->view->show_join_game_menu();
+            ask_for_input();
             break;
         case 3:
             this->view->show_instructions();
             SHOW_PRESS_ANY_KEY;
             this->view->show_start_menu();
+            ask_for_input();
             break;
         case 4:
             exit_flag = true;
@@ -213,12 +244,12 @@ void client_controller::process_join_game_input(std::string &to, bool  &exit_fla
 }
 
 
-void client_controller::process_server_input(std::string &to, std::string &from, bool  &exit_flag){
+void client_controller::process_server_input(bool  &exit_flag){
     
         switch(this->next_move){
             case game_state::WAITING_FOR_OPPONENT:
                 this->view->print_board("Bitte warte bis du am Zug bist!");
-                // this->process_waiting_for_opponent_input(to, exit_flag);
+                ask_for_input();
                 break;
             case game_state::ATTACKING:
                 // this->process_attacking_input(to, exit_flag);
@@ -226,11 +257,12 @@ void client_controller::process_server_input(std::string &to, std::string &from,
             case game_state::PLACING:
                 try{
                 packet_game_place pgp;
-                pgp.to = this->c_lookup_table.at(to);
+                pgp.to = this->c_lookup_table.at(input_queue[0]);
                 this->client->send_packet(&pgp);
                 }
                 catch(std::out_of_range& e){
-                    this->view->show_message(e.what());
+                    this->view->print_board(e.what());
+                    ask_for_input();
                     return;
                 }
                 // this->process_placing_input(to, exit_flag);
