@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install boost
-      run: sudo apt-get update && sudo apt-get install -yq libboost-dev-all
+      run: sudo apt-get update && sudo apt-get upgrade && sudo apt-get install libboost-dev-all
     - name: build
       run: make
