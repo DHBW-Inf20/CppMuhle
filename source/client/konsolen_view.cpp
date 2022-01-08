@@ -26,6 +26,10 @@
 #define CUR_SAVE "\033[s"
 #define CUR_RESTORE "\033[u"
 
+// Escape codes for reset and underline
+#define ESCAPECODE_RESET "\033[0m"
+#define ESCAPECODE_UNDERLINE "\033[4m"
+
 
 void konsolen_view::initialize(){
     // Bei Windows, den Terminal Output auf UTF-8 setzen
@@ -35,12 +39,13 @@ void konsolen_view::initialize(){
     show_start_menu();
 }
 
-void konsolen_view::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
+void konsolen_view::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state, std::string move){
     this->cached_black = black;
     this->cached_white = white;
     this->cached_white_pieces = white_pieces;
     this->cached_black_pieces = black_pieces;
     this->cached_state = state;
+    this->cached_move = move;
     this->print_board("");
 }
 
@@ -80,25 +85,50 @@ void konsolen_view::print_board(std::string message){
             black_pieces_array[i] = "  ";
         }
     }
-
+    switch(cached_state){
+        case game_state::ATTACKING:
+            std::cout << "Du bist am Zug! (Schlagen)" << std::endl;
+            break;
+        case game_state::JUMPING:
+            std::cout << "Du bist am Zug! (Springen)" << std::endl;
+            break;
+        case game_state::MOVING:
+            std::cout << "Du bist am Zug! (Schieben)" << std::endl;
+            break;
+        case game_state::PLACING:
+            std::cout << "Du bist am Zug! (Platzieren)" << std::endl;
+            break;
+        case game_state::WAITING_FOR_OPPONENT:
+            std::cout << "Warte auf Gegner..." << std::endl;
+            break;
+        default:
+            break;
+    }
     //print field
-    if(cached_state != game_state::WAITING_FOR_OPPONENT){
-        std::cout << "Du bist am Zug!" << std::endl;
+    // Felder als gespeicherte werte irgendwo?
+    std::string enemy = "Gegner";
+    std::string me = "Ich";
+
+    // formatierte werte
+    std::string formatted_enemy = enemy;
+    std::string formatted_me = me;
+
+    if(cached_state == game_state::WAITING_FOR_OPPONENT){
+        formatted_enemy = ESCAPECODE_UNDERLINE + formatted_enemy + ESCAPECODE_RESET;
+    }else{
+        formatted_me = ESCAPECODE_UNDERLINE + formatted_me + ESCAPECODE_RESET;
     }
-    else
-    {
-        std::cout << "Warte auf Gegner..." << std::endl;
-    }
+
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
-    std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << white_pieces_array[0] << PIECEMARGIN << black_pieces_array[0] << "\n";
-    std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[1] << PIECEMARGIN << black_pieces_array[1] << "\n";
-    std::cout << "2    |    " << print_field[3] << "--------" << print_field[4] << "--------" << print_field[5] << "   | " << SIDEBAR_MARGIN << white_pieces_array[2] << PIECEMARGIN << black_pieces_array[2]  << "\n";
-    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << white_pieces_array[3] << PIECEMARGIN << black_pieces_array[3] << "\n";
-    std::cout << "3    |    |    "<< print_field[6] <<"---" << print_field[7] << "---" << print_field[8] << "   |    | " << SIDEBAR_MARGIN << white_pieces_array[4] << PIECEMARGIN << black_pieces_array[4] << "\n";
-    std::cout << "     |    |    |         |    |    | "<< SIDEBAR_MARGIN << white_pieces_array[5] << PIECEMARGIN << black_pieces_array[5]  << "\n";
-    std::cout << "4    " << print_field[9] << "---" << print_field[10] << "---" << print_field[11] << "        " << print_field[12] << "---" << print_field[13] << "---" << print_field[14] << SIDEBAR_MARGIN << white_pieces_array[6] << PIECEMARGIN << black_pieces_array[6] << "\n";
-    std::cout << "     |    |    |         |    |    | " << SIDEBAR_MARGIN << white_pieces_array[7] << PIECEMARGIN << black_pieces_array[7] << "\n";
-    std::cout << "5    |    |    " << print_field[15] << "---" << print_field[16] << "---" << print_field[17] << "   |    | " << SIDEBAR_MARGIN << white_pieces_array[8] << PIECEMARGIN << black_pieces_array[8] << "\n";
+    std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << (color == player_color::WHITE ? formatted_me : formatted_enemy) << "\n";
+    std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[0] << white_pieces_array[1] << white_pieces_array[2] << white_pieces_array[3] << white_pieces_array[4] << white_pieces_array[5] << white_pieces_array[6] << white_pieces_array[7] << white_pieces_array[8] << "\n";
+    std::cout << "2    |    " << print_field[3] << "--------" << print_field[4] << "--------" << print_field[5] << "   | " << "\n";
+    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << (color == player_color::BLACK ? formatted_me : formatted_enemy) << "\n";
+    std::cout << "3    |    |    " << print_field[6] << "---" << print_field[7] << "---" << print_field[8] << "   |    | " << SIDEBAR_MARGIN << black_pieces_array[0] << black_pieces_array[1] << black_pieces_array[2] << black_pieces_array[3] << black_pieces_array[4] << black_pieces_array[5] << black_pieces_array[6] << black_pieces_array[7] << black_pieces_array[8] << "\n";
+    std::cout << "     |    |    |         |    |    | "<<  "\n";
+    std::cout << "4    " << print_field[9] << "---" << print_field[10] << "---" << print_field[11] << "        " << print_field[12] << "---" << print_field[13] << "---" << print_field[14] << SIDEBAR_MARGIN << "Letzter Zug: \n";
+    std::cout << "     |    |    |         |    |    | " << SIDEBAR_MARGIN << cached_move << "\n";
+    std::cout << "5    |    |    " << print_field[15] << "---" << print_field[16] << "---" << print_field[17] << "   |    | " << "\n";
     std::cout << "     |    |         |         |    | " << "\n";
     std::cout << "6    |    " << print_field[18] << "--------" << print_field[19] << "--------" << print_field[20] <<"   | " << "\n";
     std::cout << "     |              |              | " << "\n";

@@ -20,12 +20,12 @@ public:
     char black_pieces_left;
     char white_pieces_left;
 
-
+    std::string move;
     game_state current_game_state;
 
     packet_data_t serialize() 
     {
-        char* data = (char*) malloc(2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state));
+        char* data = (char*) malloc(2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state) + move.length());
 
         memcpy(data, &black, sizeof(int24));
         memcpy(data + sizeof(int24), &white, sizeof(int24));
@@ -35,9 +35,11 @@ public:
 
         memcpy(data + 2 * sizeof(int24) + 2 * sizeof(char), &current_game_state, sizeof(game_state));
 
+        memcpy(data + 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state), move.data(), move.length());
+
         packet_data_t packet_data;
         packet_data.data = data;
-        packet_data.size = 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state);
+        packet_data.size = 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state) + move.length();
         return packet_data;
     }
 
@@ -50,6 +52,8 @@ public:
         memcpy(&white_pieces_left, packet_data.data + 2 * sizeof(int24) + sizeof(char), sizeof(char));
         
         memcpy(&current_game_state, packet_data.data + 2 * sizeof(int24) +  2 * sizeof(char), sizeof(game_state));
+
+        move = std::string(packet_data.data + 2 * sizeof(int24) + 2 * sizeof(char) + sizeof(game_state), packet_data.size - 2 * sizeof(int24) - 2 * sizeof(char) - sizeof(game_state));
         
 
     }

@@ -2,22 +2,11 @@
 #include <map>
 
 
-enum game_state{
-    HALLO,
-    TEST
+enum game_state : char{
+    HALLO = "HALLO",
+    TEST = "HALLO"
 };
 int main()
 {
-    std::cout << R"(
-
-                                         
-   __ _  _____      _____  _ __  _ __   ___ _ __  
-  / _` |/ _ \ \ /\ / / _ \| '_ \| '_ \ / _ \ '_ \ 
- | (_| |  __/\ V  V / (_) | | | | | | |  __/ | | |
-  \__, |\___| \_/\_/ \___/|_| |_|_| |_|\___|_| |_|
-   __/ |                                          
-  |___/                                                                                                                    
-
-
-)" << '\n';
+    
 }
