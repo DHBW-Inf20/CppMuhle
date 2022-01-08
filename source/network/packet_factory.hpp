@@ -17,6 +17,7 @@
 #include "packets/packet_game_move.cpp"
 #include "packets/packet_game_jump.cpp"
 #include "packets/packet_game_ended.cpp"
+#include "packets/packet_exchange_names.cpp"
 
 class packet_factory
 {

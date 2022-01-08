@@ -33,10 +33,8 @@ void game_controller::join_player2(int player){
 
 void game_controller::leave_game(int player){
     if(this->player1_id == player){
-        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player1();
     }else if(this->player2_id == player){
-        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player2();
     }else{
         throw not_in_game(player);
@@ -46,7 +44,6 @@ void game_controller::leave_game(int player){
 void game_controller::leave_player1(){
     if (this->player1_id != 0){
         this->player1_id = 0;
-        std::cout << "player 1 left game in game_controller" << std::endl;
         this->parent.leave_game(this,player1_id);
     }else{
         throw std::runtime_error("Player 1 not joined");
@@ -74,6 +71,12 @@ void game_controller::run(){
     if(!this->can_start()){
         throw std::runtime_error("Not enough players");
     }
+    packet_exchange_names pen;
+    pen.enemy_name = parent.names.at(player2_id);
+    server->send_packet(&pen, player1_id);
+    packet_exchange_names pen2 = pen;
+    pen2.enemy_name = parent.names.at(player1_id);
+    server->send_packet(&pen2, player2_id);
     this->game->initialize();
     this->game->start_game();
 }

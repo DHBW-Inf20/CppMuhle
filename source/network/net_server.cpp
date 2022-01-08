@@ -84,8 +84,6 @@ void net_server::handle_read(std::shared_ptr<connection_t> con)
             char packet_id = con->buf[0];
             int32_t size;
             memcpy(&size, &con->buf[1], sizeof(int32_t));
-            // std::cout << "Recieved packet " << (int) packet_id << " from " << con->id << std::endl;
-            // std::cout << "size: " << size << std::endl;
             this->receive_packet(con, packet_id, size);
             this->handle_read(con);
         } 

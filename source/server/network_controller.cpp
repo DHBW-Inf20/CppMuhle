@@ -2,7 +2,9 @@
 #include "../network/net_server.hpp"
 #include "../exceptions/wrong_move.hpp"
 #include <stdlib.h>
+#include <iostream>
 #include <time.h>
+#include <vector>
 std::string gen_random(const int len);
 network_controller::network_controller()
 {
@@ -17,12 +19,25 @@ network_controller::~network_controller()
 void network_controller::run()
 {
     srand(time(NULL));
-    // TODO: Initialize the server and start listening for connections (Implementing the listeners)
 
     this->initializePackageListeners();
     
     server->start();
-    server->join_thread();
+    std::string input;
+    std::vector<std::string> exit_commands = {"exit", "quit", "q", "e", "stop", "s"};
+    while(std::cin.good()){
+        std::cin >> input;
+        if(std::find(exit_commands.begin(), exit_commands.end(), input) != exit_commands.end()){
+            break;
+        }else{
+            std::cout << "Did you mean \"exit\"?" << input << std::endl;
+        }
+    }
+    std::cin.get();
+    std::cout << "Exiting..." << std::endl;
+    server->stop();
+    std::cout << "Successfully stopped" << std::endl;
+
 }
 
 void network_controller::join_game(int player, std::string game_code)
@@ -88,11 +103,8 @@ void network_controller::delete_game(game_controller *game)
 
 void network_controller::leave_game(game_controller *game, int player)
 {
-    std::cout << "tries to leave game in network_controller" << std::endl;
     try{
-    std::cout << "entered try" << std::endl;
         player_game_controller_map.erase(player);
-    std::cout << "erased player from map" << std::endl;
         if(game->is_empty()){
             this->delete_game(game);
         }
@@ -238,7 +250,6 @@ void network_controller::initializePackageListeners()
         auto game_controller = player_game_controller_map.find(id);
         if(game_controller != player_game_controller_map.end()){
             try{
-                std::cout << "tires to leave the game" << std::endl;
             game_controller->second->leave_game(id);	
             }
             catch(not_in_game &e){
@@ -248,9 +259,7 @@ void network_controller::initializePackageListeners()
                 player_game_controller_map.at(id)->show_message(e.what(),id);
                 std::cout << e.what() << std::endl;
         }
-        catch(...){
-            std::cout << "WEIRD ERROR" << std::endl;
-        }
+     
         }
     });
 }
