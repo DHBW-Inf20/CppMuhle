@@ -45,6 +45,11 @@ void game_controller::leave_player1(){
     if (this->player1_id != 0){
         this->player1_id = 0;
         this->parent.leave_game(this,player1_id);
+        if(this->player2_id != 0){
+            int24 dummy;
+            this->show_board(dummy, dummy, 0, 0, game_state::ENDED, "FORCED");
+            this->parent.leave_game(this,player2_id);
+        }
     }else{
         throw std::runtime_error("Player 1 not joined");
     }
@@ -54,6 +59,11 @@ void game_controller::leave_player2(){
     if (this->player2_id != 0){
         this->player2_id = 0;
         this->parent.leave_game(this, player2_id);
+        if(this->player1_id != 0){
+            int24 dummy;
+            this->show_board(dummy,dummy,0,0,game_state::ENDED,"FORCED");
+            this->parent.leave_game(this,player1_id);
+        }
     }else{
         throw std::runtime_error("Player 2 not joined");
     }
@@ -104,11 +114,15 @@ int game_controller::get_player2_id(){
 // Name suggest to print it, but actually it just sends the data through to the client
 void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state, std::string move){
     if(state == game_state::ENDED){
+
         packet_game_ended pge;
         pge.won = true;
         this->server->send_packet(&pge, get_current_player());
         packet_game_ended pge2 = pge;
         pge2.won = false;
+        if(move == "FORCED"){
+            pge2.won = true;
+        }
         this->server->send_packet(&pge2, get_opposing_player());
         this->leave_player1();
         this->leave_player2();

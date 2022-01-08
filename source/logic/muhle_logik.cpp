@@ -60,12 +60,7 @@ game_state muhle_logik::place_piece(int position)
     {
         if (check_if_only_triplets(get_opposing_player()))
         {
-            if (std::bitset<24>(get_opposing_player().data).count() == 3 && this->status == game_state::MOVING)
-            {
-                state = game_state::ENDED;
-                this->status = ENDED;
-                end_game();
-            }
+            this->is_white_turn = !this->is_white_turn;
         }
         else
         {
@@ -131,6 +126,7 @@ game_state muhle_logik::jump_piece(int from, int to)
                 state = game_state::ENDED;
                 end_game();
             }
+            this->is_white_turn = !this->is_white_turn;
         }
         else
         {
