@@ -30,6 +30,7 @@ void muhle_logik::initialize()
 
 game_state muhle_logik::place_piece(int position)
 {
+    move = c_lookup_table.at(std::log2(position));
     game_state state = this->status;
     if (is_occupied(position, this->black.data | this->white.data))
     {
@@ -110,6 +111,7 @@ game_state muhle_logik::move_piece(int from, int to)
 
 game_state muhle_logik::jump_piece(int from, int to)
 {
+    move = c_lookup_table.at(std::log2(from)) + " -> " + c_lookup_table.at(std::log2(to));
     game_state state = game_state::MOVING;
     if (!check_if_valid(from, to))
     {
@@ -277,6 +279,7 @@ bool muhle_logik::check_if_triplets(int last_moved_piece)
 
 void muhle_logik::attack(int position)
 {
+    move = move + ", geschlagen: " + c_lookup_table.at(std::log2(position));
     if (check_if_triplets(position, get_opposing_player()))
     {
         std::string move = this->c_lookup_table[std::log2(position)];
@@ -356,7 +359,7 @@ std::string muhle_logik::bit24_to_coordinate(int bit24) const
 
 void muhle_logik::show_state(game_state state)
 {
-    this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, state);
+    this->view->show_board(this->white, this->black, this->white_pieces, this->black_pieces, state, move);
 }
 
 bool muhle_logik::get_attack_mode() const

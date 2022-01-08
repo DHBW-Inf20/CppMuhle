@@ -43,6 +43,7 @@ public:
     bool is_white_turn;
 
 private:
+    std::string move;
     void end_game();
     bool is_occupied(int position, int player) const;
     bool check_if_legal_move(int from, int to) const;
