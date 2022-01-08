@@ -157,7 +157,7 @@ void client_controller::ask_for_input()
             break;
         case game_state::MOVING:
             // TODO: show what type of move it is (and change to german (?))
-            std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
+            std::cout << CUR_RIGHT(5) << "Von: __" << CUR_COL(31) << "Zu: __" << CUR_COL(11);
             {
                 std::stringstream ss;
                 ss << CUR_UP(1) << CUR_COL(35);
@@ -167,7 +167,7 @@ void client_controller::ask_for_input()
             reference_in = 2;
             break;
         case game_state::JUMPING:
-            std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
+            std::cout << CUR_RIGHT(5) << "Von: __" << CUR_COL(31) << "Zu: __" << CUR_COL(11);
             {
                 std::stringstream ss;
                 ss << CUR_UP(1) << CUR_COL(35);
