@@ -85,16 +85,20 @@ void konsolen_view::print_board(std::string message){
     int pieces_left = (color == player_color::BLACK) ? cached_black_pieces : cached_white_pieces;
     int pieces_left_enemy = (color == player_color::BLACK) ? cached_white_pieces : cached_black_pieces;
 
-    for (int i = 0; i < 9; i++){
+    std::string  piece=  ((color == player_color::BLACK) ? MUHLE_PIECE_BLACK : MUHLE_PIECE_WHITE);
+    std::string  enemy_piece=  ((color == player_color::WHITE) ? MUHLE_PIECE_BLACK : MUHLE_PIECE_WHITE);
+
+    for (int i = 0; i < 9; i++)
+    {
         if (i < pieces_left) {
-            pieces_array[i] = ((color == player_color::BLACK) ? MUHLE_PIECE_BLACK :  MUHLE_PIECE_WHITE);
+            pieces_array[i] = piece;
         } else {
             pieces_array[i] = "  ";
         }
     }
     for (int i = 0; i < 9; i++){
         if (i < pieces_left_enemy) {
-            enemy_pieces_array[i] = ((color == player_color::BLACK) ? MUHLE_PIECE_WHITE : MUHLE_PIECE_BLACK);
+            enemy_pieces_array[i] = enemy_piece;
         } else {
             enemy_pieces_array[i] = "  ";
         }
@@ -123,6 +127,7 @@ void konsolen_view::print_board(std::string message){
     // formatierte werte
     std::string formatted_enemy = enemy_name;
     std::string formatted_me = name;
+    
 
     if(cached_state == game_state::WAITING_FOR_OPPONENT){
         formatted_enemy = ESCAPECODE_UNDERLINE + formatted_enemy + ESCAPECODE_RESET;
@@ -131,10 +136,10 @@ void konsolen_view::print_board(std::string message){
     }
 
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
-    std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << formatted_me  << "\n";
+    std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << (pieces_left ? "" : piece+" ") << formatted_me << "\n";
     std::cout << "     |              |              | " << SIDEBAR_MARGIN << pieces_array[0] << pieces_array[1] << pieces_array[2] << pieces_array[3] << pieces_array[4] << pieces_array[5] << pieces_array[6] << pieces_array[7] << pieces_array[8] << "\n";
     std::cout << "2    |    " << print_field[3] << "--------" << print_field[4] << "--------" << print_field[5] << "   | " << "\n";
-    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << formatted_enemy << "\n";
+    std::cout << "     |    |         |         |    | " << SIDEBAR_MARGIN << (pieces_left_enemy ? "" : enemy_piece+" ") << formatted_enemy << "\n";
     std::cout << "3    |    |    " << print_field[6] << "---" << print_field[7] << "---" << print_field[8] << "   |    | " << SIDEBAR_MARGIN << enemy_pieces_array[0] << enemy_pieces_array[1] << enemy_pieces_array[2] << enemy_pieces_array[3] << enemy_pieces_array[4] << enemy_pieces_array[5] << enemy_pieces_array[6] << enemy_pieces_array[7] << enemy_pieces_array[8] << "\n";
     std::cout << "     |    |    |         |    |    | "<<  "\n";
     std::cout << "4    " << print_field[9] << "---" << print_field[10] << "---" << print_field[11] << "        " << print_field[12] << "---" << print_field[13] << "---" << print_field[14] << SIDEBAR_MARGIN << (cached_move.empty() ? "" :"Letzter Zug:") << "\n";
