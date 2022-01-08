@@ -1,6 +1,6 @@
 name: Makefile CI
 
-on: 
+on:
   pull_request:
     branches: [ main ]
 
@@ -10,12 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install boost
-       run: sudo apt-get update && sudo apt-get install libboost-all-dev 
-    - name: make
+      run: sudo apt-get update && sudo apt-get install -yq libboost-dev-all
+    - name: build
       run: make
-  # build-on-macOS:
-  #   runs-on: macos-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: build2
-  #     run: make
