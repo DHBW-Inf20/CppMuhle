@@ -30,6 +30,7 @@ void packet_factory::initialize()
     this->register_packet(new packet_game_attack());
     this->register_packet(new packet_game_move());
     this->register_packet(new packet_game_jump());
+    this->register_packet(new packet_exchange_names());
     this->register_packet(new packet_game_ended());
 }
 

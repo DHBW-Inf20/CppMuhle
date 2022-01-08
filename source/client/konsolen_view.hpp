@@ -9,9 +9,9 @@ class konsolen_view: public iview
 {
 private:
     std::string print_field[24];
-    std::string white_pieces_array[24];
-    std::string black_pieces_array[24];
-
+    std::string pieces_array[24];
+    std::string enemy_pieces_array[24];
+    bool knows_color = false;
     int24 cached_white;
     int24 cached_black;
     int cached_white_pieces;
@@ -19,6 +19,8 @@ private:
     game_state cached_state;
     bool cached_won;
     std::string cached_move;
+    player_color color;
+
 public:
     virtual void initialize();
     virtual void print_board(std::string message);
@@ -29,7 +31,8 @@ public:
     virtual void show_message(std::string message, int player=0);
     virtual void show_instructions();
     virtual void show_join_game_menu();
-    player_color color;
+    std::string name;
+    std::string enemy_name;
 };
 
 #endif
