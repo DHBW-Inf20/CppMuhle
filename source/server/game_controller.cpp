@@ -33,10 +33,8 @@ void game_controller::join_player2(int player){
 
 void game_controller::leave_game(int player){
     if(this->player1_id == player){
-        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player1();
     }else if(this->player2_id == player){
-        std::cout << "tries to leave game as player 1" << std::endl;
         this->leave_player2();
     }else{
         throw not_in_game(player);
@@ -46,7 +44,6 @@ void game_controller::leave_game(int player){
 void game_controller::leave_player1(){
     if (this->player1_id != 0){
         this->player1_id = 0;
-        std::cout << "player 1 left game in game_controller" << std::endl;
         this->parent.leave_game(this,player1_id);
     }else{
         throw std::runtime_error("Player 1 not joined");

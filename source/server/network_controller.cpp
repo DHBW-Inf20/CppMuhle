@@ -87,11 +87,8 @@ void network_controller::delete_game(game_controller *game)
 
 void network_controller::leave_game(game_controller *game, int player)
 {
-    std::cout << "tries to leave game in network_controller" << std::endl;
     try{
-    std::cout << "entered try" << std::endl;
         player_game_controller_map.erase(player);
-    std::cout << "erased player from map" << std::endl;
         if(game->is_empty()){
             this->delete_game(game);
         }
@@ -237,7 +234,6 @@ void network_controller::initializePackageListeners()
         auto game_controller = player_game_controller_map.find(id);
         if(game_controller != player_game_controller_map.end()){
             try{
-                std::cout << "tires to leave the game" << std::endl;
             game_controller->second->leave_game(id);	
             }
             catch(not_in_game &e){
@@ -247,9 +243,7 @@ void network_controller::initializePackageListeners()
                 player_game_controller_map.at(id)->show_message(e.what(),id);
                 std::cout << e.what() << std::endl;
         }
-        catch(...){
-            std::cout << "WEIRD ERROR" << std::endl;
-        }
+     
         }
     });
 }
