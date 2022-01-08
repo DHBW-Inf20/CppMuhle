@@ -1,6 +1,7 @@
 name: Makefile CI
 
-on:
+on: 
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
 
@@ -12,23 +13,30 @@ jobs:
     # install dependencies
     # - name: boost
     #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
-    - name: build
+    - name: Cache boost
+      uses: actions/cache@v1.0.3
+      id: cache-boost
+      with:
+        path: "~/boost"
+        key: libboost-dev-all
+    - name: Install boost
+      env:
+        CACHE_HIT: ${{steps.cache-boost.outputs.cache-hit}}
+      run: |
+        if [[ "$CACHE_HIT" == 'true' ]]; then
+          sudo cp --force --recursive ~/boost/* /
+        else
+          sudo apt-get update && sudo apt-get install -yq libboost-dev-all
+          mkdir -p ~/boost
+          for dep in libboost-dev-all; do
+              dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/boost/
+          done
+        fi
+    - name: make
       run: make
-  build-on-windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    # install dependencies
-    # - name: boost
-    #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
-    - name: build
-      run: make
-  build-on-macOS:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    # install dependencies
-    # - name: boost
-    #   run: sudo apt-get update && sudo apt-get install libboost-all-dev
-    - name: build
-      run: make
+  # build-on-macOS:
+  #   runs-on: macos-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: build2
+  #     run: make
