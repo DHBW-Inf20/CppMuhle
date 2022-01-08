@@ -5,7 +5,7 @@ Es existiert eine ältere Koop-Variante des Spiels ohne Netzwerkanbindung im [Re
 
  [➤ Usage](https://github.com/DHBW-Inf20/CppMuhle#user-content-usage)\
  [➤ Dependencies](https://github.com/DHBW-Inf20/CppMuhle#user-content-dependencies)\
- [➤ Building](https://github.com/DHBW-Inf20/CppMuhle#user-content-building)
+ [➤ Building](https://github.com/DHBW-Inf20/CppMuhle#user-content-building)\
  [➤ Demo](https://github.com/DHBW-Inf20/CppMuhle#user-content-demo)
 
 ## Umgesetzte Anforderungen
