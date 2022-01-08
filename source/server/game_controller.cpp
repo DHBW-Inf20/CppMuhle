@@ -74,6 +74,12 @@ void game_controller::run(){
     if(!this->can_start()){
         throw std::runtime_error("Not enough players");
     }
+    packet_exchange_names pen;
+    pen.enemy_name = parent.names.at(player2_id);
+    server->send_packet(&pen, player1_id);
+    packet_exchange_names pen2 = pen;
+    pen2.enemy_name = parent.names.at(player1_id);
+    server->send_packet(&pen2, player2_id);
     this->game->initialize();
     this->game->start_game();
 }

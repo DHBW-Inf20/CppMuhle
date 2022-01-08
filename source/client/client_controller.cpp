@@ -62,6 +62,10 @@ void client_controller::run()
         this->current_menu_state = menu_state::END_SCREEN;
         this->ask_for_input(); });
 
+    this->client->register_packet_listener<packet_exchange_names>([this](packet_exchange_names *packet){
+            view->enemy_name = packet->enemy_name;
+    });
+
     this->client->register_packet_listener<packet_game_code_not_found>([this](packet_game_code_not_found *packet)
                                                                        {
         this->view->show_start_menu();
@@ -82,10 +86,10 @@ void client_controller::run()
     }
     // Login to the server
     std::cout << "Namen eingeben: ";
-    std::cin >> this->name;
+    std::cin >> view->name;
 
     packet_login pl;
-    pl.name = this->name;
+    pl.name = view->name;
     this->client->send_packet(&pl);
 
     this->view->initialize();
@@ -156,7 +160,6 @@ void client_controller::ask_for_input()
             reference_in = 1;
             break;
         case game_state::MOVING:
-            // TODO: show what type of move it is (and change to german (?))
             std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
             {
                 std::stringstream ss;
@@ -276,7 +279,6 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
             this->next_move = game_state::PLACING;
             delete pgc;
             delete this->client->wait_for_packet<packet_muhle_field>();
-            this->view->color == player_color::WHITE;
         }
         break;
     case 2:
@@ -303,7 +305,6 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
 
 void client_controller::process_join_game_input(std::string &to, bool &exit_flag)
 {
-    // TODO: Implement join game input
 
     packet_game_code pgc;
     std::transform(to.begin(), to.end(), to.begin(),
@@ -313,7 +314,6 @@ void client_controller::process_join_game_input(std::string &to, bool &exit_flag
     this->client->send_packet(&pgc);
     this->current_menu_state = menu_state::MAIN_MENU;
     this->user_input_type = input_type::SERVER;
-    this->view->color == player_color::BLACK;
 
     this->next_move = game_state::WAITING_FOR_OPPONENT;
 }
