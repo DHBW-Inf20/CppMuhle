@@ -167,7 +167,6 @@ bool muhle_logik::check_if_only_triplets(int24 &player)
 
 bool muhle_logik::check_if_legal_move(int from, int to) const
 {
-    // TODO: Spielzug prüfen
     // Funktion geht davon aus, das der Zug valide ist (check_if_valid)
     /*
         x-Direction:

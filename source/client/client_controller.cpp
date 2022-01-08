@@ -160,7 +160,6 @@ void client_controller::ask_for_input()
             reference_in = 1;
             break;
         case game_state::MOVING:
-            // TODO: show what type of move it is (and change to german (?))
             std::cout << CUR_RIGHT(5) << "From: __" << CUR_COL(31) << "To: __" << CUR_COL(12);
             {
                 std::stringstream ss;
@@ -306,7 +305,6 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
 
 void client_controller::process_join_game_input(std::string &to, bool &exit_flag)
 {
-    // TODO: Implement join game input
 
     packet_game_code pgc;
     std::transform(to.begin(), to.end(), to.begin(),

@@ -17,7 +17,6 @@ network_controller::~network_controller()
 void network_controller::run()
 {
     srand(time(NULL));
-    // TODO: Initialize the server and start listening for connections (Implementing the listeners)
 
     this->initializePackageListeners();
     
