@@ -2,7 +2,9 @@
 #include "../network/net_server.hpp"
 #include "../exceptions/wrong_move.hpp"
 #include <stdlib.h>
+#include <iostream>
 #include <time.h>
+#include <vector>
 std::string gen_random(const int len);
 network_controller::network_controller()
 {
@@ -21,7 +23,21 @@ void network_controller::run()
     this->initializePackageListeners();
     
     server->start();
-    server->join_thread();
+    std::string input;
+    std::vector<std::string> exit_commands = {"exit", "quit", "q", "e", "stop", "s"};
+    while(std::cin.good()){
+        std::cin >> input;
+        if(std::find(exit_commands.begin(), exit_commands.end(), input) != exit_commands.end()){
+            break;
+        }else{
+            std::cout << "Did you mean \"exit\"?" << input << std::endl;
+        }
+    }
+    std::cin.get();
+    std::cout << "Exiting..." << std::endl;
+    server->stop();
+    std::cout << "Successfully stopped" << std::endl;
+
 }
 
 void network_controller::join_game(int player, std::string game_code)
