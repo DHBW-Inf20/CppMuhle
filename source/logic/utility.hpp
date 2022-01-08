@@ -1,5 +1,9 @@
-#ifndef UTILIY_HPP_GUARD
-#define UTILIY_HPP_GUARD
+/* 
+Grüße gehen Raus an Torsten 
+https://github.com/HopfTorsten/dhbw-cpp-journey/blob/master/day3/Task1/Split.hpp
+*/
+#ifndef UTILIY_HPP
+#define UTILIY_HPP
 
 #include <string>
 #include <sstream>

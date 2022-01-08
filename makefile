@@ -1,35 +1,55 @@
+
+
 ifdef includePath
-	IFLAG = -I "$(includePath)"
-else
-$(info Info: If the Build is failing, try adding an includePath to the Boost-Include-Header-Files )
+    IncludeFlag = -I "$(includePath)"
 endif
 
-ifdef libPath
-	LFLAG = -L "$(libPath)"
-else
-$(info If the Build is failing, try adding an libPath to the Boost-Libraries )
-
-endif
-
-ifndef CPPFLAGS
-	CPPFLAGS = -std=c++11 -Wall -Wextra -Wzero-as-null-pointer-constant -Wformat=2 -Wunused $(IFLAG) $(LFLAG)
-else
-	CPPFLAGS = $(CPPFLAGS)  $(IFLAG) $(LFLAG)
+ifdef libraryPath
+	LibraryFlag = -L "$(libraryPath)"
 endif
 
 ifdef OS
-  WINDOWSLIBS =  -lwsock32 -lws2_32
+	WINDOWSLIBS = -lwsock32 -lws2_32
+endif
+
+ifndef CXXFLAGS
+	CXXFLAGS =-std=c++11 $(IncludeFlag) $(LibraryFlag)
+else
+	CXXFLAGS = $(CXXFLAGS) $(IncludeFlag) $(LibraryFlag)
 endif
 
 ifndef CXX
 	CXX = g++
-endif
+endif 
+
+ServerSOURCES := source/network/packet_factory.cpp source/network/net_server.cpp source/server/main_server.cpp source/server/network_controller.cpp source/logic/muhle_logik.cpp source/server/game_controller.cpp
+
+ClientSOURCES := source/client/konsolen_view.cpp source/network/packet_factory.cpp source/network/net_client.cpp source/client/client_controller.cpp source/client/main_client.cpp
+
+ServerOBJECTS := $(patsubst %.cpp,%.o,$(ServerSOURCES))
+ClientOBJECTS := $(patsubst %.cpp,%.o,$(ClientSOURCES))
+
+# WARNING := -Wall -Wextra
+
+all: Server Client
+
+Server: build/server
+Client: build/client
+
+
+build/server: $(ServerOBJECTS)
+	$(CXX) $(CXXFLAGS) $(WARNING) -o build/server $(ServerOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
+
+build/client: $(ClientOBJECTS)
+	$(CXX) $(CXXFLAGS) $(WARNING) -o build/client $(ClientOBJECTS) $(WINDOWSLIBS) -lboost_system -lboost_thread -lpthread
 
 
 
-build/Muhle.exe: source/controller.cpp source/main.cpp source/muhle_logik.cpp source/konsolen_view.cpp
-	$(CXX) $(CPPFLAGS) -o build/Muhle.exe source/muhle_logik.cpp  source/controller.cpp source/konsolen_view.cpp source/main.cpp
+ServerDEPENDS := $(patsubst %.cpp,%.d,$(ServerSOURCES))
+ClientDEPENDS := $(patsubst %.cpp,%.d,$(ClientSOURCES))
+-include $(ServerDEPENDS)
+-include $(ClientDEPENDS)
 
 
-test: tests/test.cpp
-	$(CXX) $(CPPFLAGS) -o tests/test.exe source/muhle_logik.cpp source/konsolen_view.cpp tests/test.cpp  -lboost_unit_test_framework
+%.o: %.cpp makefile
+	$(CXX) $(WARNING) $(CXXFLAGS) -MMD -MP -c $< -o $@

@@ -1,7 +1,6 @@
 libs/
 # Prerequisites
 *.d
-
 # Compiled Object files
 *.slo
 *.lo
@@ -36,3 +35,4 @@ libs/
 
 
 .vscode
+.vs
