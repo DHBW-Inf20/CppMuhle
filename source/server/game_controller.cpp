@@ -99,7 +99,7 @@ int game_controller::get_player2_id(){
 }
 // iview stuff
 // Name suggest to print it, but actually it just sends the data through to the client
-void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state){
+void game_controller::show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state, std::string move){
     if(state == game_state::ENDED){
         packet_game_ended pge;
         pge.won = true;
@@ -117,6 +117,7 @@ void game_controller::show_board(int24 white, int24 black, int white_pieces, int
     packet.black_pieces_left = black_pieces;
     packet.white_pieces_left = white_pieces;
     packet.current_game_state = state;
+    packet.move = move;
     server->send_packet(&packet,get_current_player());
     packet_muhle_field packet2 = packet;
     packet2.current_game_state = game_state::WAITING_FOR_OPPONENT;

@@ -18,16 +18,18 @@ private:
     int cached_black_pieces;
     game_state cached_state;
     bool cached_won;
+    std::string cached_move;
 public:
     virtual void initialize();
     virtual void print_board(std::string message);
-    virtual void show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state);
+    virtual void show_board(int24 white, int24 black, int white_pieces, int black_pieces, game_state state, std::string move);
     virtual void show_start_menu();
     virtual void show_end_screen(bool won);
     virtual void show_end_screen();
     virtual void show_message(std::string message, int player=0);
     virtual void show_instructions();
     virtual void show_join_game_menu();
+    player_color color;
 };
 
 #endif

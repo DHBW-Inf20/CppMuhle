@@ -45,7 +45,7 @@ void client_controller::run()
 
     this->client->register_packet_listener<packet_muhle_field>([this](packet_muhle_field *packet)
                                                                {
-        this->view->show_board(packet->white,packet->black,packet->white_pieces_left,packet->black_pieces_left,packet->current_game_state);
+        this->view->show_board(packet->white,packet->black,packet->white_pieces_left,packet->black_pieces_left,packet->current_game_state, packet->move);
         this->next_move = packet->current_game_state;
         this->ask_for_input(); });
 
@@ -276,6 +276,7 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
             this->next_move = game_state::PLACING;
             delete pgc;
             delete this->client->wait_for_packet<packet_muhle_field>();
+            this->view->color == player_color::WHITE;
         }
         break;
     case 2:
@@ -312,6 +313,8 @@ void client_controller::process_join_game_input(std::string &to, bool &exit_flag
     this->client->send_packet(&pgc);
     this->current_menu_state = menu_state::MAIN_MENU;
     this->user_input_type = input_type::SERVER;
+    this->view->color == player_color::BLACK;
+
     this->next_move = game_state::WAITING_FOR_OPPONENT;
 }
 

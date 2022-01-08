@@ -24,6 +24,11 @@ enum game_state{
     ENDED
 };
 
+enum player_color{
+    WHITE,
+    BLACK
+};
+
 typedef struct int24
 {
     unsigned int data : 24;
