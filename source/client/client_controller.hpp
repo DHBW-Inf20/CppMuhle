@@ -29,6 +29,7 @@ class client_controller{
         bool next_input();
         void ask_for_input();
         std::string name;
+        std::string opponent_name;
 
         // Information about the current game, sent by the server to differentiate input and output
         game_state next_move;

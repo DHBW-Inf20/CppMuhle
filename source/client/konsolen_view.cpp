@@ -80,15 +80,27 @@ void konsolen_view::print_board(std::string message){
             black_pieces_array[i] = "  ";
         }
     }
-
+    switch(cached_state){
+        case game_state::ATTACKING:
+            std::cout << "Du bist am Zug! (Schlagen)" << std::endl;
+            break;
+        case game_state::JUMPING:
+            std::cout << "Du bist am Zug! (Springen)" << std::endl;
+            break;
+        case game_state::MOVING:
+            std::cout << "Du bist am Zug! (Schieben)" << std::endl;
+            break;
+        case game_state::PLACING:
+            std::cout << "Du bist am Zug! (Platzieren)" << std::endl;
+            break;
+        case game_state::WAITING_FOR_OPPONENT:
+            std::cout << "Warte auf Gegner..." << std::endl;
+            break;
+        default:
+            break;
+    }
     //print field
-    if(cached_state != game_state::WAITING_FOR_OPPONENT){
-        std::cout << "Du bist am Zug!" << std::endl;
-    }
-    else
-    {
-        std::cout << "Warte auf Gegner..." << std::endl;
-    }
+
     std::cout << "     A    B    C    D    E    F    G  \n" << "\n";
     std::cout << "1    " << print_field[0] << "-------------" << print_field[1] << "-------------" << print_field[2] << SIDEBAR_MARGIN << white_pieces_array[0] << PIECEMARGIN << black_pieces_array[0] << "\n";
     std::cout << "     |              |              | " << SIDEBAR_MARGIN << white_pieces_array[1] << PIECEMARGIN << black_pieces_array[1] << "\n";
