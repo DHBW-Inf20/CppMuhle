@@ -48,7 +48,7 @@ Client:
 
 Nachdem erfolgreich eine Verbindung zu einem Server hergestellt wurde, wird der Nutzer nach einem Namen gefragt (Dieser hat einen rein kosmetischen UI Nutzen). Im darauffolgendem Hauptmenü lässt sich nun ein neues Spiel erstellen, oder beitreten.
 
-Wenn ein neues Spiel erstellt wird, bekommt der Spieler einen 4 stelligen Spiel-Code angezeigt den er seinem Freund (Oder einem anderen Terminal-Insantz) weiterleiten kann. Dieser Code kann in dem Menüpunkt "Einem Spiel beitreten" eingegeben werden. (Vorraussetzung natürlich, sie sind auf dem selben Server verbunden).
+Wenn ein neues Spiel erstellt wird, bekommt der Spieler einen 4 stelligen Spiel-Code angezeigt den er seinem Freund (Oder einer anderen Terminal-Insantz) weiterleiten kann. Dieser Code kann in dem Menüpunkt "Einem Spiel beitreten" eingegeben werden. (Vorraussetzung natürlich, sie sind auf dem selben Server verbunden).
 
 ## Dependencies
 
