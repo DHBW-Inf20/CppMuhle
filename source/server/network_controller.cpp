@@ -146,7 +146,7 @@ void network_controller::initializePackageListeners()
             this->server->send_packet(&pgcnf, id);
         }
         catch(std::exception &e){
-              std::cout << e.what() << " in packet_game_code listener" << std::endl;
+            std::cout << e.what() << std::endl;
         }
     });
 
@@ -169,7 +169,7 @@ void network_controller::initializePackageListeners()
             std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
             player_game_controller_map.at(id)->show_message(e.what(), id);
         }catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
+            std::cout << e.what() << std::endl;
         }
     });
 
@@ -193,7 +193,7 @@ void network_controller::initializePackageListeners()
             std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
             player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
         }catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
+            std::cout << e.what() << std::endl;
         }
     });
 
@@ -217,7 +217,7 @@ void network_controller::initializePackageListeners()
             std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
             player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
         }catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
+            std::cout << e.what() << std::endl;
         }
     });
 
@@ -241,7 +241,7 @@ void network_controller::initializePackageListeners()
             std::cout << "Player " << id << " tried a move, when it wasnt his turn" << std::endl;
             player_game_controller_map.at(id)->show_message(e.what(), game_controller->second->get_opposing_player());
         }catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
+                std::cout << e.what() << std::endl;
         }
     });
 
@@ -254,9 +254,7 @@ void network_controller::initializePackageListeners()
             }
             catch(not_in_game &e){
                 std::cout << "Player " << id << " tried to leave a game, when he wasnt in one" << std::endl;
-                player_game_controller_map.at(id)->show_message(e.what(), e.get_player());
             }catch(std::exception &e){
-                player_game_controller_map.at(id)->show_message(e.what(),id);
                 std::cout << e.what() << std::endl;
         }
      
