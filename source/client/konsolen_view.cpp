@@ -8,6 +8,7 @@
 #include <windows.h>
 #endif
 
+#define HORIZONTAL_LINE_DIVIDER "--------------------------------------------------------------------------------"
 #define CLEAR_SCREEN "\033[2J\33[H"
 // #define CLEAR_SCREEN ""
 #define SIDEBAR_MARGIN "  "
@@ -157,28 +158,34 @@ void konsolen_view::print_board(std::string message){
 
 void konsolen_view::show_start_menu(){
     std::cout << CLEAR_SCREEN;
-    std::cout << "==============================================\n";
+    std::cout << HORIZONTAL_LINE_DIVIDER << "\n";
     std::cout << "Startmenü Mühle\n";
-    std::cout << "==============================================\n";
+    std::cout << HORIZONTAL_LINE_DIVIDER << "\n";
     std::cout << "1. Neues Spiel erstellen\n";
     std::cout << "2. Einem Spiel beitreten\n";
     std::cout << "3. Anleitung anzeigen\n";
     std::cout << "4. Spiel Beenden\n";
-    std::cout << "==============================================" << std::endl;
+    std::cout << HORIZONTAL_LINE_DIVIDER << std::endl;
 }
 
 void konsolen_view::show_instructions(){
     std::cout << CLEAR_SCREEN;
-    std::cout << "==============================================" << std::endl;
+    std::cout << HORIZONTAL_LINE_DIVIDER << std::endl;
     std::cout << "Anleitung" << std::endl;
-    std::cout << "==============================================" << std::endl;
-    std::cout << "Ablauf Mühle:" << std::endl;
-    std::cout << "Setzphase: Die Spieler setzen abwechselnd je einen Stein, insgesamt je neun, auf Kreuzungs- oder Eckpunkte des Brettes" << std::endl;
-    std::cout << "Zugphase: Die Spielsteine werden gezogen, das heißt, pro Runde darf jeder Spieler einen Stein auf einen angrenzenden, freien Punkt bewegen. Kann ein Spieler keinen Stein bewegen, hat er verloren." << std::endl;
-    std::cout << "Endphase: Sobald ein Spieler nur noch drei Steine hat, darf er mit seinen Steinen springen, das heißt, er darf nun pro Runde mit einem Stein an einen beliebigen freien Punkt springen. \nSobald ihm ein weiterer Stein abgenommen wird, hat er das Spiel verloren." << std::endl;
-    std::cout << "Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, nennt man eine „Mühle“. \nWenn ein Spieler eine Mühle schließt, darf er einen beliebigen Stein des Gegners aus dem Spiel nehmen, sofern dieser Stein nicht ebenfalls Bestandteil einer Mühle ist. " << std::endl;
-    std::cout << "==============================================\n" << std::endl;
+    std::cout << HORIZONTAL_LINE_DIVIDER << std::endl;
+    std::cout << R"(
+1. Die Züge werden wie in Schach über eine Notation gelöst. Das Mühle-Feld lässt
+   sich aufteilen in a-g Spalten und 1-7 Zeilen.
+2. Die Auswahl des Feldes erfolgt über die Angabe der Notation (z. B. `a7`).
+3. Das Spiel läuft wie folgt ab:
+    - Setzphase: Die Spieler setzen abwechselnd je einen Stein, insgesamt je neun, auf Kreuzungs- oder Eckpunkte des Brettes
+    - Zugphase: Die Spielsteine werden gezogen, das heißt, pro Runde darf jeder Spieler einen Stein auf einen angrenzenden, freien Punkt bewegen. Kann ein Spieler keinen Stein bewegen, hat er verloren.
+    - Endphase: Sobald ein Spieler nur noch drei Steine hat, darf er mit seinen Steinen springen, das heißt, er darf nun pro Runde mit einem Stein an einen beliebigen freien Punkt springen. Sobald ihm ein weiterer Stein abgenommen wird, hat er das Spiel verloren.
 
+Drei Steine einer Farbe, die in einer Geraden auf Feldern nebeneinander liegen, nennt man eine „Mühle“. Wenn ein Spieler eine Mühle schließt, darf er einen beliebigen Stein des Gegners aus dem Spiel nehmen, sofern dieser Stein nicht ebenfalls Bestandteil einer Mühle ist.
+)";
+    std::cout << HORIZONTAL_LINE_DIVIDER << "\n" << std::endl;
+    std::cout << "Um zurückzukehren drücken Sie eine beliebige Taste + ENTER." << std::endl;
 }
 
 void konsolen_view::show_end_screen(bool won){

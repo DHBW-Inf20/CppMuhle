@@ -12,7 +12,8 @@ enum menu_state{
     MAIN_MENU,
     CREATE_GAME,
     JOIN_GAME,
-    END_SCREEN
+    END_SCREEN,
+    INSTRUCTIONS
 };
 
 enum game_state{

@@ -1,11 +1,7 @@
 #include "client_controller.hpp"
 #include "../network/net_client.hpp"
 
-#ifdef _WIN32
-#define SHOW_PRESS_ANY_KEY system("pause");
-#else
-#define SHOW_PRESS_ANY_KEY system("read");
-#endif
+
 
 #define CLEAR_SCREEN "\033[2J\33[H"
 // #define CLEAR_SCREEN ""
@@ -245,6 +241,11 @@ void client_controller::process_local_input(std::string &in, bool &exit_flag)
             this->view->show_message(e.what());
         }
         break;
+    case menu_state::INSTRUCTIONS:
+        this->current_menu_state = menu_state::MAIN_MENU;
+        this->view->show_start_menu();
+        this->ask_for_input();
+        break;
     }
 }
 
@@ -287,9 +288,8 @@ void client_controller::process_main_menu_input(std::string &in, bool &exit_flag
         ask_for_input();
         break;
     case 3:
+        this->current_menu_state = menu_state::INSTRUCTIONS;
         this->view->show_instructions();
-        SHOW_PRESS_ANY_KEY;
-        this->view->show_start_menu();
         ask_for_input();
         break;
     case 4:
