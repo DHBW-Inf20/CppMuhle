@@ -17,6 +17,7 @@ class network_controller
 {
     public:
         network_controller();
+        network_controller(int port);
         ~network_controller();
         void run();
         

@@ -10,6 +10,10 @@ network_controller::network_controller()
 {
     this->server = new net_server(42069);
 }
+network_controller::network_controller(int port)
+{
+    this->server = new net_server(port);
+}
 
 network_controller::~network_controller()
 {

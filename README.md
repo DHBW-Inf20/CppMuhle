@@ -34,7 +34,7 @@ Es existiert eine ältere Koop-Variante des Spiels ohne Netzwerkanbindung im [Re
 
 ```plain
 Server:
-    server
+    server <port>
 
         Führt einen Server aus, der die Logik des Spiels hält.
         Der Server hört auf Port 42069 zu.

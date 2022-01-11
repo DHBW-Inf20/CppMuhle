@@ -9,7 +9,7 @@ int main(int argc, char** argv)
     }else if(argc == 2){
         client_controller controller(argv[1]);
         controller.run();
-    }else if(argc == 3){
+    }else if(argc >= 3){
         client_controller controller(std::string(argv[1]), stoi(std::string(argv[2])));
         controller.run();
     }
